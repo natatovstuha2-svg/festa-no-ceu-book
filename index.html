@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Свято на небі — інтерактивна книга</title>
 
-<script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.js"></script>
-
 <style>
+/* =========================================================
+   БАЗОВІ НАЛАШТУВАННЯ
+========================================================= */
 
 * {
     box-sizing: border-box;
@@ -22,26 +22,22 @@ body {
 }
 
 body {
-    font-family: Arial, "Segoe UI", sans-serif;
-    color: #173b50;
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #173c51;
     overflow-x: hidden;
 
     background:
-        radial-gradient(
-            circle at 10% 20%,
-            rgba(104, 222, 202, .22),
-            transparent 26%
-        ),
-        radial-gradient(
-            circle at 91% 82%,
-            rgba(87, 196, 245, .21),
-            transparent 27%
-        ),
+        radial-gradient(circle at 8% 18%,
+            rgba(102, 220, 195, .20),
+            transparent 28%),
+        radial-gradient(circle at 91% 80%,
+            rgba(82, 188, 237, .20),
+            transparent 29%),
         linear-gradient(
             135deg,
             #ffffff 0%,
             #edfaff 48%,
-            #f9feff 100%
+            #fbfeff 100%
         );
 }
 
@@ -59,11 +55,10 @@ body {
 
     padding: 24px;
 
-    perspective: 1800px;
+    perspective: 2200px;
 }
 
-
-.cover-volume {
+.closed-book {
     position: relative;
 
     width: min(92vw, 1450px);
@@ -72,93 +67,92 @@ body {
     transform-style: preserve-3d;
 
     filter:
-        drop-shadow(0 28px 32px rgba(35, 75, 75, .24));
+        drop-shadow(0 34px 31px rgba(28, 69, 70, .25));
 }
 
-
-/* товщина сторінок закритої книги */
-.cover-volume::before {
+/* паперовий блок під обкладинкою */
+.closed-book::before {
     content: "";
 
     position: absolute;
 
-    left: 3.1%;
-    right: .7%;
-    top: 2.2%;
-    bottom: -13px;
-
     z-index: -2;
 
-    border-radius: 4px 15px 17px 4px;
+    left: 3%;
+    right: .7%;
+
+    top: 2%;
+    bottom: -17px;
+
+    border-radius: 6px 17px 19px 6px;
 
     background:
         repeating-linear-gradient(
             to bottom,
             #ffffff 0px,
             #ffffff 2px,
-            #dce5e8 3px,
-            #ffffff 4px
+            #d2dde0 3px,
+            #fdfdfd 5px
         );
 
     box-shadow:
-        5px 11px 19px rgba(25, 55, 60, .20);
+        6px 12px 20px rgba(26, 57, 59, .18);
 }
 
-
-/* задня тверда обкладинка */
-.cover-volume::after {
+/* нижня тверда обкладинка */
+.closed-book::after {
     content: "";
 
     position: absolute;
 
-    left: 1%;
-    right: -.4%;
-    top: 1%;
-    bottom: -21px;
-
     z-index: -3;
 
-    border-radius: 5px 17px 20px 5px;
+    left: 1%;
+    right: -.5%;
+
+    top: .8%;
+    bottom: -27px;
+
+    border-radius: 7px 19px 22px 7px;
 
     background:
         linear-gradient(
             90deg,
-            #0b553e,
-            #12674e 38%,
-            #084631
+            #073e2f,
+            #0c654a 37%,
+            #073f30
         );
 
-    border:
-        2px solid rgba(217, 170, 56, .72);
+    border: 2px solid rgba(218, 174, 60, .80);
+
+    box-shadow:
+        inset 0 0 0 2px rgba(255, 219, 108, .15);
 }
 
-
-#coverBook {
+.cover-face {
     position: absolute;
     inset: 0;
 
-    overflow: hidden;
+    border-radius: 6px 18px 18px 6px;
 
-    border-radius: 5px 17px 17px 5px;
+    overflow: hidden;
 
     transform-origin: left center;
 
     transition:
-        transform 1.05s cubic-bezier(.67,.02,.22,1),
-        opacity .62s ease;
+        transform 1.05s cubic-bezier(.68,.01,.20,1),
+        opacity .65s ease;
 }
 
-
-#coverBook.opening {
+.cover-face.opening {
     transform:
-        rotateY(-93deg)
-        translateX(-4%);
+        rotateY(-104deg)
+        translateX(-2%);
 
-    opacity: .12;
+    opacity: .08;
 }
 
-
-#coverBook img {
+.cover-face img {
     width: 100%;
     height: 100%;
 
@@ -168,75 +162,56 @@ body {
     user-select: none;
 }
 
-
-/* кутик обкладинки */
-.cover-corner {
+/* кутик відкривання */
+.open-corner {
     position: absolute;
 
     right: 0;
     bottom: 0;
 
-    width: 110px;
-    height: 110px;
+    width: 112px;
+    height: 112px;
 
-    cursor: pointer;
     z-index: 20;
 
-    filter:
-        drop-shadow(-4px -4px 8px rgba(0,0,0,.10));
+    border: 0;
+    background: transparent;
+
+    cursor: pointer;
 }
 
-
-.cover-corner::before {
+.open-corner::before {
     content: "";
 
     position: absolute;
-
-    right: 0;
-    bottom: 0;
-
-    width: 100%;
-    height: 100%;
-
-    background:
-        linear-gradient(
-            135deg,
-            transparent 48%,
-            rgba(255,255,255,.96) 50%,
-            rgba(238,247,249,.97) 100%
-        );
+    inset: 0;
 
     clip-path:
         polygon(100% 0, 100% 100%, 0 100%);
 
-    transition: transform .25s ease;
+    background:
+        linear-gradient(
+            135deg,
+            transparent 47%,
+            rgba(255,255,255,.88) 50%,
+            rgba(235,244,244,.98) 100%
+        );
+
+    filter:
+        drop-shadow(-5px -5px 7px rgba(0,0,0,.11));
+
+    transition:
+        transform .23s ease;
 }
 
-
-.cover-corner:hover::before {
-    transform: translate(-5px, -5px);
-}
-
-
-.cover-corner::after {
-    content: "відкрити";
-
-    position: absolute;
-
-    right: 10px;
-    bottom: 13px;
-
-    transform: rotate(-45deg);
-
-    color: #7d6426;
-
-    font-size: 12px;
-    font-weight: 700;
+.open-corner:hover::before {
+    transform:
+        translate(-5px,-5px);
 }
 
 
 /* =========================================================
-   ЧИТАЧ
+   ЕКРАН КНИГИ
 ========================================================= */
 
 #readerScreen {
@@ -248,9 +223,8 @@ body {
     align-items: center;
     justify-content: center;
 
-    padding: 20px 14px 16px;
+    padding: 20px 12px 14px;
 }
-
 
 #readerScreen.visible {
     display: flex;
@@ -261,33 +235,36 @@ body {
    ОБ'ЄМНА КНИГА
 ========================================================= */
 
-.book-volume {
+.book-shell {
+    --left-stack: 5px;
+    --right-stack: 25px;
+
     position: relative;
 
-    width: min(96vw, 1780px);
+    width: min(96vw, 1760px);
+    aspect-ratio: 16 / 9;
+
+    perspective: 2500px;
 
     padding:
-        10px 13px 25px;
-
-    border-radius: 20px;
-
-    perspective: 2400px;
+        11px
+        15px
+        31px;
 
     filter:
         drop-shadow(
-            0 32px 34px
-            rgba(35, 78, 78, .20)
+            0 34px 34px
+            rgba(29, 70, 72, .21)
         );
 }
 
-
-/* тверда обкладинка під сторінками */
-.book-volume::before {
+/* тверда обкладинка під книгою */
+.book-shell::before {
     content: "";
 
     position: absolute;
 
-    z-index: -3;
+    z-index: -5;
 
     left: 0;
     right: 0;
@@ -296,118 +273,225 @@ body {
     bottom: 0;
 
     border-radius:
-        19px 19px 23px 23px;
+        20px 20px 25px 25px;
 
     background:
         linear-gradient(
             90deg,
-            #084a36 0%,
-            #10654b 15%,
-            #0a513c 50%,
-            #10654b 85%,
-            #084a36 100%
+            #073f30 0%,
+            #0b664a 20%,
+            #0b4b39 50%,
+            #0b664a 80%,
+            #073f30 100%
         );
 
     border:
-        2px solid
-        rgba(213, 168, 51, .82);
+        2px solid rgba(217, 171, 53, .88);
 
     box-shadow:
         inset 0 0 0 2px
-        rgba(247, 210, 102, .20);
+        rgba(255, 219, 108, .18);
 }
 
-
-/* нижня товщина блоку сторінок */
-.book-volume::after {
+/* нижній зріз сторінок */
+.book-shell::after {
     content: "";
 
     position: absolute;
 
-    z-index: -2;
+    z-index: -3;
 
     left: 17px;
     right: 17px;
 
-    bottom: 11px;
+    bottom: 10px;
 
-    height: 23px;
+    height: 26px;
 
     border-radius:
-        0 0 14px 14px;
+        0 0 15px 15px;
 
     background:
         repeating-linear-gradient(
             to bottom,
             #ffffff 0px,
             #ffffff 2px,
-            #d8e2e5 3px,
+            #d5dfe1 3px,
             #ffffff 5px
         );
 
     box-shadow:
-        0 9px 16px
-        rgba(25, 58, 62, .16);
+        0 9px 15px
+        rgba(25, 58, 61, .16);
 }
 
 
-/* бокові пачки сторінок */
-.paper-edge-left,
-.paper-edge-right {
+/* =========================================================
+   ТОВЩИНА ЛІВОГО І ПРАВОГО БЛОКУ
+========================================================= */
+
+.page-stack-left,
+.page-stack-right {
     position: absolute;
 
-    z-index: -1;
+    z-index: -2;
 
-    top: 18px;
-    bottom: 27px;
-
-    width: 17px;
+    top: 19px;
+    bottom: 35px;
 
     background:
         repeating-linear-gradient(
             90deg,
-            #ffffff 0px,
-            #ffffff 2px,
-            #d6e0e3 3px,
+            #fdfdfd 0,
+            #fdfdfd 2px,
+            #d2dcdf 3px,
             #ffffff 5px
         );
 
     box-shadow:
-        0 4px 8px
-        rgba(0,0,0,.08);
+        0 5px 10px rgba(22, 50, 54, .11);
 
-    pointer-events: none;
+    transition:
+        width .45s ease;
 }
 
-
-.paper-edge-left {
+.page-stack-left {
     left: 12px;
 
-    border-radius:
-        12px 0 0 12px;
+    width: var(--left-stack);
+
+    border-radius: 13px 0 0 13px;
 }
 
-
-.paper-edge-right {
+.page-stack-right {
     right: 12px;
 
-    border-radius:
-        0 12px 12px 0;
+    width: var(--right-stack);
+
+    border-radius: 0 13px 13px 0;
 }
 
 
-/* внутрішній книжковий жолобок */
-.gutter {
+/* =========================================================
+   РОЗВОРОТ
+========================================================= */
+
+.spread {
     position: absolute;
 
-    z-index: 100;
+    left: 15px;
+    right: 15px;
+
+    top: 11px;
+    bottom: 31px;
+
+    display: flex;
+
+    background: #ffffff;
+
+    border-radius: 13px;
+
+    overflow: visible;
+
+    transform-style: preserve-3d;
+
+    box-shadow:
+        0 4px 13px rgba(34, 65, 68, .10);
+}
+
+.page {
+    position: relative;
+
+    width: 50%;
+    height: 100%;
+
+    overflow: hidden;
+
+    background: #ffffff;
+}
+
+.left-page {
+    border-radius:
+        12px 2px 2px 12px;
+
+    box-shadow:
+        inset -18px 0 27px rgba(25, 44, 48, .12);
+}
+
+.right-page {
+    border-radius:
+        2px 12px 12px 2px;
+
+    box-shadow:
+        inset 18px 0 27px rgba(25, 44, 48, .11);
+}
+
+
+/* =========================================================
+   ГЛИБОКИЙ КНИЖКОВИЙ ЗГИН
+========================================================= */
+
+.left-page::after {
+    content: "";
+
+    position: absolute;
+
+    z-index: 25;
+
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 75px;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            to left,
+            rgba(12, 29, 33, .26) 0%,
+            rgba(20, 38, 42, .17) 20%,
+            rgba(33, 55, 59, .08) 48%,
+            transparent 100%
+        );
+}
+
+.right-page::before {
+    content: "";
+
+    position: absolute;
+
+    z-index: 25;
+
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 75px;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            to right,
+            rgba(12, 29, 33, .27) 0%,
+            rgba(20, 38, 42, .17) 20%,
+            rgba(33, 55, 59, .08) 48%,
+            transparent 100%
+        );
+}
+
+.gutter-shadow {
+    position: absolute;
+
+    z-index: 65;
 
     left: 50%;
 
-    top: 17px;
-    bottom: 34px;
+    top: 0;
+    bottom: 0;
 
-    width: 52px;
+    width: 88px;
 
     transform:
         translateX(-50%);
@@ -418,75 +502,29 @@ body {
         linear-gradient(
             90deg,
             transparent 0%,
-            rgba(20,42,48,.07) 18%,
-            rgba(14,30,35,.18) 42%,
-            rgba(255,255,255,.42) 50%,
-            rgba(14,30,35,.17) 58%,
-            rgba(20,42,48,.07) 82%,
+            rgba(17, 32, 36, .05) 12%,
+            rgba(13, 27, 30, .19) 34%,
+            rgba(5, 16, 18, .40) 48%,
+            rgba(255,255,255,.28) 50%,
+            rgba(5, 16, 18, .38) 52%,
+            rgba(13, 27, 30, .19) 66%,
+            rgba(17, 32, 36, .05) 88%,
             transparent 100%
         );
 
-    filter:
-        blur(.2px);
-}
-
-
-/* тонке золоте обрамлення */
-.gold-line {
-    position: absolute;
-
-    z-index: 90;
-
-    inset:
-        7px 9px 21px;
-
-    border-radius: 12px;
-
-    border:
-        1px solid
-        rgba(232, 190, 76, .58);
-
-    pointer-events: none;
-}
-
-
-/* контейнер бібліотеки */
-#book {
-    position: relative;
-
-    width: 100%;
-    height: 100%;
+    filter: blur(.15px);
 }
 
 
 /* =========================================================
-   СТОРІНКИ
+   СЮЖЕТНІ ІЛЮСТРАЦІЇ
 ========================================================= */
 
-.page {
-    position: relative;
-
-    overflow: hidden;
-
-    background: #ffffff;
-
-    box-shadow:
-        inset 0 0 0 1px
-        rgba(37, 73, 80, .05);
-}
-
-
-/* ліва сюжетна сторінка */
 .scene-page {
-    background: #ffffff;
-
-    box-shadow:
-        inset -16px 0 24px
-        rgba(26, 53, 58, .10);
+    background: #e3f7ff;
 }
 
-
-.scene-page .scene {
+.scene-page > .scene-image {
     position: absolute;
 
     inset: 0;
@@ -502,81 +540,74 @@ body {
 }
 
 
-/* права текстова сторінка */
+/* =========================================================
+   ТЕКСТОВА СТОРІНКА
+========================================================= */
+
 .text-page,
-.question-page {
+.task-page,
+.quiz-page {
     background:
         url("text-page-bg.png")
         center / cover no-repeat;
-
-    box-shadow:
-        inset 16px 0 24px
-        rgba(26, 53, 58, .09);
 }
-
-
-/* =========================================================
-   ТЕКСТ КАЗКИ
-========================================================= */
 
 .text-wrap {
     position: absolute;
 
-    left: 7.8%;
-    right: 7.8%;
+    left: 8.5%;
+    right: 8.2%;
 
-    top: 8.5%;
-    bottom: 8.5%;
+    top: 8%;
+    bottom: 8%;
 
     display: flex;
 
     flex-direction: column;
 
     justify-content: center;
-}
 
+    z-index: 5;
+}
 
 .story-text {
     margin: 0;
 
     font-family:
-        Arial,
         "Segoe UI",
+        Arial,
         sans-serif;
 
     font-size:
-        24px;
+        clamp(16px, 1.22vw, 24px);
 
-    line-height: 1.46;
+    line-height: 1.47;
 
-    font-weight: 400;
+    font-weight: 430;
 
-    color: #183e54;
+    color: #183d53;
 
     text-align: left;
 }
-
 
 .story-text p {
     margin:
         0 0 .72em;
 }
 
-
 .story-text strong {
-    color: #075276;
-    font-weight: 700;
+    color: #075273;
+    font-weight: 750;
 }
 
-
 .dialogue {
-    color: #075276;
+    color: #075273;
     font-weight: 650;
 }
 
 
 /* =========================================================
-   ХМАРИ
+   АНІМАЦІЯ ХМАР
 ========================================================= */
 
 .cloud-layer {
@@ -584,13 +615,12 @@ body {
 
     inset: 0;
 
-    z-index: 10;
+    z-index: 12;
 
     overflow: hidden;
 
     pointer-events: none;
 }
-
 
 .cloud {
     position: absolute;
@@ -598,98 +628,161 @@ body {
     height: auto;
 
     pointer-events: none;
-
-    filter:
-        drop-shadow(
-            0 4px 8px
-            rgba(255,255,255,.25)
-        );
 }
 
-
-.cloud-one {
+.cloud-a {
     width: 64%;
 
-    top: 8%;
-    left: -70%;
+    top: 3%;
+    left: -68%;
 
-    opacity: .71;
+    opacity: .66;
 
     animation:
         cloudRight
-        17s linear infinite;
+        16s linear infinite;
 }
 
-
-.cloud-two {
-    width: 47%;
+.cloud-b {
+    width: 48%;
 
     top: 55%;
-    left: -58%;
+    left: -57%;
 
-    opacity: .48;
+    opacity: .46;
 
     animation:
         cloudRight
-        28s linear infinite;
+        26s linear infinite;
 
     animation-delay: -9s;
 }
 
-
-.cloud-layer.reverse .cloud-one {
+.cloud-layer.reverse .cloud-a {
     left: auto;
-    right: -70%;
+    right: -68%;
 
     animation-name:
         cloudLeft;
 }
 
-
-.cloud-layer.reverse .cloud-two {
+.cloud-layer.reverse .cloud-b {
     left: auto;
-    right: -58%;
+    right: -57%;
 
     animation-name:
         cloudLeft;
 }
-
 
 @keyframes cloudRight {
     from {
-        transform:
-            translateX(0);
+        transform: translateX(0);
     }
 
     to {
-        transform:
-            translateX(270%);
+        transform: translateX(275%);
     }
 }
 
-
 @keyframes cloudLeft {
     from {
-        transform:
-            translateX(0);
+        transform: translateX(0);
     }
 
     to {
-        transform:
-            translateX(-270%);
+        transform: translateX(-275%);
     }
 }
 
 
 /* =========================================================
-   ДЖАБУТІ НА ПІДЛОЖЦІ
+   ПАДІННЯ ДЖАБУТІ
 ========================================================= */
 
-.jabuti-page {
-    position: relative;
+.falling-scene {
+    position: absolute;
 
-    width: 100%;
-    height: 100%;
+    inset: 0;
+
+    overflow: hidden;
+
+    background:
+        url("falling-bg.png")
+        center / cover no-repeat;
+}
+
+.falling-scene .cloud-a {
+    animation-duration: 7s;
+}
+
+.falling-scene .cloud-b {
+    animation-duration: 10s;
+}
+
+.falling-jabuti {
+    position: absolute;
+
+    z-index: 15;
+
+    left: 50%;
+    top: -5%;
+
+    width: 30%;
+
+    transform-origin: center;
+
+    filter:
+        drop-shadow(
+            0 18px 17px
+            rgba(20, 50, 59, .18)
+        );
+
+    animation:
+        jabutiFall
+        4.2s ease-in infinite;
+}
+
+@keyframes jabutiFall {
+
+    0% {
+        transform:
+            translate(-50%, -10%)
+            rotate(-15deg)
+            scale(.72);
+    }
+
+    38% {
+        transform:
+            translate(-35%, 85%)
+            rotate(18deg)
+            scale(.82);
+    }
+
+    72% {
+        transform:
+            translate(-60%, 185%)
+            rotate(-22deg)
+            scale(.96);
+    }
+
+    100% {
+        transform:
+            translate(-42%, 310%)
+            rotate(24deg)
+            scale(1.13);
+    }
+}
+
+
+/* =========================================================
+   ДЖАБУТІ В ІНТЕРАКТИВНИХ БЛОКАХ
+   ЗАВЖДИ НА ПІДЛОЖЦІ
+========================================================= */
+
+.jabuti-panel {
+    position: absolute;
+
+    inset: 0;
 
     overflow: hidden;
 
@@ -698,42 +791,39 @@ body {
         center / cover no-repeat;
 }
 
-
-/* трохи затемнюємо сам низ,
-   щоб персонаж мав опору */
-.jabuti-page::after {
+.jabuti-panel::after {
     content: "";
 
     position: absolute;
 
-    left: 8%;
-    right: 8%;
-    bottom: 2%;
+    left: 12%;
+    right: 12%;
 
-    height: 17%;
+    bottom: 3%;
+
+    height: 16%;
 
     border-radius: 50%;
 
     background:
         radial-gradient(
-            ellipse at center,
-            rgba(28, 119, 82, .17),
+            ellipse,
+            rgba(48, 120, 92, .18),
             transparent 68%
         );
 
     filter: blur(8px);
 }
 
-
-.jabuti-character {
+.quiz-jabuti {
     position: absolute;
 
-    z-index: 4;
+    z-index: 5;
+
+    width: 52%;
 
     left: 50%;
-    bottom: 4%;
-
-    width: 53%;
+    bottom: 3%;
 
     transform:
         translateX(-50%);
@@ -741,17 +831,16 @@ body {
     transform-origin:
         center bottom;
 
-    animation:
-        jabutiIdle
-        3.2s ease-in-out infinite;
-
     filter:
         drop-shadow(
-            0 17px 15px
-            rgba(31, 63, 59, .19)
+            0 18px 15px
+            rgba(23, 61, 64, .18)
         );
-}
 
+    animation:
+        jabutiIdle
+        3s ease-in-out infinite;
+}
 
 @keyframes jabutiIdle {
 
@@ -766,20 +855,18 @@ body {
     50% {
         transform:
             translateX(-50%)
-            translateY(-11px)
+            translateY(-10px)
             rotate(1.5deg);
     }
 }
 
-
-.jabuti-character.celebrate {
+.quiz-jabuti.celebrate {
     animation:
-        jabutiCelebrate
-        .65s ease;
+        celebrate
+        .62s ease;
 }
 
-
-@keyframes jabutiCelebrate {
+@keyframes celebrate {
 
     0% {
         transform:
@@ -787,19 +874,19 @@ body {
             scale(1);
     }
 
-    35% {
+    32% {
         transform:
             translateX(-50%)
-            translateY(-18px)
-            rotate(-4deg)
+            translateY(-20px)
+            rotate(-5deg)
             scale(1.07);
     }
 
-    70% {
+    68% {
         transform:
             translateX(-50%)
             rotate(4deg)
-            scale(1.05);
+            scale(1.04);
     }
 
     100% {
@@ -810,295 +897,517 @@ body {
 }
 
 
-/* =========================================================
-   ПИТАННЯ
-========================================================= */
-
-.question-wrap {
+/* репліка Джабуті */
+.speech-bubble {
     position: absolute;
 
-    inset: 7.5%;
+    z-index: 8;
 
-    overflow-y: auto;
-}
+    top: 10%;
+    left: 9%;
+    right: 9%;
 
+    padding:
+        18px 22px;
 
-.question-heading {
-    margin:
-        0 0 20px;
+    border-radius: 22px;
 
-    font-family:
-        Arial,
-        "Segoe UI",
-        sans-serif;
+    background:
+        rgba(255,255,255,.91);
 
-    font-size: 30px;
+    border:
+        1px solid rgba(21, 104, 137, .16);
 
-    line-height: 1.16;
+    box-shadow:
+        0 9px 25px
+        rgba(31, 91, 107, .11);
 
-    color: #075276;
+    color: #075273;
 
-    font-weight: 750;
-}
-
-
-.question-list {
-    margin: 0;
-
-    padding-left: 1.25em;
-
-    font-family:
-        Arial,
-        "Segoe UI",
-        sans-serif;
-
-    font-size: 21px;
-
-    line-height: 1.48;
-
-    color: #183e54;
-}
-
-
-.question-list li {
-    margin-bottom: .8em;
-}
-
-
-/* =========================================================
-   ТЕСТ УВАЖНОСТІ
-========================================================= */
-
-.quiz-item {
-    margin-bottom: 18px;
-
-    padding-bottom: 15px;
-
-    border-bottom:
-        1px solid
-        rgba(20, 105, 137, .13);
-}
-
-
-.quiz-item:last-of-type {
-    border-bottom: none;
-}
-
-
-.quiz-question {
-    margin:
-        0 0 9px;
-
-    color: #173f56;
-
-    font-size: 18px;
+    font-size:
+        clamp(16px, 1.2vw, 23px);
 
     line-height: 1.35;
 
     font-weight: 700;
+
+    text-align: center;
 }
 
 
-.answers {
-    display: flex;
+/* =========================================================
+   КЛІКАБЕЛЬНІ ПЛАШКИ
+========================================================= */
 
+.interactive-wrap {
+    position: absolute;
+
+    inset: 7% 7.5%;
+
+    overflow-y: auto;
+
+    z-index: 5;
+
+    padding-right: 5px;
+}
+
+.interactive-title {
+    margin:
+        0 0 17px;
+
+    color: #075273;
+
+    font-size:
+        clamp(23px, 1.65vw, 31px);
+
+    line-height: 1.15;
+
+    font-weight: 800;
+}
+
+.cards {
+    display: grid;
+
+    gap: 10px;
+}
+
+.task-card,
+.quiz-card {
+    width: 100%;
+
+    border:
+        1px solid rgba(16, 105, 140, .19);
+
+    border-radius: 18px;
+
+    background:
+        rgba(255,255,255,.91);
+
+    color: #17465e;
+
+    box-shadow:
+        0 5px 14px
+        rgba(34, 93, 107, .09);
+
+    overflow: hidden;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+}
+
+.task-card:hover,
+.quiz-card:hover {
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 8px 18px
+        rgba(34, 93, 107, .13);
+
+    border-color:
+        rgba(16, 105, 140, .30);
+}
+
+.task-toggle,
+.quiz-toggle {
+    width: 100%;
+
+    border: 0;
+
+    background: transparent;
+
+    padding:
+        13px 16px;
+
+    color: inherit;
+
+    font-family: inherit;
+
+    font-size:
+        clamp(14px, .97vw, 18px);
+
+    line-height: 1.35;
+
+    font-weight: 700;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.task-toggle::after,
+.quiz-toggle::after {
+    content: "+";
+
+    flex: 0 0 auto;
+
+    width: 26px;
+    height: 26px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background:
+        rgba(30, 124, 158, .10);
+
+    color: #096184;
+
+    font-size: 20px;
+
+    transition:
+        transform .22s ease;
+}
+
+.task-card.open .task-toggle::after,
+.quiz-card.open .quiz-toggle::after {
+    transform: rotate(45deg);
+}
+
+.task-detail,
+.quiz-options {
+    max-height: 0;
+
+    overflow: hidden;
+
+    padding:
+        0 16px;
+
+    opacity: 0;
+
+    transition:
+        max-height .30s ease,
+        opacity .25s ease,
+        padding .30s ease;
+}
+
+.task-card.open .task-detail,
+.quiz-card.open .quiz-options {
+    max-height: 260px;
+
+    opacity: 1;
+
+    padding:
+        2px 16px 15px;
+}
+
+.task-detail {
+    color: #214d62;
+
+    font-size:
+        clamp(14px, .93vw, 17px);
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   ВАРІАНТИ ВІДПОВІДЕЙ
+========================================================= */
+
+.answer-row {
+    display: flex;
     flex-wrap: wrap;
 
-    gap: 8px;
+    gap: 7px;
 }
-
 
 .answer {
     border:
-        1px solid
-        rgba(10, 95, 132, .22);
+        1px solid rgba(14, 101, 137, .20);
 
     border-radius: 999px;
 
     background:
-        rgba(255,255,255,.93);
+        rgba(255,255,255,.96);
 
-    color: #0d5572;
+    color: #12546f;
 
     padding:
-        7px 13px;
+        7px 12px;
 
     cursor: pointer;
 
-    font-size: 15px;
+    font-size:
+        clamp(13px, .85vw, 16px);
 
     transition:
-        transform .16s ease,
-        background .16s ease;
+        .17s ease;
 }
-
 
 .answer:hover {
-    transform:
-        translateY(-1px);
-
-    background: #ffffff;
+    transform: translateY(-1px);
 }
-
 
 .answer.correct {
     background: #d9f4df;
-
-    border-color: #68b97d;
-
-    color: #216439;
+    border-color: #63b47a;
+    color: #23643a;
 }
-
 
 .answer.wrong {
     background: #ffe3e3;
+    border-color: #d87c7c;
+    color: #923e3e;
 
-    border-color: #db7d7d;
+    animation:
+        wrongShake
+        .26s ease;
+}
 
-    color: #944040;
+@keyframes wrongShake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    35% {
+        transform: translateX(-4px);
+    }
+
+    70% {
+        transform: translateX(4px);
+    }
 }
 
 
-.final-memory {
-    margin-top: 20px;
+/* остання перевірка */
+.memory-card {
+    margin-top: 11px;
 
     padding:
         15px 17px;
 
-    border-radius: 17px;
+    border-radius: 18px;
 
     background:
-        rgba(255,255,255,.86);
+        rgba(255,255,255,.92);
 
     border:
-        1px solid
-        rgba(10, 95, 132, .17);
+        1px solid rgba(16, 105, 140, .18);
 
-    color: #075276;
+    box-shadow:
+        0 5px 14px rgba(34,93,107,.09);
 
-    font-size: 17px;
+    color: #17465e;
 
     line-height: 1.42;
 
     font-weight: 650;
 }
 
+.memory-button {
+    margin-top: 10px;
 
-.reveal-button {
-    margin-top: 12px;
-
-    border: none;
+    border: 0;
 
     border-radius: 999px;
 
     padding:
-        9px 16px;
+        8px 15px;
 
-    background: #11698c;
+    background: #0e698c;
 
     color: #ffffff;
 
-    cursor: pointer;
-
-    font-size: 15px;
-
     font-weight: 700;
+
+    cursor: pointer;
 }
 
-
-.jabuti-reply {
+.memory-answer {
     display: none;
 
     margin-top: 12px;
 
-    font-weight: 700;
+    color: #075273;
 }
 
-
-.jabuti-reply.visible {
+.memory-answer.visible {
     display: block;
 
     animation:
-        fadeAnswer
-        .35s ease;
+        reveal .35s ease;
 }
 
-
-@keyframes fadeAnswer {
-
+@keyframes reveal {
     from {
         opacity: 0;
-
-        transform:
-            translateY(7px);
+        transform: translateY(6px);
     }
 
     to {
         opacity: 1;
-
-        transform:
-            translateY(0);
+        transform: translateY(0);
     }
 }
 
 
 /* =========================================================
-   КУТИК ДЛЯ ГОРТАННЯ
+   СПРАВЖНІЙ ЕФЕКТ ПЕРЕГОРТАННЯ
 ========================================================= */
 
-.corner-cue {
+.turn-sheet {
+    display: none;
+
     position: absolute;
 
-    z-index: 150;
+    z-index: 80;
 
-    right: 21px;
-    bottom: 33px;
+    left: 50%;
 
-    width: 62px;
-    height: 62px;
+    top: 0;
+    bottom: 0;
+
+    width: 50%;
+
+    transform-origin: left center;
+
+    transform-style: preserve-3d;
 
     pointer-events: none;
-
-    opacity: .68;
 }
 
+.turn-sheet.active {
+    display: block;
+}
 
-.corner-cue::before {
+.sheet-face {
+    position: absolute;
+
+    inset: 0;
+
+    overflow: hidden;
+
+    backface-visibility: hidden;
+
+    background: #ffffff;
+}
+
+.sheet-front {
+    border-radius:
+        2px 12px 12px 2px;
+
+    box-shadow:
+        inset 18px 0 27px rgba(25,44,48,.11),
+        -3px 0 15px rgba(14,30,33,.18);
+}
+
+.sheet-back {
+    transform: rotateY(180deg);
+
+    border-radius:
+        12px 2px 2px 12px;
+
+    box-shadow:
+        inset -18px 0 27px rgba(25,44,48,.12),
+        3px 0 15px rgba(14,30,33,.18);
+}
+
+/* динамічна тінь аркуша */
+.turn-sheet::after {
     content: "";
 
     position: absolute;
 
     inset: 0;
 
-    clip-path:
-        polygon(100% 0, 100% 100%, 0 100%);
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            to left,
+            rgba(0,0,0,.02),
+            rgba(0,0,0,.23)
+        );
+
+    opacity: .32;
+
+    backface-visibility: hidden;
+}
+
+
+/* =========================================================
+   КУТИКИ ГОРТАННЯ
+========================================================= */
+
+.page-corner {
+    position: absolute;
+
+    z-index: 105;
+
+    bottom: 0;
+
+    width: 79px;
+    height: 79px;
+
+    border: 0;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    opacity: .72;
+
+    transition:
+        opacity .2s ease,
+        transform .2s ease;
+}
+
+.page-corner:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.page-corner:disabled {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.corner-next {
+    right: 0;
+}
+
+.corner-prev {
+    left: 0;
+}
+
+.corner-next::before,
+.corner-prev::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
 
     background:
         linear-gradient(
             135deg,
-            transparent 45%,
-            rgba(255,255,255,.75) 48%,
-            rgba(226, 190, 88, .32) 100%
+            transparent 46%,
+            rgba(255,255,255,.74) 49%,
+            rgba(219, 183, 73, .29) 100%
         );
-
-    animation:
-        cornerPulse
-        2s ease-in-out infinite;
 }
 
+.corner-next::before {
+    clip-path:
+        polygon(100% 0,100% 100%,0 100%);
+}
 
-@keyframes cornerPulse {
+.corner-prev::before {
+    transform: scaleX(-1);
 
-    0%,
-    100% {
-        transform:
-            translate(0,0);
-    }
-
-    50% {
-        transform:
-            translate(-4px,-4px);
-    }
+    clip-path:
+        polygon(100% 0,100% 100%,0 100%);
 }
 
 
@@ -1109,26 +1418,23 @@ body {
 .reader-controls {
     width: min(94vw, 1720px);
 
-    margin-top: 16px;
-
     display: grid;
 
     grid-template-columns:
         1fr auto 1fr;
 
     align-items: center;
+
+    margin-top: 15px;
 }
 
-
-.controls-left {
+.control-left {
     justify-self: start;
 }
 
-
-.controls-right {
+.control-right {
     justify-self: end;
 }
-
 
 .round-button {
     width: 46px;
@@ -1140,48 +1446,40 @@ body {
     border-radius: 50%;
 
     border:
-        1px solid
-        rgba(25, 102, 128, .16);
+        1px solid rgba(24, 102, 130, .15);
 
     background:
         rgba(255,255,255,.94);
 
-    color: #145e7c;
+    color: #155f7c;
 
     cursor: pointer;
 
     box-shadow:
-        0 7px 18px
-        rgba(32, 91, 104, .12);
+        0 7px 18px rgba(34,89,101,.12);
 
     transition:
-        transform .17s ease;
+        transform .18s ease;
 }
-
 
 .round-button:hover {
-    transform:
-        scale(1.06);
+    transform: scale(1.06);
 }
-
 
 .round-button svg {
     width: 22px;
     height: 22px;
 
     fill: none;
-
     stroke: currentColor;
 
-    stroke-width: 2.2;
-
+    stroke-width: 2.1;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 
-
 .counter {
-    min-width: 145px;
+    min-width: 150px;
 
     padding:
         8px 16px;
@@ -1191,81 +1489,100 @@ body {
     text-align: center;
 
     background:
-        rgba(255,255,255,.92);
+        rgba(255,255,255,.91);
 
     border:
-        1px solid
-        rgba(25, 102, 128, .13);
+        1px solid rgba(24,102,130,.13);
 
     color: #17617d;
 
-    font-size: 14px;
-
     font-weight: 700;
 
+    font-size: 14px;
+
     box-shadow:
-        0 6px 15px
-        rgba(32, 91, 104, .09);
+        0 6px 15px rgba(32,91,104,.09);
 }
 
-
 .flip-hint {
-    margin-top: 10px;
+    margin-top: 9px;
 
-    text-align: center;
-
-    color: #6091a2;
+    color: #6090a1;
 
     font-size: 13px;
+
+    text-align: center;
 }
 
 
 /* =========================================================
-   МОБІЛЬНИЙ
+   МОБІЛЬНА ВЕРСІЯ
 ========================================================= */
 
-@media (max-width: 760px) {
+@media (max-width: 780px) {
 
     #readerScreen {
         padding:
-            6px 3px 14px;
+            5px 2px 12px;
     }
 
-    .book-volume {
+    .book-shell {
         width: 99vw;
 
         padding:
-            5px 6px 14px;
+            5px 6px 17px;
     }
 
-    .paper-edge-left,
-    .paper-edge-right,
-    .gutter,
-    .gold-line,
-    .corner-cue {
-        display: none;
+    .spread {
+        left: 6px;
+        right: 6px;
+
+        top: 5px;
+        bottom: 17px;
+    }
+
+    .book-shell::after,
+    .page-stack-left,
+    .page-stack-right {
+        opacity: .68;
     }
 
     .story-text {
-        font-size: 18px;
+        font-size:
+            clamp(12px, 2.6vw, 17px);
 
-        line-height: 1.42;
+        line-height: 1.37;
     }
 
     .text-wrap {
         left: 7%;
         right: 7%;
 
-        top: 7%;
-        bottom: 7%;
+        top: 6%;
+        bottom: 6%;
     }
 
-    .question-heading {
-        font-size: 23px;
+    .gutter-shadow {
+        width: 49px;
     }
 
-    .question-list {
-        font-size: 17px;
+    .left-page::after,
+    .right-page::before {
+        width: 43px;
+    }
+
+    .speech-bubble {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+
+    .quiz-jabuti {
+        width: 47%;
+    }
+
+    .page-corner {
+        width: 54px;
+        height: 54px;
     }
 
     .flip-hint {
@@ -1276,7 +1593,7 @@ body {
 
 
 /* =========================================================
-   ЗМЕНШЕННЯ АНІМАЦІЇ
+   ДОСТУПНІСТЬ
 ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
@@ -1295,7 +1612,6 @@ body {
     }
 
 }
-
 </style>
 </head>
 
@@ -1309,9 +1625,12 @@ body {
 
 <section id="coverScreen">
 
-    <div class="cover-volume">
+    <div class="closed-book">
 
-        <div id="coverBook">
+        <div
+            class="cover-face"
+            id="coverFace"
+        >
 
             <img
                 src="book-cover.png"
@@ -1319,11 +1638,11 @@ body {
                 draggable="false"
             >
 
-            <div
-                class="cover-corner"
-                id="coverCorner"
-                title="Відкрити книгу"
-            ></div>
+            <button
+                class="open-corner"
+                id="openBookButton"
+                aria-label="Відкрити книгу"
+            ></button>
 
         </div>
 
@@ -1339,42 +1658,142 @@ body {
 
 <section id="readerScreen">
 
-    <div class="book-volume">
-
-        <div class="paper-edge-left"></div>
-        <div class="paper-edge-right"></div>
-
-        <div class="gold-line"></div>
-        <div class="gutter"></div>
-
-        <div class="corner-cue"></div>
-
-
-        <div id="book">
-
-
-<!-- ======================================================
-     01
-====================================================== -->
-
-<div class="page scene-page">
-
-    <img
-        class="scene"
-        src="01.png"
-        alt=""
-        draggable="false"
+    <div
+        class="book-shell"
+        id="bookShell"
     >
 
-</div>
+        <div class="page-stack-left"></div>
+        <div class="page-stack-right"></div>
+
+        <div class="spread">
+
+            <section
+                class="page left-page"
+                id="leftPage"
+            ></section>
+
+            <section
+                class="page right-page"
+                id="rightPage"
+            ></section>
+
+            <div class="gutter-shadow"></div>
+
+            <div
+                class="turn-sheet"
+                id="turnSheet"
+            >
+
+                <div
+                    class="sheet-face sheet-front"
+                    id="sheetFront"
+                ></div>
+
+                <div
+                    class="sheet-face sheet-back"
+                    id="sheetBack"
+                ></div>
+
+            </div>
 
 
-<div class="page text-page">
+            <button
+                class="page-corner corner-prev"
+                id="prevCorner"
+                aria-label="Попередня сторінка"
+            ></button>
 
-    <div class="text-wrap">
+            <button
+                class="page-corner corner-next"
+                id="nextCorner"
+                aria-label="Наступна сторінка"
+            ></button>
 
-        <div class="story-text">
+        </div>
 
+    </div>
+
+
+    <div class="reader-controls">
+
+        <div class="control-left">
+
+            <button
+                class="round-button"
+                id="homeButton"
+                title="До обкладинки"
+            >
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 11.5L12 4l9 7.5"/>
+                    <path d="M5.5 10v10h13V10"/>
+                </svg>
+
+            </button>
+
+        </div>
+
+
+        <div
+            class="counter"
+            id="counter"
+        >
+            1 / 17
+        </div>
+
+
+        <div class="control-right">
+
+            <button
+                class="round-button"
+                id="fullscreenButton"
+                title="Повний екран"
+            >
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M8 3H3v5"/>
+                    <path d="M16 3h5v5"/>
+                    <path d="M8 21H3v-5"/>
+                    <path d="M16 21h5v-5"/>
+                </svg>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="flip-hint">
+        Перегорни сторінку,
+        натиснувши на її нижній кутик
+    </div>
+
+</section>
+
+
+
+<script>
+
+/* =========================================================
+   ТЕКСТ КАЗКИ
+   ТЕКСТ НЕ ПЕРЕПИСУЄМО —
+   ЛИШЕ РОЗКЛАДАЄМО ПО СЮЖЕТНИХ СЦЕНАХ
+========================================================= */
+
+const spreads = [
+
+/* 01 */
+{
+    left: {
+        kind: "image",
+        src: "01.png"
+    },
+
+    right: {
+        kind: "text",
+        html: `
             <p>
                 Ця історія сталася дуже давно
                 в одному тропічному лісі.
@@ -1395,36 +1814,21 @@ body {
                 і чому мавпи з самого ранку
                 так підозріло хихочуть.
             </p>
-
-        </div>
-
-    </div>
-
-</div>
+        `
+    }
+},
 
 
-<!-- ======================================================
-     02
-====================================================== -->
+/* 02 */
+{
+    left: {
+        kind: "image",
+        src: "02.png"
+    },
 
-<div class="page scene-page">
-
-    <img
-        class="scene"
-        src="02.png"
-        alt=""
-        draggable="false"
-    >
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
-
+    right: {
+        kind: "text",
+        html: `
             <p>
                 Через свою цікавість Джабуті
                 вже не раз потрапляв
@@ -1448,35 +1852,6 @@ body {
                 а мавпи шукали найгустішу тінь.
             </p>
 
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ======================================================
-     03
-====================================================== -->
-
-<div class="page scene-page">
-
-    <img
-        class="scene"
-        src="03.png"
-        alt=""
-        draggable="false"
-    >
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
-
             <p>
                 І тоді птахи вирішили:
             </p>
@@ -1499,41 +1874,26 @@ body {
             <p>
                 Ідея всім страшенно сподобалася.
             </p>
+        `
+    }
+},
 
+
+/* TOUCAN INVITE */
+{
+    left: {
+        kind: "image",
+        src: "toucan-invite.png"
+    },
+
+    right: {
+        kind: "text",
+        html: `
             <p>
                 Але була одна умова:
                 на свято могли потрапити лише ті,
-                хто має крила.
+                <strong>хто має крила.</strong>
             </p>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ======================================================
-     04
-====================================================== -->
-
-<div class="page scene-page">
-
-    <img
-        class="scene"
-        src="04.png"
-        alt=""
-        draggable="false"
-    >
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
 
             <p>
                 Сповістити про це мешканців лісу
@@ -1541,8 +1901,7 @@ body {
             </p>
 
             <p>
-                Він літав над деревами
-                й голосно вигукував:
+                Він літав над деревами й голосно вигукував:
             </p>
 
             <p class="dialogue">
@@ -1557,8 +1916,7 @@ body {
             </p>
 
             <p>
-                Почувши лише слова
-                «велике свято»,
+                Почувши лише слова «велике свято»,
                 він одразу зупинився.
             </p>
 
@@ -1566,36 +1924,21 @@ body {
                 — Свято?! О! Чудово!
                 Я неодмінно прибуду!
             </p>
-
-        </div>
-
-    </div>
-
-</div>
+        `
+    }
+},
 
 
-<!-- ======================================================
-     05
-====================================================== -->
+/* 03 */
+{
+    left: {
+        kind: "image",
+        src: "03.png"
+    },
 
-<div class="page scene-page">
-
-    <img
-        class="scene"
-        src="05.png"
-        alt=""
-        draggable="false"
-    >
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
-
+    right: {
+        kind: "text",
+        html: `
             <p>
                 Тукан уже відлітав,
                 але почув його й повернув голову:
@@ -1611,8 +1954,7 @@ body {
             </p>
 
             <p>
-                Тукан махнув крилами
-                й прокричав ще раз,
+                Тукан махнув крилами й прокричав ще раз,
                 уже здалеку:
             </p>
 
@@ -1636,52 +1978,21 @@ body {
                 — Крила…
                 От саме крил мені й не вистачає.
             </p>
-
-        </div>
-
-    </div>
-
-</div>
+        `
+    }
+},
 
 
-<!-- ======================================================
-     06
-====================================================== -->
+/* 04 */
+{
+    left: {
+        kind: "image",
+        src: "04.png"
+    },
 
-<div class="page scene-page">
-
-    <img
-        class="scene"
-        src="06.png"
-        alt=""
-        draggable="false"
-    >
-
-    <div class="cloud-layer">
-
-        <img
-            src="clouds-01.png"
-            class="cloud cloud-one"
-            alt=""
-        >
-
-        <img
-            src="clouds-02.png"
-            class="cloud cloud-two"
-            alt=""
-        >
-
-    </div>
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
-
+    right: {
+        kind: "text",
+        html: `
             <p>
                 На хвилинку Джабуті засмутився.
             </p>
@@ -1692,14 +2003,12 @@ body {
 
             <p>
                 Бо якщо він щось задумував,
-                то відмовити його було
-                майже неможливо.
+                то відмовити його було майже неможливо.
             </p>
 
             <p class="dialogue">
                 — Немає крил?
-                Значить, треба придумати
-                щось інше!
+                Значить, треба придумати щось інше!
             </p>
 
             <p>
@@ -1715,39 +2024,9 @@ body {
                 а кудись угору.
             </p>
 
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ======================================================
-     07
-====================================================== -->
-
-<div class="page scene-page">
-
-    <img
-        class="scene"
-        src="07.png"
-        alt=""
-        draggable="false"
-    >
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
-
             <p>
                 І тут він побачив
-                свого знайомого —
-                грифа Урубу.
+                свого знайомого — грифа Урубу.
             </p>
 
             <p>
@@ -1759,13 +2038,7 @@ body {
 
             <p>
                 Джабуті подивився на Урубу.
-            </p>
-
-            <p>
                 Потім — на гітару.
-            </p>
-
-            <p>
                 Потім знову на Урубу.
             </p>
 
@@ -1777,39 +2050,23 @@ body {
                 — Здається,
                 я знаю, як потраплю на свято…
             </p>
-
-        </div>
-
-    </div>
-
-</div>
+        `
+    }
+},
 
 
-<!-- ======================================================
-     08 — СВЯТО НА НЕБІ
-====================================================== -->
+/* 05 */
+{
+    left: {
+        kind: "image",
+        src: "05.png"
+    },
 
-<div class="page scene-page">
-
-    <img
-        class="scene"
-        src="08.png"
-        alt=""
-        draggable="false"
-    >
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
-
+    right: {
+        kind: "text",
+        html: `
             <p>
-                Того вечора Джабуті
-                завітав до Урубу.
+                Того вечора Джабуті завітав до Урубу.
             </p>
 
             <p>
@@ -1839,53 +2096,8 @@ body {
 
             <p>
                 Точніше,
-                зробив вигляд, що пішов.
+                <strong>зробив вигляд, що пішов.</strong>
             </p>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ======================================================
-     09
-====================================================== -->
-
-<div class="page scene-page">
-
-    <img
-        class="scene"
-        src="09.png"
-        alt=""
-        draggable="false"
-    >
-
-    <div class="cloud-layer reverse">
-
-        <img
-            src="clouds-01.png"
-            class="cloud cloud-one"
-            alt=""
-        >
-
-        <img
-            src="clouds-02.png"
-            class="cloud cloud-two"
-            alt=""
-        >
-
-    </div>
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
 
             <p>
                 Щойно Урубу відвернувся,
@@ -1897,10 +2109,23 @@ body {
             <p class="dialogue">
                 — Тіснувато, —
                 прошепотів він. —
-                Але ж не щодня
-                літаєш на небо!
+                Але ж не щодня літаєш на небо!
             </p>
+        `
+    }
+},
 
+
+/* 06 */
+{
+    left: {
+        kind: "flight",
+        src: "06.png"
+    },
+
+    right: {
+        kind: "text",
+        html: `
             <p>
                 Наступного ранку
                 Урубу взяв гітару.
@@ -1926,35 +2151,6 @@ body {
                 І полетів.
             </p>
 
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ======================================================
-     10
-====================================================== -->
-
-<div class="page scene-page">
-
-    <img
-        class="scene"
-        src="10.png"
-        alt=""
-        draggable="false"
-    >
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
-
             <p>
                 Для Джабуті це був
                 перший політ у житті.
@@ -1962,13 +2158,7 @@ body {
 
             <p>
                 Гітара хиталася.
-            </p>
-
-            <p>
                 Десь поруч свистів вітер.
-            </p>
-
-            <p>
                 Джабуті підстрибував усередині
                 на кожному різкому повороті.
             </p>
@@ -1986,44 +2176,28 @@ body {
             </p>
 
             <p>
-                А після третього поштовху
-                прошепотів:
+                А після третього поштовху прошепотів:
             </p>
 
             <p class="dialogue">
                 — І навіщо птахам
                 узагалі подобається літати?
             </p>
-
-        </div>
-
-    </div>
-
-</div>
+        `
+    }
+},
 
 
-<!-- ======================================================
-     11
-====================================================== -->
+/* 07 */
+{
+    left: {
+        kind: "image",
+        src: "07.png"
+    },
 
-<div class="page scene-page">
-
-    <img
-        class="scene"
-        src="11.png"
-        alt=""
-        draggable="false"
-    >
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
-
+    right: {
+        kind: "text",
+        html: `
             <p>
                 Нарешті Урубу дістався до неба.
             </p>
@@ -2061,36 +2235,21 @@ body {
                 І тоді він швиденько
                 вибрався назовні.
             </p>
-
-        </div>
-
-    </div>
-
-</div>
+        `
+    }
+},
 
 
-<!-- ======================================================
-     12
-====================================================== -->
+/* 08 */
+{
+    left: {
+        kind: "image",
+        src: "08.png"
+    },
 
-<div class="page scene-page">
-
-    <img
-        class="scene"
-        src="12.png"
-        alt=""
-        draggable="false"
-    >
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
-
+    right: {
+        kind: "text",
+        html: `
             <p>
                 За кілька хвилин
                 хтось із птахів побачив його.
@@ -2121,42 +2280,12 @@ body {
             </p>
 
             <p class="dialogue">
-                — У кожного є
-                свої маленькі секрети.
+                — У кожного є свої маленькі секрети.
             </p>
 
             <p>
                 І пішов веселитися.
             </p>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ======================================================
-     13
-====================================================== -->
-
-<div class="page scene-page">
-
-    <img
-        class="scene"
-        src="13.png"
-        alt=""
-        draggable="false"
-    >
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
 
             <p>
                 Він танцював,
@@ -2174,14 +2303,27 @@ body {
             <p>
                 Йому таки вдалося!
             </p>
+        `
+    }
+},
 
+
+/* RETURN HIDE */
+{
+    left: {
+        kind: "image",
+        src: "return-hide.png"
+    },
+
+    right: {
+        kind: "text",
+        html: `
             <p>
                 Та свято добігало кінця.
             </p>
 
             <p>
-                Птахи почали
-                збиратися додому.
+                Птахи почали збиратися додому.
             </p>
 
             <p>
@@ -2194,36 +2336,21 @@ body {
                 Тож він знову нишком
                 заліз у гітару Урубу.
             </p>
-
-        </div>
-
-    </div>
-
-</div>
+        `
+    }
+},
 
 
-<!-- ======================================================
-     14 — FINAL SCENE
-====================================================== -->
+/* 09 */
+{
+    left: {
+        kind: "return-flight",
+        src: "09.png"
+    },
 
-<div class="page scene-page">
-
-    <img
-        class="scene"
-        src="final-scene.png"
-        alt=""
-        draggable="false"
-    >
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
-
+    right: {
+        kind: "text",
+        html: `
             <p>
                 Урубу злетів.
             </p>
@@ -2270,40 +2397,21 @@ body {
                 — Що це там? —
                 здивувався Урубу.
             </p>
-
-        </div>
-
-    </div>
-
-</div>
+        `
+    }
+},
 
 
-<!-- ======================================================
-     ПРОДОВЖЕННЯ ФІНАЛУ —
-     ТЕКСТОВІ РОЗВОРОТИ З ДЖАБУТІ НА ПІДЛОЖЦІ
-====================================================== -->
+/* 10 */
+{
+    left: {
+        kind: "image",
+        src: "10.png"
+    },
 
-<div class="page">
-
-    <div class="jabuti-page">
-
-        <img
-            src="jabuti.png"
-            class="jabuti-character"
-            alt="Джабуті"
-        >
-
-    </div>
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
-
+    right: {
+        kind: "text",
+        html: `
             <p>
                 Він зазирнув усередину.
             </p>
@@ -2342,35 +2450,20 @@ body {
             <p>
                 Джабуті випав.
             </p>
-
-        </div>
-
-    </div>
-
-</div>
+        `
+    }
+},
 
 
-<div class="page">
+/* FALLING */
+{
+    left: {
+        kind: "falling"
+    },
 
-    <div class="jabuti-page">
-
-        <img
-            src="jabuti.png"
-            class="jabuti-character"
-            alt="Джабуті"
-        >
-
-    </div>
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
-
+    right: {
+        kind: "text",
+        html: `
             <p>
                 Він летів униз
                 і бачив,
@@ -2399,9 +2492,23 @@ body {
             <p class="dialogue">
                 — Ніколи!
                 Чуєте?!
-                Ні-ко-ли!
+                <strong>Ні-ко-ли!</strong>
             </p>
+        `
+    }
+},
 
+
+/* 11 */
+{
+    left: {
+        kind: "image",
+        src: "11.png"
+    },
+
+    right: {
+        kind: "text",
+        html: `
             <p>
                 І тут —
             </p>
@@ -2409,34 +2516,6 @@ body {
             <p>
                 <strong>БУМ!</strong>
             </p>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="page">
-
-    <div class="jabuti-page">
-
-        <img
-            src="jabuti.png"
-            class="jabuti-character"
-            alt="Джабуті"
-        >
-
-    </div>
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
 
             <p>
                 Джабуті впав
@@ -2455,7 +2534,21 @@ body {
                 сам Джабуті
                 залишився живий.
             </p>
+        `
+    }
+},
 
+
+/* 12 */
+{
+    left: {
+        kind: "image",
+        src: "12.png"
+    },
+
+    right: {
+        kind: "text",
+        html: `
             <p>
                 Невдовзі його знайшли друзі.
             </p>
@@ -2465,35 +2558,21 @@ body {
                 всі шматочки панцира
                 й склали їх докупи.
             </p>
-
-        </div>
-
-    </div>
-
-</div>
+        `
+    }
+},
 
 
-<div class="page">
+/* 13 */
+{
+    left: {
+        kind: "image",
+        src: "13.png"
+    },
 
-    <div class="jabuti-page">
-
-        <img
-            src="jabuti.png"
-            class="jabuti-character"
-            alt="Джабуті"
-        >
-
-    </div>
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
-
+    right: {
+        kind: "text",
+        html: `
             <p>
                 Минув час.
             </p>
@@ -2515,41 +2594,27 @@ body {
                 ніби був складений
                 із багатьох окремих частинок.
             </p>
+        `
+    }
+},
 
+
+/* FINAL */
+{
+    left: {
+        kind: "image",
+        src: "final-scene.png"
+    },
+
+    right: {
+        kind: "text",
+        html: `
             <p>
                 Кажуть,
                 саме тому панцир Джабуті
                 й сьогодні має
                 такий незвичайний візерунок.
             </p>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="page">
-
-    <div class="jabuti-page">
-
-        <img
-            src="jabuti.png"
-            class="jabuti-character"
-            alt="Джабуті"
-        >
-
-    </div>
-
-</div>
-
-
-<div class="page text-page">
-
-    <div class="text-wrap">
-
-        <div class="story-text">
 
             <p>
                 А щодо його обіцянки
@@ -2563,8 +2628,10 @@ body {
             <p>
                 Той, хто хоч трохи знає Джабуті,
                 розуміє:
-                ця обіцянка
-                довго не протрималася.
+                <strong>
+                    ця обіцянка
+                    довго не протрималася.
+                </strong>
             </p>
 
             <p>
@@ -2573,498 +2640,789 @@ body {
                 нова пригода —
                 лише питання часу.
             </p>
+        `
+    }
+},
 
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ======================================================
-     ПІСЛЯ ЧИТАННЯ
-====================================================== -->
-
-<div class="page">
-
-    <div class="jabuti-page">
-
-        <img
-            src="jabuti.png"
-            class="jabuti-character"
-            alt="Джабуті"
-        >
-
-    </div>
-
-</div>
-
-
-<div class="page question-page">
-
-    <div class="question-wrap">
-
-        <h2 class="question-heading">
-            Поміркуй після читання
-        </h2>
-
-        <ol class="question-list">
-
-            <li>
-                Чому Джабуті так хотів
-                потрапити на свято,
-                хоча не мав крил?
-            </li>
-
-            <li>
-                Який план він придумав?
-                Чому цей план був ризикованим?
-            </li>
-
-            <li>
-                Як ти вважаєш:
-                Джабуті був сміливим,
-                хитрим чи необачним?
-                Можна обрати кілька відповідей
-                і коротко пояснити.
-            </li>
-
-            <li>
-                Що стало наслідком
-                його витівки?
-            </li>
-
-            <li>
-                Чи повірив ти Джабуті,
-                коли він під час падіння
-                обіцяв більше нічого
-                не вигадувати?
-                Чому?
-            </li>
-
-        </ol>
-
-    </div>
-
-</div>
-
-
-<!-- ======================================================
-     ПЕРЕВІРКА УВАЖНОСТІ
-====================================================== -->
-
-<div class="page">
-
-    <div class="jabuti-page">
-
-        <img
-            src="jabuti.png"
-            class="jabuti-character"
-            id="quizJabuti"
-            alt="Джабуті"
-        >
-
-    </div>
-
-</div>
-
-
-<div class="page question-page">
-
-    <div class="question-wrap">
-
-        <h2 class="question-heading">
-            Джабуті перевіряє твою уважність
-        </h2>
-
-
-        <div class="quiz-item" data-answer="Тукан">
-
-            <p class="quiz-question">
-                1. Хто повідомляв
-                мешканців лісу про свято?
-            </p>
-
-            <div class="answers">
-
-                <button class="answer">
-                    Урубу
-                </button>
-
-                <button class="answer">
-                    Тукан
-                </button>
-
-                <button class="answer">
-                    Мавпа
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="quiz-item" data-answer="На небі">
-
-            <p class="quiz-question">
-                2. Де мало відбутися свято?
-            </p>
-
-            <div class="answers">
-
-                <button class="answer">
-                    У джунглях
-                </button>
-
-                <button class="answer">
-                    На небі
-                </button>
-
-                <button class="answer">
-                    Біля річки
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="quiz-item" data-answer="Гітару">
-
-            <p class="quiz-question">
-                3. Що Урубу взяв
-                із собою на свято?
-            </p>
-
-            <div class="answers">
-
-                <button class="answer">
-                    Барабан
-                </button>
-
-                <button class="answer">
-                    Гітару
-                </button>
-
-                <button class="answer">
-                    Кошик із фруктами
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="quiz-item" data-answer="У гітарі">
-
-            <p class="quiz-question">
-                4. Де сховався Джабуті?
-            </p>
-
-            <div class="answers">
-
-                <button class="answer">
-                    У дуплі
-                </button>
-
-                <button class="answer">
-                    У гітарі
-                </button>
-
-                <button class="answer">
-                    Під крилом Урубу
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="quiz-item" data-answer="Він заворушився">
-
-            <p class="quiz-question">
-                5. Що видало Джабуті
-                дорогою назад?
-            </p>
-
-            <div class="answers">
-
-                <button class="answer">
-                    Він заспівав
-                </button>
-
-                <button class="answer">
-                    Він заворушився
-                </button>
-
-                <button class="answer">
-                    Він засміявся
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="final-memory">
-
-            <div>
-                — І найскладніше!
-                Що я обіцяв,
-                коли падав?
-            </div>
-
-            <button
-                class="reveal-button"
-                id="revealAnswer"
-            >
-                Перевірити
-            </button>
-
-            <div
-                class="jabuti-reply"
-                id="jabutiReply"
-            >
-                — «Якщо врятуюся —
-                більше ніколи нічого
-                такого не вигадуватиму!»
-                <br><br>
-                Е-е-е…
-                Ну, з обіцянками
-                в мене іноді складно.
-                <br>
-                До наступної пригоди, друже!
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-        </div>
-
-    </div>
-
-
-<!-- ======================================================
-     КЕРУВАННЯ
-====================================================== -->
-
-<div class="reader-controls">
-
-    <div class="controls-left">
-
-        <button
-            class="round-button"
-            id="homeButton"
-            title="До обкладинки"
-        >
-
-            <svg viewBox="0 0 24 24">
-
-                <path
-                    d="M3 11.5L12 4l9 7.5"
-                />
-
-                <path
-                    d="M5.5 10v10h13V10"
-                />
-
-            </svg>
-
-        </button>
-
-    </div>
-
-
-    <div
-        class="counter"
-        id="counter"
-    >
-        1 / 14
-    </div>
-
-
-    <div class="controls-right">
-
-        <button
-            class="round-button"
-            id="fullscreenButton"
-            title="Повний екран"
-        >
-
-            <svg viewBox="0 0 24 24">
-
-                <path d="M8 3H3v5"/>
-                <path d="M16 3h5v5"/>
-                <path d="M8 21H3v-5"/>
-                <path d="M16 21h5v-5"/>
-
-            </svg>
-
-        </button>
-
-    </div>
-
-</div>
-
-
-<div class="flip-hint">
-    Перегорни сторінку,
-    потягнувши за нижній кутик
-</div>
-
-
-</section>
-
-
-
-<script>
 
 /* =========================================================
-   ОБКЛАДИНКА
+   ПІСЛЯ ЧИТАННЯ
+========================================================= */
+
+{
+    left: {
+        kind: "jabuti-panel",
+        bubble:
+            "— Ну що, друже? Пригода завершилася. А тепер цікаво, що ти про неї думаєш?"
+    },
+
+    right: {
+        kind: "tasks"
+    }
+},
+
+
+/* =========================================================
+   ПЕРЕВІРКА УВАЖНОСТІ
+========================================================= */
+
+{
+    left: {
+        kind: "jabuti-panel",
+        bubble:
+            "— Стривай! А ти точно уважно читав мою історію? Перевірмо!"
+    },
+
+    right: {
+        kind: "quiz"
+    }
+}
+
+];
+
+
+/* =========================================================
+   DOM
 ========================================================= */
 
 const coverScreen =
-    document.getElementById(
-        "coverScreen"
-    );
+    document.getElementById("coverScreen");
 
-const coverBook =
-    document.getElementById(
-        "coverBook"
-    );
-
-const coverCorner =
-    document.getElementById(
-        "coverCorner"
-    );
+const coverFace =
+    document.getElementById("coverFace");
 
 const readerScreen =
-    document.getElementById(
-        "readerScreen"
-    );
+    document.getElementById("readerScreen");
+
+const leftPage =
+    document.getElementById("leftPage");
+
+const rightPage =
+    document.getElementById("rightPage");
+
+const turnSheet =
+    document.getElementById("turnSheet");
+
+const sheetFront =
+    document.getElementById("sheetFront");
+
+const sheetBack =
+    document.getElementById("sheetBack");
+
+const nextCorner =
+    document.getElementById("nextCorner");
+
+const prevCorner =
+    document.getElementById("prevCorner");
+
+const counter =
+    document.getElementById("counter");
+
+const bookShell =
+    document.getElementById("bookShell");
 
 
-let pageFlip = null;
+let currentSpread = 0;
+let turning = false;
 
 
-function openBook() {
+/* =========================================================
+   РЕНДЕР СТОРІНКИ
+========================================================= */
 
-    coverBook.classList.add(
-        "opening"
-    );
+function buildPage(spec) {
+
+    if (spec.kind === "image") {
+
+        return {
+            className: "scene-page",
+
+            html: `
+                <img
+                    class="scene-image"
+                    src="${spec.src}"
+                    alt=""
+                    draggable="false"
+                >
+            `
+        };
+
+    }
 
 
-    setTimeout(() => {
+    if (spec.kind === "flight") {
 
-        coverScreen.style.display =
-            "none";
+        return {
+            className: "scene-page",
 
-        readerScreen.classList.add(
-            "visible"
-        );
+            html: `
+                <img
+                    class="scene-image"
+                    src="${spec.src}"
+                    alt=""
+                    draggable="false"
+                >
+
+                <div class="cloud-layer">
+
+                    <img
+                        class="cloud cloud-a"
+                        src="clouds-01.png"
+                        alt=""
+                    >
+
+                    <img
+                        class="cloud cloud-b"
+                        src="clouds-02.png"
+                        alt=""
+                    >
+
+                </div>
+            `
+        };
+
+    }
 
 
-        if (!pageFlip) {
+    if (spec.kind === "return-flight") {
 
-            initialiseBook();
+        return {
+            className: "scene-page",
 
-        }
+            html: `
+                <img
+                    class="scene-image"
+                    src="${spec.src}"
+                    alt=""
+                    draggable="false"
+                >
 
-        else {
+                <div class="cloud-layer reverse">
 
-            pageFlip.update();
+                    <img
+                        class="cloud cloud-a"
+                        src="clouds-01.png"
+                        alt=""
+                    >
 
-        }
+                    <img
+                        class="cloud cloud-b"
+                        src="clouds-02.png"
+                        alt=""
+                    >
 
-    }, 760);
+                </div>
+            `
+        };
+
+    }
+
+
+    if (spec.kind === "falling") {
+
+        return {
+            className: "scene-page",
+
+            html: `
+                <div class="falling-scene">
+
+                    <div class="cloud-layer">
+
+                        <img
+                            class="cloud cloud-a"
+                            src="clouds-01.png"
+                            alt=""
+                        >
+
+                        <img
+                            class="cloud cloud-b"
+                            src="clouds-02.png"
+                            alt=""
+                        >
+
+                    </div>
+
+                    <img
+                        class="falling-jabuti"
+                        src="jabuti.png"
+                        alt="Джабуті"
+                    >
+
+                </div>
+            `
+        };
+
+    }
+
+
+    if (spec.kind === "text") {
+
+        return {
+            className: "text-page",
+
+            html: `
+                <div class="text-wrap">
+
+                    <div class="story-text">
+                        ${spec.html}
+                    </div>
+
+                </div>
+            `
+        };
+
+    }
+
+
+    if (spec.kind === "jabuti-panel") {
+
+        return {
+            className: "scene-page",
+
+            html: `
+                <div class="jabuti-panel">
+
+                    <div class="speech-bubble">
+                        ${spec.bubble}
+                    </div>
+
+                    <img
+                        class="quiz-jabuti"
+                        src="jabuti.png"
+                        alt="Джабуті"
+                    >
+
+                </div>
+            `
+        };
+
+    }
+
+
+    if (spec.kind === "tasks") {
+
+        return {
+            className: "task-page",
+
+            html: `
+                <div class="interactive-wrap">
+
+                    <h2 class="interactive-title">
+                        Поміркуй після читання
+                    </h2>
+
+
+                    <div class="cards">
+
+
+                        <div class="task-card">
+
+                            <button class="task-toggle">
+                                1. Чому Джабуті так хотів
+                                потрапити на свято?
+                            </button>
+
+                            <div class="task-detail">
+                                Чому Джабуті так хотів
+                                потрапити на свято,
+                                хоча не мав крил?
+                            </div>
+
+                        </div>
+
+
+                        <div class="task-card">
+
+                            <button class="task-toggle">
+                                2. Який план він придумав?
+                            </button>
+
+                            <div class="task-detail">
+                                Який план він придумав?
+                                Чому цей план був ризикованим?
+                            </div>
+
+                        </div>
+
+
+                        <div class="task-card">
+
+                            <button class="task-toggle">
+                                3. Яким був Джабуті?
+                            </button>
+
+                            <div class="task-detail">
+                                Як ти вважаєш:
+                                Джабуті був сміливим,
+                                хитрим чи необачним?
+                                Можна обрати кілька відповідей
+                                і коротко пояснити.
+                            </div>
+
+                        </div>
+
+
+                        <div class="task-card">
+
+                            <button class="task-toggle">
+                                4. До чого призвела його витівка?
+                            </button>
+
+                            <div class="task-detail">
+                                Що стало наслідком
+                                його витівки?
+                            </div>
+
+                        </div>
+
+
+                        <div class="task-card">
+
+                            <button class="task-toggle">
+                                5. Чи повірив ти Джабуті?
+                            </button>
+
+                            <div class="task-detail">
+                                Чи повірив ти Джабуті,
+                                коли він під час падіння
+                                обіцяв більше нічого
+                                не вигадувати?
+                                Чому?
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+            `
+        };
+
+    }
+
+
+    if (spec.kind === "quiz") {
+
+        return {
+            className: "quiz-page",
+
+            html: `
+                <div class="interactive-wrap">
+
+                    <h2 class="interactive-title">
+                        Джабуті перевіряє твою уважність
+                    </h2>
+
+
+                    <div class="cards">
+
+
+                        ${quizCard(
+                            "1. Хто повідомляв мешканців лісу про свято?",
+                            ["Урубу", "Тукан", "Мавпа"],
+                            "Тукан"
+                        )}
+
+
+                        ${quizCard(
+                            "2. Де мало відбутися свято?",
+                            ["У джунглях", "На небі", "Біля річки"],
+                            "На небі"
+                        )}
+
+
+                        ${quizCard(
+                            "3. Що Урубу взяв із собою на свято?",
+                            ["Барабан", "Гітару", "Кошик із фруктами"],
+                            "Гітару"
+                        )}
+
+
+                        ${quizCard(
+                            "4. Де сховався Джабуті?",
+                            ["У дуплі", "У гітарі", "Під крилом Урубу"],
+                            "У гітарі"
+                        )}
+
+
+                        ${quizCard(
+                            "5. Що видало Джабуті дорогою назад?",
+                            ["Він заспівав", "Він заворушився", "Він засміявся"],
+                            "Він заворушився"
+                        )}
+
+
+                    </div>
+
+
+                    <div class="memory-card">
+
+                        <div>
+                            — І найскладніше!
+                            Що я обіцяв,
+                            коли падав?
+                        </div>
+
+                        <button
+                            class="memory-button"
+                            data-memory
+                        >
+                            Перевірити
+                        </button>
+
+                        <div class="memory-answer">
+
+                            — «Якщо врятуюся —
+                            більше ніколи нічого
+                            такого не вигадуватиму!»
+
+                            <br><br>
+
+                            Е-е-е…
+                            Ну, з обіцянками
+                            в мене іноді складно. 😄
+
+                            <br>
+
+                            <strong>
+                                До наступної пригоди, друже!
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            `
+        };
+
+    }
+
+
+    return {
+        className: "",
+        html: ""
+    };
 
 }
 
 
-coverCorner.addEventListener(
-    "click",
-    openBook
-);
+/* =========================================================
+   QUIZ CARD
+========================================================= */
+
+function quizCard(
+    question,
+    answers,
+    correct
+) {
+
+    return `
+        <div
+            class="quiz-card"
+            data-correct="${correct}"
+        >
+
+            <button class="quiz-toggle">
+                ${question}
+            </button>
+
+            <div class="quiz-options">
+
+                <div class="answer-row">
+
+                    ${answers.map(
+                        answer => `
+                            <button
+                                class="answer"
+                                data-answer="${answer}"
+                            >
+                                ${answer}
+                            </button>
+                        `
+                    ).join("")}
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+}
 
 
 /* =========================================================
-   PAGE FLIP
+   APPLY PAGE
 ========================================================= */
 
-function initialiseBook() {
+function applyPage(
+    element,
+    spec,
+    side
+) {
 
-    const book =
-        document.getElementById(
-            "book"
-        );
+    const built =
+        buildPage(spec);
 
+    element.className =
+        `page ${side}-page ${built.className}`;
 
-    pageFlip =
-        new St.PageFlip(
-            book,
-            {
-                width: 860,
-                height: 484,
+    element.innerHTML =
+        built.html;
 
-                size: "stretch",
-
-                minWidth: 300,
-                maxWidth: 900,
-
-                minHeight: 169,
-                maxHeight: 506,
-
-                showCover: false,
-
-                usePortrait: true,
-
-                mobileScrollSupport: false,
-
-                useMouseEvents: true,
-
-                showPageCorners: true,
-
-                disableFlipByClick: false,
-
-                clickEventForward: true,
-
-                drawShadow: true,
-
-                maxShadowOpacity: .42,
-
-                flippingTime: 1050,
-
-                autoSize: true
-            }
-        );
+}
 
 
-    pageFlip.loadFromHTML(
-        document.querySelectorAll(
-            "#book > .page"
-        )
+/* =========================================================
+   APPLY SHEET FACE
+========================================================= */
+
+function applySheetFace(
+    element,
+    spec,
+    side
+) {
+
+    const built =
+        buildPage(spec);
+
+    element.className =
+        `sheet-face ${built.className} ${
+            side === "front"
+            ? "sheet-front"
+            : "sheet-back"
+        }`;
+
+    element.innerHTML =
+        built.html;
+
+}
+
+
+/* =========================================================
+   РЕНДЕР РОЗВОРОТУ
+========================================================= */
+
+function renderSpread() {
+
+    const spread =
+        spreads[currentSpread];
+
+    applyPage(
+        leftPage,
+        spread.left,
+        "left"
+    );
+
+    applyPage(
+        rightPage,
+        spread.right,
+        "right"
+    );
+
+    updateCounter();
+    updateCorners();
+    updatePageThickness();
+
+    requestAnimationFrame(
+        fitCurrentText
+    );
+
+    wireInteractions();
+
+}
+
+
+/* =========================================================
+   ПЕРЕГОРТАННЯ ВПЕРЕД
+========================================================= */
+
+function nextSpread() {
+
+    if (
+        turning ||
+        currentSpread >= spreads.length - 1
+    ) {
+        return;
+    }
+
+    turning = true;
+
+
+    const current =
+        spreads[currentSpread];
+
+    const next =
+        spreads[currentSpread + 1];
+
+
+    applySheetFace(
+        sheetFront,
+        current.right,
+        "front"
+    );
+
+    applySheetFace(
+        sheetBack,
+        next.left,
+        "back"
     );
 
 
-    pageFlip.on(
-        "flip",
-        event => {
+    applyPage(
+        rightPage,
+        next.right,
+        "right"
+    );
 
-            updateCounter(
-                event.data
+
+    turnSheet.classList.add(
+        "active"
+    );
+
+    turnSheet.style.transition =
+        "none";
+
+    turnSheet.style.transform =
+        "rotateY(0deg)";
+
+
+    requestAnimationFrame(
+        () => {
+
+            requestAnimationFrame(
+                () => {
+
+                    turnSheet.style.transition =
+                        "transform 930ms cubic-bezier(.64,.01,.24,1)";
+
+                    turnSheet.style.transform =
+                        "rotateY(-180deg)";
+
+                }
             );
-
-            fitAllText();
 
         }
     );
 
 
-    fitAllText();
+    setTimeout(
+        () => {
+
+            currentSpread++;
+
+            turnSheet.classList.remove(
+                "active"
+            );
+
+            turnSheet.style.transition =
+                "none";
+
+            turnSheet.style.transform =
+                "rotateY(0deg)";
+
+            renderSpread();
+
+            turning = false;
+
+        },
+        950
+    );
+
+}
+
+
+/* =========================================================
+   ПЕРЕГОРТАННЯ НАЗАД
+========================================================= */
+
+function previousSpread() {
+
+    if (
+        turning ||
+        currentSpread <= 0
+    ) {
+        return;
+    }
+
+    turning = true;
+
+
+    const current =
+        spreads[currentSpread];
+
+    const previous =
+        spreads[currentSpread - 1];
+
+
+    applyPage(
+        leftPage,
+        previous.left,
+        "left"
+    );
+
+
+    applySheetFace(
+        sheetFront,
+        previous.right,
+        "front"
+    );
+
+    applySheetFace(
+        sheetBack,
+        current.left,
+        "back"
+    );
+
+
+    turnSheet.classList.add(
+        "active"
+    );
+
+    turnSheet.style.transition =
+        "none";
+
+    turnSheet.style.transform =
+        "rotateY(-180deg)";
+
+
+    requestAnimationFrame(
+        () => {
+
+            requestAnimationFrame(
+                () => {
+
+                    turnSheet.style.transition =
+                        "transform 930ms cubic-bezier(.64,.01,.24,1)";
+
+                    turnSheet.style.transform =
+                        "rotateY(0deg)";
+
+                }
+            );
+
+        }
+    );
+
+
+    setTimeout(
+        () => {
+
+            currentSpread--;
+
+            turnSheet.classList.remove(
+                "active"
+            );
+
+            renderSpread();
+
+            turning = false;
+
+        },
+        950
+    );
 
 }
 
@@ -3073,47 +3431,131 @@ function initialiseBook() {
    ЛІЧИЛЬНИК
 ========================================================= */
 
-const counter =
-    document.getElementById(
-        "counter"
-    );
+const STORY_SPREADS = 17;
 
 
-function updateCounter(
-    pageIndex
-) {
+function updateCounter() {
 
-    const spread =
-        Math.floor(
-            pageIndex / 2
-        );
-
-
-    if (spread <= 13) {
+    if (
+        currentSpread < STORY_SPREADS
+    ) {
 
         counter.textContent =
-            `${spread + 1} / 14`;
+            `${currentSpread + 1} / ${STORY_SPREADS}`;
 
+        return;
     }
 
-    else if (spread === 19) {
+
+    if (
+        currentSpread === STORY_SPREADS
+    ) {
 
         counter.textContent =
             "Після читання";
 
+        return;
     }
 
-    else if (spread >= 20) {
 
-        counter.textContent =
-            "Перевірка уважності";
+    counter.textContent =
+        "Перевірка уважності";
 
+}
+
+
+/* =========================================================
+   КУТИКИ
+========================================================= */
+
+function updateCorners() {
+
+    prevCorner.disabled =
+        currentSpread === 0;
+
+    nextCorner.disabled =
+        currentSpread === spreads.length - 1;
+
+}
+
+
+/* =========================================================
+   ТОВЩИНА СТОРІНОК
+========================================================= */
+
+function updatePageThickness() {
+
+    const max =
+        spreads.length - 1;
+
+    const progress =
+        currentSpread / max;
+
+
+    const leftThickness =
+        5 + progress * 22;
+
+    const rightThickness =
+        27 - progress * 22;
+
+
+    bookShell.style.setProperty(
+        "--left-stack",
+        `${leftThickness}px`
+    );
+
+    bookShell.style.setProperty(
+        "--right-stack",
+        `${rightThickness}px`
+    );
+
+}
+
+
+/* =========================================================
+   ПІДГАНЯННЯ ТЕКСТУ
+========================================================= */
+
+function fitCurrentText() {
+
+    const text =
+        rightPage.querySelector(
+            ".story-text"
+        );
+
+    if (!text) {
+        return;
     }
 
-    else {
 
-        counter.textContent =
-            "Фінал";
+    const holder =
+        text.parentElement;
+
+    let size = 24;
+
+
+    if (
+        window.innerWidth < 800
+    ) {
+        size = 17;
+    }
+
+
+    text.style.fontSize =
+        size + "px";
+
+
+    while (
+        text.scrollHeight >
+        holder.clientHeight
+        &&
+        size > 13
+    ) {
+
+        size -= .5;
+
+        text.style.fontSize =
+            size + "px";
 
     }
 
@@ -3121,46 +3563,288 @@ function updateCounter(
 
 
 /* =========================================================
-   АВТОМАТИЧНЕ ПІДГАНЯННЯ ТЕКСТУ
+   КЛІКАБЕЛЬНІ ПЛАШКИ
 ========================================================= */
 
-function fitAllText() {
+function wireInteractions() {
 
-    document
+    rightPage
         .querySelectorAll(
-            ".story-text"
+            ".task-toggle"
         )
         .forEach(
-            text => {
+            button => {
 
-                const holder =
-                    text.parentElement;
+                button.addEventListener(
+                    "click",
+                    () => {
 
+                        button
+                            .closest(
+                                ".task-card"
+                            )
+                            .classList
+                            .toggle(
+                                "open"
+                            );
 
-                let size = 24;
-
-                text.style.fontSize =
-                    size + "px";
-
-
-                while (
-                    text.scrollHeight >
-                    holder.clientHeight
-                    &&
-                    size > 16
-                ) {
-
-                    size -= .5;
-
-                    text.style.fontSize =
-                        size + "px";
-
-                }
+                    }
+                );
 
             }
         );
 
+
+    rightPage
+        .querySelectorAll(
+            ".quiz-toggle"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        button
+                            .closest(
+                                ".quiz-card"
+                            )
+                            .classList
+                            .toggle(
+                                "open"
+                            );
+
+                    }
+                );
+
+            }
+        );
+
+
+    rightPage
+        .querySelectorAll(
+            ".answer"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    event => {
+
+                        event.stopPropagation();
+
+
+                        const card =
+                            button.closest(
+                                ".quiz-card"
+                            );
+
+
+                        if (
+                            card.dataset.done
+                            === "true"
+                        ) {
+                            return;
+                        }
+
+
+                        const correct =
+                            card.dataset.correct;
+
+                        const selected =
+                            button.dataset.answer;
+
+
+                        if (
+                            selected === correct
+                        ) {
+
+                            button.classList.add(
+                                "correct"
+                            );
+
+                            card.dataset.done =
+                                "true";
+
+                            celebrateJabuti();
+
+                        }
+
+                        else {
+
+                            button.classList.add(
+                                "wrong"
+                            );
+
+
+                            setTimeout(
+                                () => {
+
+                                    button.classList.remove(
+                                        "wrong"
+                                    );
+
+                                },
+                                700
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+    const memoryButton =
+        rightPage.querySelector(
+            "[data-memory]"
+        );
+
+
+    if (memoryButton) {
+
+        memoryButton.addEventListener(
+            "click",
+            () => {
+
+                const answer =
+                    rightPage.querySelector(
+                        ".memory-answer"
+                    );
+
+                answer.classList.add(
+                    "visible"
+                );
+
+                celebrateJabuti();
+
+            }
+        );
+
+    }
+
 }
+
+
+/* =========================================================
+   РЕАКЦІЯ ДЖАБУТІ
+========================================================= */
+
+function celebrateJabuti() {
+
+    const jabuti =
+        leftPage.querySelector(
+            ".quiz-jabuti"
+        );
+
+    if (!jabuti) {
+        return;
+    }
+
+
+    jabuti.classList.remove(
+        "celebrate"
+    );
+
+
+    void jabuti.offsetWidth;
+
+
+    jabuti.classList.add(
+        "celebrate"
+    );
+
+}
+
+
+/* =========================================================
+   ВІДКРИТТЯ КНИГИ
+========================================================= */
+
+document
+    .getElementById(
+        "openBookButton"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            coverFace.classList.add(
+                "opening"
+            );
+
+
+            setTimeout(
+                () => {
+
+                    coverScreen.style.display =
+                        "none";
+
+                    readerScreen.classList.add(
+                        "visible"
+                    );
+
+                    renderSpread();
+
+                },
+                780
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   КУТИКИ
+========================================================= */
+
+nextCorner.addEventListener(
+    "click",
+    nextSpread
+);
+
+prevCorner.addEventListener(
+    "click",
+    previousSpread
+);
+
+
+/* =========================================================
+   КЛАВІАТУРА
+========================================================= */
+
+window.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            !readerScreen.classList.contains(
+                "visible"
+            )
+        ) {
+            return;
+        }
+
+
+        if (
+            event.key === "ArrowRight"
+        ) {
+            nextSpread();
+        }
+
+
+        if (
+            event.key === "ArrowLeft"
+        ) {
+            previousSpread();
+        }
+
+    }
+);
 
 
 /* =========================================================
@@ -3179,25 +3863,16 @@ document
                 "visible"
             );
 
-
             coverScreen.style.display =
                 "flex";
 
-
-            coverBook.classList.remove(
+            coverFace.classList.remove(
                 "opening"
             );
 
+            currentSpread = 0;
 
-            if (pageFlip) {
-
-                pageFlip.turnToPage(0);
-
-            }
-
-
-            counter.textContent =
-                "1 / 14";
+            renderSpread();
 
         }
     );
@@ -3247,158 +3922,6 @@ document
 
 
 /* =========================================================
-   QUIZ
-========================================================= */
-
-document
-    .querySelectorAll(
-        ".quiz-item"
-    )
-    .forEach(
-        item => {
-
-            const correct =
-                item.dataset.answer;
-
-
-            item
-                .querySelectorAll(
-                    ".answer"
-                )
-                .forEach(
-                    button => {
-
-                        button.addEventListener(
-                            "click",
-                            () => {
-
-                                if (
-                                    item.dataset.done
-                                    === "yes"
-                                ) {
-                                    return;
-                                }
-
-
-                                item.dataset.done =
-                                    "yes";
-
-
-                                const chosen =
-                                    button
-                                        .textContent
-                                        .trim();
-
-
-                                if (
-                                    chosen === correct
-                                ) {
-
-                                    button.classList.add(
-                                        "correct"
-                                    );
-
-
-                                    celebrateJabuti();
-
-                                }
-
-                                else {
-
-                                    button.classList.add(
-                                        "wrong"
-                                    );
-
-
-                                    item
-                                        .querySelectorAll(
-                                            ".answer"
-                                        )
-                                        .forEach(
-                                            answer => {
-
-                                                if (
-                                                    answer
-                                                        .textContent
-                                                        .trim()
-                                                    === correct
-                                                ) {
-
-                                                    answer
-                                                        .classList
-                                                        .add(
-                                                            "correct"
-                                                        );
-
-                                                }
-
-                                            }
-                                        );
-
-                                }
-
-                            }
-                        );
-
-                    }
-                );
-
-        }
-    );
-
-
-function celebrateJabuti() {
-
-    const jabuti =
-        document.getElementById(
-            "quizJabuti"
-        );
-
-
-    jabuti.classList.remove(
-        "celebrate"
-    );
-
-
-    void jabuti.offsetWidth;
-
-
-    jabuti.classList.add(
-        "celebrate"
-    );
-
-}
-
-
-/* =========================================================
-   ОСТАННЯ ПЕРЕВІРКА
-========================================================= */
-
-document
-    .getElementById(
-        "revealAnswer"
-    )
-    .addEventListener(
-        "click",
-        () => {
-
-            document
-                .getElementById(
-                    "jabutiReply"
-                )
-                .classList
-                .add(
-                    "visible"
-                );
-
-
-            celebrateJabuti();
-
-        }
-    );
-
-
-/* =========================================================
    RESIZE
 ========================================================= */
 
@@ -3406,13 +3929,9 @@ window.addEventListener(
     "resize",
     () => {
 
-        if (pageFlip) {
-
-            pageFlip.update();
-
-            fitAllText();
-
-        }
+        requestAnimationFrame(
+            fitCurrentText
+        );
 
     }
 );
