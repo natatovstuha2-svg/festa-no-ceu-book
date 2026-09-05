@@ -2,12 +2,13 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
 <title>Свято на небі — інтерактивна книга</title>
 
 <style>
 /* =========================================================
-   БАЗОВІ НАЛАШТУВАННЯ
+   ОСНОВА
 ========================================================= */
 
 * {
@@ -18,27 +19,45 @@ html,
 body {
     margin: 0;
     width: 100%;
-    min-height: 100%;
+    height: 100%;
+}
+
+html {
+    background: #f5fcff;
 }
 
 body {
-    font-family: "Segoe UI", Arial, sans-serif;
-    color: #173c51;
-    overflow-x: hidden;
+    height: 100dvh;
+    overflow: hidden;
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    color: #173d52;
 
     background:
-        radial-gradient(circle at 8% 18%,
-            rgba(102, 220, 195, .20),
-            transparent 28%),
-        radial-gradient(circle at 91% 80%,
-            rgba(82, 188, 237, .20),
-            transparent 29%),
+        radial-gradient(
+            circle at 7% 14%,
+            rgba(97, 220, 196, .16),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 92% 82%,
+            rgba(86, 193, 240, .18),
+            transparent 27%
+        ),
         linear-gradient(
             135deg,
             #ffffff 0%,
-            #edfaff 48%,
+            #eefaff 52%,
             #fbfeff 100%
         );
+}
+
+button {
+    font-family: inherit;
 }
 
 
@@ -47,30 +66,41 @@ body {
 ========================================================= */
 
 #coverScreen {
-    min-height: 100vh;
+    position: fixed;
+    inset: 0;
+
+    z-index: 1000;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    padding: 24px;
+    padding: 18px;
 
-    perspective: 2200px;
+    perspective: 2400px;
 }
 
 .closed-book {
     position: relative;
 
-    width: min(92vw, 1450px);
+    width: min(
+        92vw,
+        calc((100dvh - 42px) * 16 / 9),
+        1450px
+    );
+
     aspect-ratio: 16 / 9;
 
     transform-style: preserve-3d;
 
     filter:
-        drop-shadow(0 34px 31px rgba(28, 69, 70, .25));
+        drop-shadow(
+            0 32px 28px
+            rgba(29, 68, 69, .25)
+        );
 }
 
-/* паперовий блок під обкладинкою */
+/* блок сторінок */
 .closed-book::before {
     content: "";
 
@@ -78,28 +108,30 @@ body {
 
     z-index: -2;
 
-    left: 3%;
-    right: .7%;
+    left: 2.8%;
+    right: .6%;
 
     top: 2%;
     bottom: -17px;
 
-    border-radius: 6px 17px 19px 6px;
+    border-radius:
+        5px 17px 18px 5px;
 
     background:
         repeating-linear-gradient(
             to bottom,
             #ffffff 0px,
             #ffffff 2px,
-            #d2dde0 3px,
-            #fdfdfd 5px
+            #d6dfe2 3px,
+            #ffffff 5px
         );
 
     box-shadow:
-        6px 12px 20px rgba(26, 57, 59, .18);
+        5px 11px 18px
+        rgba(30, 57, 60, .17);
 }
 
-/* нижня тверда обкладинка */
+/* тверда задня обкладинка */
 .closed-book::after {
     content: "";
 
@@ -107,49 +139,54 @@ body {
 
     z-index: -3;
 
-    left: 1%;
+    left: .9%;
     right: -.5%;
 
     top: .8%;
-    bottom: -27px;
+    bottom: -26px;
 
-    border-radius: 7px 19px 22px 7px;
+    border-radius:
+        6px 18px 21px 6px;
 
     background:
         linear-gradient(
             90deg,
-            #073e2f,
-            #0c654a 37%,
-            #073f30
+            #063b2d,
+            #0c674b 36%,
+            #073e30
         );
 
-    border: 2px solid rgba(218, 174, 60, .80);
-
-    box-shadow:
-        inset 0 0 0 2px rgba(255, 219, 108, .15);
+    border:
+        2px solid
+        rgba(220, 175, 57, .84);
 }
 
 .cover-face {
     position: absolute;
     inset: 0;
 
-    border-radius: 6px 18px 18px 6px;
-
     overflow: hidden;
 
-    transform-origin: left center;
+    border-radius:
+        6px 18px 18px 6px;
+
+    transform-origin:
+        left center;
+
+    transform-style: preserve-3d;
 
     transition:
-        transform 1.05s cubic-bezier(.68,.01,.20,1),
-        opacity .65s ease;
+        transform 1.15s
+        cubic-bezier(.2,.75,.18,1),
+        opacity .9s ease;
 }
 
 .cover-face.opening {
     transform:
-        rotateY(-104deg)
+        rotateY(-108deg)
         translateX(-2%);
 
-    opacity: .08;
+    opacity: .06;
 }
 
 .cover-face img {
@@ -157,22 +194,20 @@ body {
     height: 100%;
 
     display: block;
-    object-fit: cover;
 
-    user-select: none;
+    object-fit: cover;
 }
 
-/* кутик відкривання */
 .open-corner {
     position: absolute;
+
+    z-index: 20;
 
     right: 0;
     bottom: 0;
 
-    width: 112px;
-    height: 112px;
-
-    z-index: 20;
+    width: 105px;
+    height: 105px;
 
     border: 0;
     background: transparent;
@@ -187,21 +222,28 @@ body {
     inset: 0;
 
     clip-path:
-        polygon(100% 0, 100% 100%, 0 100%);
+        polygon(
+            100% 0,
+            100% 100%,
+            0 100%
+        );
 
     background:
         linear-gradient(
             135deg,
             transparent 47%,
-            rgba(255,255,255,.88) 50%,
-            rgba(235,244,244,.98) 100%
+            rgba(255,255,255,.82) 50%,
+            rgba(233,243,244,.97) 100%
         );
 
     filter:
-        drop-shadow(-5px -5px 7px rgba(0,0,0,.11));
+        drop-shadow(
+            -4px -4px 7px
+            rgba(0,0,0,.12)
+        );
 
     transition:
-        transform .23s ease;
+        transform .22s ease;
 }
 
 .open-corner:hover::before {
@@ -211,105 +253,107 @@ body {
 
 
 /* =========================================================
-   ЕКРАН КНИГИ
+   ЧИТАННЯ
 ========================================================= */
 
 #readerScreen {
-    display: none;
+    position: fixed;
+    inset: 0;
 
-    min-height: 100vh;
+    display: none;
 
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
 
-    padding: 20px 12px 14px;
+    overflow: hidden;
+
+    padding:
+        8px
+        8px
+        8px;
 }
 
 #readerScreen.visible {
     display: flex;
 }
 
+.reader-stage {
+    flex: 0 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+}
+
 
 /* =========================================================
-   ОБ'ЄМНА КНИГА
+   DESKTOP BOOK
 ========================================================= */
 
-.book-shell {
-    --left-stack: 5px;
-    --right-stack: 25px;
-
+#desktopBook {
     position: relative;
 
-    width: min(96vw, 1760px);
-    aspect-ratio: 16 / 9;
+    transform-style: preserve-3d;
 
-    perspective: 2500px;
-
-    padding:
-        11px
-        15px
-        31px;
+    perspective: 2800px;
 
     filter:
         drop-shadow(
-            0 34px 34px
-            rgba(29, 70, 72, .21)
+            0 28px 29px
+            rgba(31, 68, 70, .20)
         );
 }
 
-/* тверда обкладинка під книгою */
-.book-shell::before {
-    content: "";
-
+.book-back {
     position: absolute;
 
-    z-index: -5;
+    z-index: -6;
 
-    left: 0;
-    right: 0;
-
-    top: 8px;
-    bottom: 0;
+    inset:
+        4px
+        -8px
+        -18px
+        -8px;
 
     border-radius:
-        20px 20px 25px 25px;
+        20px 20px 24px 24px;
 
     background:
         linear-gradient(
             90deg,
-            #073f30 0%,
-            #0b664a 20%,
-            #0b4b39 50%,
-            #0b664a 80%,
-            #073f30 100%
+            #063a2c 0%,
+            #0b6248 17%,
+            #074433 50%,
+            #0b6248 83%,
+            #063a2c 100%
         );
 
     border:
-        2px solid rgba(217, 171, 53, .88);
+        2px solid
+        rgba(219, 174, 57, .88);
 
     box-shadow:
         inset 0 0 0 2px
-        rgba(255, 219, 108, .18);
+        rgba(255, 217, 98, .13);
 }
 
-/* нижній зріз сторінок */
-.book-shell::after {
-    content: "";
-
+.bottom-pages {
     position: absolute;
 
-    z-index: -3;
+    z-index: -4;
 
-    left: 17px;
-    right: 17px;
+    left: 11px;
+    right: 11px;
 
-    bottom: 10px;
+    bottom: -9px;
 
-    height: 26px;
+    height: 24px;
 
     border-radius:
-        0 0 15px 15px;
+        0 0 14px 14px;
 
     background:
         repeating-linear-gradient(
@@ -321,54 +365,54 @@ body {
         );
 
     box-shadow:
-        0 9px 15px
-        rgba(25, 58, 61, .16);
+        0 8px 12px
+        rgba(27, 57, 60, .14);
 }
 
-
-/* =========================================================
-   ТОВЩИНА ЛІВОГО І ПРАВОГО БЛОКУ
-========================================================= */
-
-.page-stack-left,
-.page-stack-right {
+.stack-left,
+.stack-right {
     position: absolute;
 
-    z-index: -2;
+    z-index: -3;
 
-    top: 19px;
-    bottom: 35px;
+    top: 8px;
+    bottom: 6px;
 
     background:
         repeating-linear-gradient(
             90deg,
-            #fdfdfd 0,
-            #fdfdfd 2px,
-            #d2dcdf 3px,
+            #ffffff 0,
+            #ffffff 2px,
+            #d1dcdf 3px,
             #ffffff 5px
         );
 
-    box-shadow:
-        0 5px 10px rgba(22, 50, 54, .11);
-
     transition:
         width .45s ease;
+
+    box-shadow:
+        0 4px 8px
+        rgba(20, 45, 48, .11);
 }
 
-.page-stack-left {
-    left: 12px;
+.stack-left {
+    left: -5px;
 
-    width: var(--left-stack);
+    width:
+        var(--left-stack, 5px);
 
-    border-radius: 13px 0 0 13px;
+    border-radius:
+        12px 0 0 12px;
 }
 
-.page-stack-right {
-    right: 12px;
+.stack-right {
+    right: -5px;
 
-    width: var(--right-stack);
+    width:
+        var(--right-stack, 26px);
 
-    border-radius: 0 13px 13px 0;
+    border-radius:
+        0 12px 12px 0;
 }
 
 
@@ -378,25 +422,21 @@ body {
 
 .spread {
     position: absolute;
-
-    left: 15px;
-    right: 15px;
-
-    top: 11px;
-    bottom: 31px;
+    inset: 0;
 
     display: flex;
 
-    background: #ffffff;
+    overflow: visible;
 
     border-radius: 13px;
 
-    overflow: visible;
-
-    transform-style: preserve-3d;
+    background: #ffffff;
 
     box-shadow:
-        0 4px 13px rgba(34, 65, 68, .10);
+        0 4px 10px
+        rgba(27, 60, 64, .10);
+
+    transform-style: preserve-3d;
 }
 
 .page {
@@ -412,46 +452,41 @@ body {
 
 .left-page {
     border-radius:
-        12px 2px 2px 12px;
-
-    box-shadow:
-        inset -18px 0 27px rgba(25, 44, 48, .12);
+        12px 1px 1px 12px;
 }
 
 .right-page {
     border-radius:
-        2px 12px 12px 2px;
-
-    box-shadow:
-        inset 18px 0 27px rgba(25, 44, 48, .11);
+        1px 12px 12px 1px;
 }
 
 
 /* =========================================================
-   ГЛИБОКИЙ КНИЖКОВИЙ ЗГИН
+   СПРАВЖНІШИЙ ЗГИН
 ========================================================= */
 
+/* легка тінь сторінок біля корінця */
 .left-page::after {
     content: "";
 
     position: absolute;
 
-    z-index: 25;
+    z-index: 30;
 
     right: 0;
     top: 0;
     bottom: 0;
 
-    width: 75px;
+    width: 49px;
 
     pointer-events: none;
 
     background:
         linear-gradient(
             to left,
-            rgba(12, 29, 33, .26) 0%,
-            rgba(20, 38, 42, .17) 20%,
-            rgba(33, 55, 59, .08) 48%,
+            rgba(6,16,18,.30) 0%,
+            rgba(14,29,32,.18) 14%,
+            rgba(23,42,45,.08) 43%,
             transparent 100%
         );
 }
@@ -461,37 +496,38 @@ body {
 
     position: absolute;
 
-    z-index: 25;
+    z-index: 30;
 
     left: 0;
     top: 0;
     bottom: 0;
 
-    width: 75px;
+    width: 49px;
 
     pointer-events: none;
 
     background:
         linear-gradient(
             to right,
-            rgba(12, 29, 33, .27) 0%,
-            rgba(20, 38, 42, .17) 20%,
-            rgba(33, 55, 59, .08) 48%,
+            rgba(6,16,18,.30) 0%,
+            rgba(14,29,32,.18) 14%,
+            rgba(23,42,45,.08) 43%,
             transparent 100%
         );
 }
 
+/* сам жолобок */
 .gutter-shadow {
     position: absolute;
 
-    z-index: 65;
+    z-index: 75;
 
     left: 50%;
 
     top: 0;
     bottom: 0;
 
-    width: 88px;
+    width: 62px;
 
     transform:
         translateX(-50%);
@@ -502,46 +538,94 @@ body {
         linear-gradient(
             90deg,
             transparent 0%,
-            rgba(17, 32, 36, .05) 12%,
-            rgba(13, 27, 30, .19) 34%,
-            rgba(5, 16, 18, .40) 48%,
-            rgba(255,255,255,.28) 50%,
-            rgba(5, 16, 18, .38) 52%,
-            rgba(13, 27, 30, .19) 66%,
-            rgba(17, 32, 36, .05) 88%,
+            rgba(13,26,29,.05) 17%,
+            rgba(6,16,18,.25) 38%,
+            rgba(1,8,9,.51) 47%,
+            rgba(0,0,0,.60) 49.3%,
+            rgba(255,255,255,.22) 50%,
+            rgba(0,0,0,.56) 50.7%,
+            rgba(1,8,9,.48) 53%,
+            rgba(6,16,18,.23) 62%,
+            rgba(13,26,29,.05) 83%,
             transparent 100%
         );
 
-    filter: blur(.15px);
+    filter:
+        blur(.35px);
 }
 
 
 /* =========================================================
-   СЮЖЕТНІ ІЛЮСТРАЦІЇ
+   ІЛЮСТРАЦІЇ БЕЗ ОБРІЗАННЯ
 ========================================================= */
 
 .scene-page {
-    background: #e3f7ff;
+    background: #e7f7fc;
 }
 
-.scene-page > .scene-image {
+.scene-frame {
     position: absolute;
+    inset: 0;
+
+    overflow: hidden;
+
+    background: #d9f2f9;
+}
+
+.scene-blur {
+    position: absolute;
+
+    inset: -9%;
+
+    background-image:
+        var(--scene);
+
+    background-size: cover;
+    background-position: center;
+
+    filter:
+        blur(22px)
+        brightness(.91)
+        saturate(.92);
+
+    opacity: .72;
+
+    transform:
+        scale(1.08);
+}
+
+.scene-tint {
+    position: absolute;
+    inset: 0;
+
+    background:
+        rgba(255,255,255,.07);
+}
+
+.scene-image {
+    position: absolute;
+
+    z-index: 3;
 
     inset: 0;
 
     width: 100%;
     height: 100%;
 
+    object-fit: contain;
+
     display: block;
 
-    object-fit: cover;
-
-    user-select: none;
+    filter:
+        drop-shadow(
+            0 2px 4px
+            rgba(0,0,0,.12)
+        );
 }
 
 
 /* =========================================================
-   ТЕКСТОВА СТОРІНКА
+   TEXT PAGE
 ========================================================= */
 
 .text-page,
@@ -555,67 +639,57 @@ body {
 .text-wrap {
     position: absolute;
 
-    left: 8.5%;
+    z-index: 5;
+
+    left: 8.3%;
     right: 8.2%;
 
-    top: 8%;
-    bottom: 8%;
+    top: 7.5%;
+    bottom: 7.5%;
 
     display: flex;
-
     flex-direction: column;
 
     justify-content: center;
-
-    z-index: 5;
 }
 
 .story-text {
-    margin: 0;
+    color: #183e53;
 
     font-family:
         "Segoe UI",
         Arial,
         sans-serif;
 
-    font-size:
-        clamp(16px, 1.22vw, 24px);
+    font-weight: 420;
 
-    line-height: 1.47;
-
-    font-weight: 430;
-
-    color: #183d53;
+    line-height: 1.46;
 
     text-align: left;
 }
 
 .story-text p {
     margin:
-        0 0 .72em;
+        0 0 .69em;
 }
 
-.story-text strong {
-    color: #075273;
-    font-weight: 750;
-}
-
+.story-text strong,
 .dialogue {
-    color: #075273;
-    font-weight: 650;
+    color: #075676;
+    font-weight: 720;
 }
 
 
 /* =========================================================
-   АНІМАЦІЯ ХМАР
+   CLOUDS
 ========================================================= */
 
 .cloud-layer {
     position: absolute;
 
-    inset: 0;
+    z-index: 9;
 
-    z-index: 12;
+    inset: 0;
 
     overflow: hidden;
 
@@ -631,72 +705,74 @@ body {
 }
 
 .cloud-a {
-    width: 64%;
+    width: 61%;
 
-    top: 3%;
-    left: -68%;
+    top: 8%;
+    left: -66%;
 
-    opacity: .66;
+    opacity: .58;
 
     animation:
         cloudRight
-        16s linear infinite;
+        17s linear infinite;
 }
 
 .cloud-b {
-    width: 48%;
+    width: 44%;
 
-    top: 55%;
-    left: -57%;
+    top: 57%;
+    left: -55%;
 
-    opacity: .46;
+    opacity: .42;
 
     animation:
         cloudRight
-        26s linear infinite;
+        27s linear infinite;
 
-    animation-delay: -9s;
+    animation-delay: -10s;
 }
 
 .cloud-layer.reverse .cloud-a {
     left: auto;
-    right: -68%;
+    right: -66%;
 
-    animation-name:
-        cloudLeft;
+    animation-name: cloudLeft;
 }
 
 .cloud-layer.reverse .cloud-b {
     left: auto;
-    right: -57%;
+    right: -55%;
 
-    animation-name:
-        cloudLeft;
+    animation-name: cloudLeft;
 }
 
 @keyframes cloudRight {
+
     from {
         transform: translateX(0);
     }
 
     to {
-        transform: translateX(275%);
+        transform: translateX(280%);
     }
+
 }
 
 @keyframes cloudLeft {
+
     from {
         transform: translateX(0);
     }
 
     to {
-        transform: translateX(-275%);
+        transform: translateX(-280%);
     }
+
 }
 
 
 /* =========================================================
-   ПАДІННЯ ДЖАБУТІ
+   FALL
 ========================================================= */
 
 .falling-scene {
@@ -725,58 +801,60 @@ body {
     z-index: 15;
 
     left: 50%;
-    top: -5%;
+    top: -8%;
 
-    width: 30%;
+    width: 27%;
 
     transform-origin: center;
 
     filter:
         drop-shadow(
-            0 18px 17px
-            rgba(20, 50, 59, .18)
+            0 14px 16px
+            rgba(14, 47, 54, .17)
         );
 
     animation:
         jabutiFall
-        4.2s ease-in infinite;
+        4.3s
+        cubic-bezier(.38,.04,.74,.72)
+        infinite;
 }
 
 @keyframes jabutiFall {
 
     0% {
         transform:
-            translate(-50%, -10%)
-            rotate(-15deg)
-            scale(.72);
+            translate(-50%,-10%)
+            rotate(-12deg)
+            scale(.68);
     }
 
-    38% {
+    32% {
         transform:
-            translate(-35%, 85%)
-            rotate(18deg)
-            scale(.82);
+            translate(-35%,80%)
+            rotate(15deg)
+            scale(.80);
     }
 
-    72% {
+    65% {
         transform:
-            translate(-60%, 185%)
-            rotate(-22deg)
-            scale(.96);
+            translate(-59%,178%)
+            rotate(-18deg)
+            scale(.94);
     }
 
     100% {
         transform:
-            translate(-42%, 310%)
-            rotate(24deg)
-            scale(1.13);
+            translate(-42%,315%)
+            rotate(23deg)
+            scale(1.11);
     }
+
 }
 
 
 /* =========================================================
-   ДЖАБУТІ В ІНТЕРАКТИВНИХ БЛОКАХ
-   ЗАВЖДИ НА ПІДЛОЖЦІ
+   ДЖАБУТІ — ІНТЕРАКТИВ
 ========================================================= */
 
 .jabuti-panel {
@@ -796,19 +874,19 @@ body {
 
     position: absolute;
 
-    left: 12%;
-    right: 12%;
+    left: 14%;
+    right: 14%;
 
     bottom: 3%;
 
-    height: 16%;
+    height: 14%;
 
     border-radius: 50%;
 
     background:
         radial-gradient(
             ellipse,
-            rgba(48, 120, 92, .18),
+            rgba(42, 111, 83, .16),
             transparent 68%
         );
 
@@ -820,10 +898,10 @@ body {
 
     z-index: 5;
 
-    width: 52%;
+    width: 48%;
 
     left: 50%;
-    bottom: 3%;
+    bottom: 4%;
 
     transform:
         translateX(-50%);
@@ -833,13 +911,13 @@ body {
 
     filter:
         drop-shadow(
-            0 18px 15px
-            rgba(23, 61, 64, .18)
+            0 14px 14px
+            rgba(25, 59, 60, .18)
         );
 
     animation:
         jabutiIdle
-        3s ease-in-out infinite;
+        3.1s ease-in-out infinite;
 }
 
 @keyframes jabutiIdle {
@@ -855,15 +933,16 @@ body {
     50% {
         transform:
             translateX(-50%)
-            translateY(-10px)
-            rotate(1.5deg);
+            translateY(-9px)
+            rotate(1.4deg);
     }
+
 }
 
 .quiz-jabuti.celebrate {
     animation:
         celebrate
-        .62s ease;
+        .64s ease;
 }
 
 @keyframes celebrate {
@@ -874,15 +953,15 @@ body {
             scale(1);
     }
 
-    32% {
+    34% {
         transform:
             translateX(-50%)
-            translateY(-20px)
-            rotate(-5deg)
-            scale(1.07);
+            translateY(-17px)
+            rotate(-4deg)
+            scale(1.06);
     }
 
-    68% {
+    70% {
         transform:
             translateX(-50%)
             rotate(4deg)
@@ -894,107 +973,104 @@ body {
             translateX(-50%)
             scale(1);
     }
+
 }
 
-
-/* репліка Джабуті */
 .speech-bubble {
     position: absolute;
 
     z-index: 8;
 
-    top: 10%;
+    top: 8.5%;
     left: 9%;
     right: 9%;
 
     padding:
-        18px 22px;
+        16px 20px;
 
     border-radius: 22px;
 
     background:
-        rgba(255,255,255,.91);
+        rgba(255,255,255,.93);
 
     border:
-        1px solid rgba(21, 104, 137, .16);
+        1px solid
+        rgba(15, 99, 132, .16);
 
     box-shadow:
-        0 9px 25px
-        rgba(31, 91, 107, .11);
+        0 8px 20px
+        rgba(25, 80, 97, .10);
 
-    color: #075273;
+    color: #075676;
 
     font-size:
-        clamp(16px, 1.2vw, 23px);
+        clamp(16px, 1.2vw, 22px);
 
-    line-height: 1.35;
-
-    font-weight: 700;
+    line-height: 1.36;
 
     text-align: center;
+
+    font-weight: 720;
 }
 
 
 /* =========================================================
-   КЛІКАБЕЛЬНІ ПЛАШКИ
+   TASKS
 ========================================================= */
 
 .interactive-wrap {
     position: absolute;
 
-    inset: 7% 7.5%;
+    z-index: 5;
+
+    inset: 6.7% 7%;
 
     overflow-y: auto;
 
-    z-index: 5;
+    padding-right: 3px;
 
-    padding-right: 5px;
+    scrollbar-width: thin;
 }
 
 .interactive-title {
     margin:
-        0 0 17px;
+        0 0 14px;
 
-    color: #075273;
+    color: #075676;
 
     font-size:
-        clamp(23px, 1.65vw, 31px);
+        clamp(23px, 1.55vw, 30px);
 
-    line-height: 1.15;
+    line-height: 1.16;
 
     font-weight: 800;
 }
 
 .cards {
     display: grid;
-
     gap: 10px;
 }
 
 .task-card,
 .quiz-card {
-    width: 100%;
-
     border:
-        1px solid rgba(16, 105, 140, .19);
+        1px solid
+        rgba(17, 102, 136, .17);
 
-    border-radius: 18px;
-
-    background:
-        rgba(255,255,255,.91);
-
-    color: #17465e;
-
-    box-shadow:
-        0 5px 14px
-        rgba(34, 93, 107, .09);
+    border-radius: 17px;
 
     overflow: hidden;
 
+    background:
+        rgba(255,255,255,.92);
+
+    box-shadow:
+        0 5px 13px
+        rgba(30, 89, 103, .08);
+
     transition:
         transform .18s ease,
-        box-shadow .18s ease,
-        border-color .18s ease;
+        box-shadow .18s ease;
 }
 
 .task-card:hover,
@@ -1003,44 +1079,38 @@ body {
         translateY(-1px);
 
     box-shadow:
-        0 8px 18px
-        rgba(34, 93, 107, .13);
-
-    border-color:
-        rgba(16, 105, 140, .30);
+        0 8px 17px
+        rgba(30,89,103,.12);
 }
 
 .task-toggle,
 .quiz-toggle {
     width: 100%;
 
-    border: 0;
-
-    background: transparent;
-
-    padding:
-        13px 16px;
-
-    color: inherit;
-
-    font-family: inherit;
-
-    font-size:
-        clamp(14px, .97vw, 18px);
-
-    line-height: 1.35;
-
-    font-weight: 700;
-
-    text-align: left;
-
-    cursor: pointer;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
 
     gap: 10px;
+
+    border: 0;
+    background: transparent;
+
+    padding:
+        12px 15px;
+
+    color: #17465d;
+
+    font-size:
+        clamp(14px, .94vw, 18px);
+
+    line-height: 1.35;
+
+    font-weight: 720;
+
+    text-align: left;
+
+    cursor: pointer;
 }
 
 .task-toggle::after,
@@ -1049,8 +1119,8 @@ body {
 
     flex: 0 0 auto;
 
-    width: 26px;
-    height: 26px;
+    width: 25px;
+    height: 25px;
 
     display: grid;
     place-items: center;
@@ -1058,19 +1128,22 @@ body {
     border-radius: 50%;
 
     background:
-        rgba(30, 124, 158, .10);
+        rgba(22,112,145,.09);
 
-    color: #096184;
+    color: #126988;
 
-    font-size: 20px;
+    font-size: 19px;
 
     transition:
-        transform .22s ease;
+        transform .23s ease;
 }
 
-.task-card.open .task-toggle::after,
-.quiz-card.open .quiz-toggle::after {
-    transform: rotate(45deg);
+.task-card.open
+.task-toggle::after,
+.quiz-card.open
+.quiz-toggle::after {
+    transform:
+        rotate(45deg);
 }
 
 .task-detail,
@@ -1079,40 +1152,32 @@ body {
 
     overflow: hidden;
 
-    padding:
-        0 16px;
-
     opacity: 0;
 
+    padding:
+        0 15px;
+
+    color: #285268;
+
+    line-height: 1.42;
+
     transition:
-        max-height .30s ease,
-        opacity .25s ease,
+        max-height .32s ease,
+        opacity .24s ease,
         padding .30s ease;
 }
 
-.task-card.open .task-detail,
-.quiz-card.open .quiz-options {
-    max-height: 260px;
+.task-card.open
+.task-detail,
+.quiz-card.open
+.quiz-options {
+    max-height: 230px;
 
     opacity: 1;
 
     padding:
-        2px 16px 15px;
+        0 15px 14px;
 }
-
-.task-detail {
-    color: #214d62;
-
-    font-size:
-        clamp(14px, .93vw, 17px);
-
-    line-height: 1.45;
-}
-
-
-/* =========================================================
-   ВАРІАНТИ ВІДПОВІДЕЙ
-========================================================= */
 
 .answer-row {
     display: flex;
@@ -1123,48 +1188,46 @@ body {
 
 .answer {
     border:
-        1px solid rgba(14, 101, 137, .20);
+        1px solid
+        rgba(15, 99, 136, .18);
 
     border-radius: 999px;
 
-    background:
-        rgba(255,255,255,.96);
+    background: #ffffff;
 
-    color: #12546f;
+    color: #13546e;
 
     padding:
         7px 12px;
 
     cursor: pointer;
 
-    font-size:
-        clamp(13px, .85vw, 16px);
-
-    transition:
-        .17s ease;
+    transition: .17s ease;
 }
 
 .answer:hover {
-    transform: translateY(-1px);
+    transform:
+        translateY(-1px);
 }
 
 .answer.correct {
-    background: #d9f4df;
-    border-color: #63b47a;
-    color: #23643a;
+    background: #dff4e3;
+    border-color: #65b57d;
+    color: #236239;
 }
 
 .answer.wrong {
-    background: #ffe3e3;
-    border-color: #d87c7c;
-    color: #923e3e;
+    background: #ffe5e5;
+    border-color: #d47b7b;
+    color: #913f3f;
 
     animation:
         wrongShake
-        .26s ease;
+        .28s ease;
 }
 
 @keyframes wrongShake {
+
     0%,
     100% {
         transform: translateX(0);
@@ -1177,32 +1240,29 @@ body {
     70% {
         transform: translateX(4px);
     }
+
 }
 
-
-/* остання перевірка */
 .memory-card {
     margin-top: 11px;
 
     padding:
-        15px 17px;
+        14px 16px;
 
-    border-radius: 18px;
+    border-radius: 17px;
 
     background:
-        rgba(255,255,255,.92);
+        rgba(255,255,255,.93);
 
     border:
-        1px solid rgba(16, 105, 140, .18);
+        1px solid
+        rgba(16,101,136,.17);
+
+    color: #17465d;
 
     box-shadow:
-        0 5px 14px rgba(34,93,107,.09);
-
-    color: #17465e;
-
-    line-height: 1.42;
-
-    font-weight: 650;
+        0 5px 13px
+        rgba(30,89,103,.08);
 }
 
 .memory-button {
@@ -1215,9 +1275,8 @@ body {
     padding:
         8px 15px;
 
-    background: #0e698c;
-
-    color: #ffffff;
+    color: white;
+    background: #0d698b;
 
     font-weight: 700;
 
@@ -1229,31 +1288,18 @@ body {
 
     margin-top: 12px;
 
-    color: #075273;
+    color: #075676;
+
+    line-height: 1.43;
 }
 
 .memory-answer.visible {
     display: block;
-
-    animation:
-        reveal .35s ease;
-}
-
-@keyframes reveal {
-    from {
-        opacity: 0;
-        transform: translateY(6px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 
 /* =========================================================
-   СПРАВЖНІЙ ЕФЕКТ ПЕРЕГОРТАННЯ
+   DESKTOP PAGE TURN
 ========================================================= */
 
 .turn-sheet {
@@ -1261,18 +1307,19 @@ body {
 
     position: absolute;
 
-    z-index: 80;
+    z-index: 100;
 
     left: 50%;
-
     top: 0;
-    bottom: 0;
 
     width: 50%;
+    height: 100%;
 
-    transform-origin: left center;
+    transform-origin:
+        left center;
 
-    transform-style: preserve-3d;
+    transform-style:
+        preserve-3d;
 
     pointer-events: none;
 }
@@ -1295,72 +1342,71 @@ body {
 
 .sheet-front {
     border-radius:
-        2px 12px 12px 2px;
+        1px 12px 12px 1px;
 
     box-shadow:
-        inset 18px 0 27px rgba(25,44,48,.11),
-        -3px 0 15px rgba(14,30,33,.18);
+        -8px 2px 18px
+        rgba(0,0,0,.13);
 }
 
 .sheet-back {
-    transform: rotateY(180deg);
+    transform:
+        rotateY(180deg);
 
     border-radius:
-        12px 2px 2px 12px;
+        12px 1px 1px 12px;
 
     box-shadow:
-        inset -18px 0 27px rgba(25,44,48,.12),
-        3px 0 15px rgba(14,30,33,.18);
+        8px 2px 18px
+        rgba(0,0,0,.14);
 }
 
-/* динамічна тінь аркуша */
-.turn-sheet::after {
-    content: "";
-
+.sheet-gloss {
     position: absolute;
+
+    z-index: 200;
 
     inset: 0;
 
     pointer-events: none;
 
+    opacity: 0;
+
     background:
         linear-gradient(
-            to left,
+            90deg,
             rgba(0,0,0,.02),
-            rgba(0,0,0,.23)
+            rgba(0,0,0,.25) 38%,
+            rgba(255,255,255,.19) 52%,
+            rgba(0,0,0,.12) 100%
         );
-
-    opacity: .32;
-
-    backface-visibility: hidden;
 }
 
 
 /* =========================================================
-   КУТИКИ ГОРТАННЯ
+   CORNERS
 ========================================================= */
 
 .page-corner {
     position: absolute;
 
-    z-index: 105;
+    z-index: 160;
 
     bottom: 0;
 
-    width: 79px;
-    height: 79px;
+    width: 75px;
+    height: 75px;
 
     border: 0;
-
     background: transparent;
 
     cursor: pointer;
 
-    opacity: .72;
+    opacity: .61;
 
     transition:
-        opacity .2s ease,
-        transform .2s ease;
+        opacity .18s ease,
+        transform .18s ease;
 }
 
 .page-corner:hover {
@@ -1381,42 +1427,220 @@ body {
     left: 0;
 }
 
-.corner-next::before,
-.corner-prev::before {
+.page-corner::before {
     content: "";
 
     position: absolute;
 
     inset: 0;
 
+    clip-path:
+        polygon(
+            100% 0,
+            100% 100%,
+            0 100%
+        );
+
     background:
         linear-gradient(
             135deg,
-            transparent 46%,
-            rgba(255,255,255,.74) 49%,
-            rgba(219, 183, 73, .29) 100%
+            transparent 47%,
+            rgba(255,255,255,.69) 50%,
+            rgba(215,177,71,.26) 100%
         );
 }
 
-.corner-next::before {
-    clip-path:
-        polygon(100% 0,100% 100%,0 100%);
-}
-
 .corner-prev::before {
-    transform: scaleX(-1);
-
-    clip-path:
-        polygon(100% 0,100% 100%,0 100%);
+    transform:
+        scaleX(-1);
 }
 
 
 /* =========================================================
-   КЕРУВАННЯ
+   MOBILE BOOK
+========================================================= */
+
+#mobileBook {
+    display: none;
+
+    position: relative;
+
+    perspective: 2200px;
+
+    filter:
+        drop-shadow(
+            0 18px 22px
+            rgba(30, 69, 71, .18)
+        );
+}
+
+.mobile-back {
+    position: absolute;
+
+    z-index: -3;
+
+    inset:
+        5px
+        -5px
+        -15px;
+
+    border-radius: 19px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0b654a,
+            #073f30
+        );
+
+    border:
+        2px solid
+        rgba(219,174,57,.82);
+}
+
+.mobile-paper-edge {
+    position: absolute;
+
+    z-index: -2;
+
+    left: 7px;
+    right: 7px;
+
+    bottom: -7px;
+
+    height: 18px;
+
+    border-radius:
+        0 0 13px 13px;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            #ffffff 0,
+            #ffffff 2px,
+            #d6dfe1 3px,
+            #ffffff 5px
+        );
+}
+
+.mobile-page {
+    position: absolute;
+
+    inset: 0;
+
+    overflow: hidden;
+
+    border-radius: 16px;
+
+    background:
+        url("text-page-bg.png")
+        center / cover no-repeat;
+
+    box-shadow:
+        0 4px 11px
+        rgba(25, 58, 61, .11);
+
+    transform-style:
+        preserve-3d;
+}
+
+.mobile-visual {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    top: 0;
+
+    height: 41%;
+
+    overflow: hidden;
+
+    border-radius:
+        16px 16px 0 0;
+}
+
+.mobile-content {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 59%;
+
+    overflow-y: auto;
+
+    padding:
+        17px 19px 25px;
+
+    background:
+        url("text-page-bg.png")
+        center / cover no-repeat;
+
+    scrollbar-width: thin;
+}
+
+.mobile-content
+.story-text {
+    font-size: 18px;
+    line-height: 1.43;
+}
+
+.mobile-content
+.interactive-wrap {
+    position: static;
+
+    overflow: visible;
+
+    padding: 0;
+}
+
+.mobile-content
+.interactive-title {
+    font-size: 22px;
+}
+
+.mobile-turn-card {
+    display: none;
+
+    position: absolute;
+
+    z-index: 100;
+
+    inset: 0;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    transform-origin:
+        left center;
+
+    transform-style:
+        preserve-3d;
+
+    background: #ffffff;
+
+    pointer-events: none;
+
+    box-shadow:
+        0 12px 22px
+        rgba(0,0,0,.18);
+}
+
+.mobile-turn-card.active {
+    display: block;
+}
+
+
+/* =========================================================
+   CONTROLS
 ========================================================= */
 
 .reader-controls {
-    width: min(94vw, 1720px);
+    flex: 0 0 auto;
+
+    width: min(96vw, 1700px);
 
     display: grid;
 
@@ -1425,7 +1649,7 @@ body {
 
     align-items: center;
 
-    margin-top: 15px;
+    margin-top: 11px;
 }
 
 .control-left {
@@ -1437,8 +1661,8 @@ body {
 }
 
 .round-button {
-    width: 46px;
-    height: 46px;
+    width: 44px;
+    height: 44px;
 
     display: grid;
     place-items: center;
@@ -1446,7 +1670,8 @@ body {
     border-radius: 50%;
 
     border:
-        1px solid rgba(24, 102, 130, .15);
+        1px solid
+        rgba(22,100,128,.14);
 
     background:
         rgba(255,255,255,.94);
@@ -1456,147 +1681,121 @@ body {
     cursor: pointer;
 
     box-shadow:
-        0 7px 18px rgba(34,89,101,.12);
-
-    transition:
-        transform .18s ease;
-}
-
-.round-button:hover {
-    transform: scale(1.06);
+        0 6px 15px
+        rgba(32,88,100,.11);
 }
 
 .round-button svg {
-    width: 22px;
-    height: 22px;
+    width: 21px;
+    height: 21px;
 
     fill: none;
+
     stroke: currentColor;
 
     stroke-width: 2.1;
+
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 
 .counter {
-    min-width: 150px;
+    min-width: 140px;
 
     padding:
-        8px 16px;
+        8px 15px;
 
     border-radius: 999px;
 
     text-align: center;
 
     background:
-        rgba(255,255,255,.91);
+        rgba(255,255,255,.93);
 
     border:
-        1px solid rgba(24,102,130,.13);
+        1px solid
+        rgba(22,100,128,.12);
 
     color: #17617d;
 
-    font-weight: 700;
-
     font-size: 14px;
 
+    font-weight: 720;
+
     box-shadow:
-        0 6px 15px rgba(32,91,104,.09);
+        0 5px 13px
+        rgba(32,88,100,.09);
 }
 
 .flip-hint {
-    margin-top: 9px;
+    flex: 0 0 auto;
 
-    color: #6090a1;
+    margin-top: 7px;
 
-    font-size: 13px;
+    color: #6091a1;
+
+    font-size: 12px;
 
     text-align: center;
 }
 
 
 /* =========================================================
-   МОБІЛЬНА ВЕРСІЯ
+   MOBILE PORTRAIT
 ========================================================= */
 
-@media (max-width: 780px) {
+body.mobile-mode
+#desktopBook {
+    display: none;
+}
 
-    #readerScreen {
-        padding:
-            5px 2px 12px;
-    }
+body.mobile-mode
+#mobileBook {
+    display: block;
+}
 
-    .book-shell {
-        width: 99vw;
+body.mobile-mode
+.reader-controls {
+    width:
+        calc(100vw - 24px);
 
-        padding:
-            5px 6px 17px;
-    }
+    margin-top: 14px;
+}
 
-    .spread {
-        left: 6px;
-        right: 6px;
+body.mobile-mode
+.round-button {
+    width: 40px;
+    height: 40px;
+}
 
-        top: 5px;
-        bottom: 17px;
-    }
+body.mobile-mode
+.counter {
+    min-width: 116px;
 
-    .book-shell::after,
-    .page-stack-left,
-    .page-stack-right {
-        opacity: .68;
-    }
+    padding:
+        7px 13px;
+}
 
-    .story-text {
-        font-size:
-            clamp(12px, 2.6vw, 17px);
+body.mobile-mode
+.flip-hint {
+    display: none;
+}
 
-        line-height: 1.37;
-    }
-
-    .text-wrap {
-        left: 7%;
-        right: 7%;
-
-        top: 6%;
-        bottom: 6%;
-    }
-
-    .gutter-shadow {
-        width: 49px;
-    }
-
-    .left-page::after,
-    .right-page::before {
-        width: 43px;
-    }
-
-    .speech-bubble {
-        font-size: 13px;
-        padding: 10px 12px;
-    }
-
-    .quiz-jabuti {
-        width: 47%;
-    }
-
-    .page-corner {
-        width: 54px;
-        height: 54px;
-    }
-
-    .flip-hint {
-        display: none;
-    }
-
+body.mobile-mode
+.page-corner {
+    width: 58px;
+    height: 58px;
 }
 
 
 /* =========================================================
-   ДОСТУПНІСТЬ
+   ACCESSIBILITY
 ========================================================= */
 
-@media (prefers-reduced-motion: reduce) {
+@media (
+    prefers-reduced-motion:
+    reduce
+) {
 
     *,
     *::before,
@@ -1653,64 +1852,117 @@ body {
 
 
 <!-- ======================================================
-     КНИГА
+     READER
 ====================================================== -->
 
 <section id="readerScreen">
 
     <div
-        class="book-shell"
-        id="bookShell"
+        class="reader-stage"
+        id="readerStage"
     >
 
-        <div class="page-stack-left"></div>
-        <div class="page-stack-right"></div>
 
-        <div class="spread">
+        <!-- DESKTOP -->
 
-            <section
-                class="page left-page"
-                id="leftPage"
-            ></section>
+        <div id="desktopBook">
 
-            <section
-                class="page right-page"
-                id="rightPage"
-            ></section>
+            <div class="book-back"></div>
+            <div class="bottom-pages"></div>
 
-            <div class="gutter-shadow"></div>
+            <div class="stack-left"></div>
+            <div class="stack-right"></div>
 
-            <div
-                class="turn-sheet"
-                id="turnSheet"
-            >
+
+            <div class="spread">
+
+                <section
+                    class="page left-page"
+                    id="leftPage"
+                ></section>
+
+                <section
+                    class="page right-page"
+                    id="rightPage"
+                ></section>
+
+
+                <div class="gutter-shadow"></div>
+
 
                 <div
-                    class="sheet-face sheet-front"
-                    id="sheetFront"
-                ></div>
+                    class="turn-sheet"
+                    id="turnSheet"
+                >
 
-                <div
-                    class="sheet-face sheet-back"
-                    id="sheetBack"
-                ></div>
+                    <div
+                        class="sheet-face sheet-front"
+                        id="sheetFront"
+                    ></div>
+
+                    <div
+                        class="sheet-face sheet-back"
+                        id="sheetBack"
+                    ></div>
+
+                    <div
+                        class="sheet-gloss"
+                        id="sheetGloss"
+                    ></div>
+
+                </div>
+
+
+                <button
+                    class="page-corner corner-prev"
+                    id="desktopPrev"
+                    aria-label="Попередній розворот"
+                ></button>
+
+                <button
+                    class="page-corner corner-next"
+                    id="desktopNext"
+                    aria-label="Наступний розворот"
+                ></button>
 
             </div>
+
+        </div>
+
+
+
+        <!-- MOBILE -->
+
+        <div id="mobileBook">
+
+            <div class="mobile-back"></div>
+            <div class="mobile-paper-edge"></div>
+
+            <div
+                class="mobile-page"
+                id="mobilePage"
+            ></div>
+
+            <div
+                class="mobile-turn-card"
+                id="mobileTurnCard"
+            ></div>
 
 
             <button
                 class="page-corner corner-prev"
-                id="prevCorner"
+                id="mobilePrev"
                 aria-label="Попередня сторінка"
             ></button>
 
             <button
                 class="page-corner corner-next"
-                id="nextCorner"
+                id="mobileNext"
                 aria-label="Наступна сторінка"
             ></button>
 
         </div>
+
 
     </div>
 
@@ -1767,7 +2019,7 @@ body {
 
     <div class="flip-hint">
         Перегорни сторінку,
-        натиснувши на її нижній кутик
+        натиснувши на нижній кутик
     </div>
 
 </section>
@@ -1775,16 +2027,12 @@ body {
 
 
 <script>
-
 /* =========================================================
-   ТЕКСТ КАЗКИ
-   ТЕКСТ НЕ ПЕРЕПИСУЄМО —
-   ЛИШЕ РОЗКЛАДАЄМО ПО СЮЖЕТНИХ СЦЕНАХ
+   CONTENT
 ========================================================= */
 
 const spreads = [
 
-/* 01 */
 {
     left: {
         kind: "image",
@@ -1793,6 +2041,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 Ця історія сталася дуже давно
@@ -1819,7 +2068,6 @@ const spreads = [
 },
 
 
-/* 02 */
 {
     left: {
         kind: "image",
@@ -1828,6 +2076,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 Через свою цікавість Джабуті
@@ -1879,7 +2128,6 @@ const spreads = [
 },
 
 
-/* TOUCAN INVITE */
 {
     left: {
         kind: "image",
@@ -1888,6 +2136,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 Але була одна умова:
@@ -1929,7 +2178,6 @@ const spreads = [
 },
 
 
-/* 03 */
 {
     left: {
         kind: "image",
@@ -1938,6 +2186,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 Тукан уже відлітав,
@@ -1983,7 +2232,6 @@ const spreads = [
 },
 
 
-/* 04 */
 {
     left: {
         kind: "image",
@@ -1992,6 +2240,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 На хвилинку Джабуті засмутився.
@@ -2055,7 +2304,6 @@ const spreads = [
 },
 
 
-/* 05 */
 {
     left: {
         kind: "image",
@@ -2064,6 +2312,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 Того вечора Джабуті завітав до Урубу.
@@ -2116,7 +2365,6 @@ const spreads = [
 },
 
 
-/* 06 */
 {
     left: {
         kind: "flight",
@@ -2125,6 +2373,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 Наступного ранку
@@ -2188,7 +2437,6 @@ const spreads = [
 },
 
 
-/* 07 */
 {
     left: {
         kind: "image",
@@ -2197,6 +2445,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 Нарешті Урубу дістався до неба.
@@ -2240,7 +2489,6 @@ const spreads = [
 },
 
 
-/* 08 */
 {
     left: {
         kind: "image",
@@ -2249,6 +2497,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 За кілька хвилин
@@ -2308,7 +2557,6 @@ const spreads = [
 },
 
 
-/* RETURN HIDE */
 {
     left: {
         kind: "image",
@@ -2317,6 +2565,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 Та свято добігало кінця.
@@ -2341,7 +2590,6 @@ const spreads = [
 },
 
 
-/* 09 */
 {
     left: {
         kind: "return-flight",
@@ -2350,6 +2598,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 Урубу злетів.
@@ -2402,7 +2651,6 @@ const spreads = [
 },
 
 
-/* 10 */
 {
     left: {
         kind: "image",
@@ -2411,6 +2659,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 Він зазирнув усередину.
@@ -2455,7 +2704,6 @@ const spreads = [
 },
 
 
-/* FALLING */
 {
     left: {
         kind: "falling"
@@ -2463,6 +2711,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 Він летів униз
@@ -2499,7 +2748,6 @@ const spreads = [
 },
 
 
-/* 11 */
 {
     left: {
         kind: "image",
@@ -2508,6 +2756,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 І тут —
@@ -2539,7 +2788,6 @@ const spreads = [
 },
 
 
-/* 12 */
 {
     left: {
         kind: "image",
@@ -2548,6 +2796,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 Невдовзі його знайшли друзі.
@@ -2563,7 +2812,6 @@ const spreads = [
 },
 
 
-/* 13 */
 {
     left: {
         kind: "image",
@@ -2572,6 +2820,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 Минув час.
@@ -2599,7 +2848,6 @@ const spreads = [
 },
 
 
-/* FINAL */
 {
     left: {
         kind: "image",
@@ -2608,6 +2856,7 @@ const spreads = [
 
     right: {
         kind: "text",
+
         html: `
             <p>
                 Кажуть,
@@ -2645,13 +2894,10 @@ const spreads = [
 },
 
 
-/* =========================================================
-   ПІСЛЯ ЧИТАННЯ
-========================================================= */
-
 {
     left: {
         kind: "jabuti-panel",
+
         bubble:
             "— Ну що, друже? Пригода завершилася. А тепер цікаво, що ти про неї думаєш?"
     },
@@ -2662,13 +2908,10 @@ const spreads = [
 },
 
 
-/* =========================================================
-   ПЕРЕВІРКА УВАЖНОСТІ
-========================================================= */
-
 {
     left: {
         kind: "jabuti-panel",
+
         bubble:
             "— Стривай! А ти точно уважно читав мою історію? Перевірмо!"
     },
@@ -2685,140 +2928,204 @@ const spreads = [
    DOM
 ========================================================= */
 
+const readerScreen =
+    document.getElementById(
+        "readerScreen"
+    );
+
 const coverScreen =
-    document.getElementById("coverScreen");
+    document.getElementById(
+        "coverScreen"
+    );
 
 const coverFace =
-    document.getElementById("coverFace");
+    document.getElementById(
+        "coverFace"
+    );
 
-const readerScreen =
-    document.getElementById("readerScreen");
+const desktopBook =
+    document.getElementById(
+        "desktopBook"
+    );
+
+const mobileBook =
+    document.getElementById(
+        "mobileBook"
+    );
+
+const mobilePage =
+    document.getElementById(
+        "mobilePage"
+    );
+
+const mobileTurnCard =
+    document.getElementById(
+        "mobileTurnCard"
+    );
 
 const leftPage =
-    document.getElementById("leftPage");
+    document.getElementById(
+        "leftPage"
+    );
 
 const rightPage =
-    document.getElementById("rightPage");
+    document.getElementById(
+        "rightPage"
+    );
 
 const turnSheet =
-    document.getElementById("turnSheet");
+    document.getElementById(
+        "turnSheet"
+    );
 
 const sheetFront =
-    document.getElementById("sheetFront");
+    document.getElementById(
+        "sheetFront"
+    );
 
 const sheetBack =
-    document.getElementById("sheetBack");
+    document.getElementById(
+        "sheetBack"
+    );
 
-const nextCorner =
-    document.getElementById("nextCorner");
-
-const prevCorner =
-    document.getElementById("prevCorner");
+const sheetGloss =
+    document.getElementById(
+        "sheetGloss"
+    );
 
 const counter =
-    document.getElementById("counter");
-
-const bookShell =
-    document.getElementById("bookShell");
+    document.getElementById(
+        "counter"
+    );
 
 
 let currentSpread = 0;
 let turning = false;
+let mobileMode = false;
 
 
 /* =========================================================
-   РЕНДЕР СТОРІНКИ
+   HELPERS
 ========================================================= */
 
-function buildPage(spec) {
+function sceneHTML(
+    src
+) {
 
-    if (spec.kind === "image") {
+    return `
+        <div
+            class="scene-frame"
+            style="--scene:url('${src}')"
+        >
+
+            <div class="scene-blur"></div>
+            <div class="scene-tint"></div>
+
+            <img
+                class="scene-image"
+                src="${src}"
+                alt=""
+                draggable="false"
+            >
+
+        </div>
+    `;
+
+}
+
+
+function cloudHTML(
+    reverse = false
+) {
+
+    return `
+        <div
+            class="cloud-layer
+            ${reverse ? "reverse" : ""}"
+        >
+
+            <img
+                class="cloud cloud-a"
+                src="clouds-01.png"
+                alt=""
+            >
+
+            <img
+                class="cloud cloud-b"
+                src="clouds-02.png"
+                alt=""
+            >
+
+        </div>
+    `;
+
+}
+
+
+/* =========================================================
+   BUILD PAGE
+========================================================= */
+
+function buildPage(
+    spec
+) {
+
+    if (
+        spec.kind === "image"
+    ) {
 
         return {
             className: "scene-page",
 
-            html: `
-                <img
-                    class="scene-image"
-                    src="${spec.src}"
-                    alt=""
-                    draggable="false"
-                >
-            `
+            html:
+                sceneHTML(
+                    spec.src
+                )
         };
 
     }
 
 
-    if (spec.kind === "flight") {
+    if (
+        spec.kind === "flight"
+    ) {
 
         return {
             className: "scene-page",
 
-            html: `
-                <img
-                    class="scene-image"
-                    src="${spec.src}"
-                    alt=""
-                    draggable="false"
-                >
-
-                <div class="cloud-layer">
-
-                    <img
-                        class="cloud cloud-a"
-                        src="clouds-01.png"
-                        alt=""
-                    >
-
-                    <img
-                        class="cloud cloud-b"
-                        src="clouds-02.png"
-                        alt=""
-                    >
-
-                </div>
-            `
+            html:
+                sceneHTML(
+                    spec.src
+                )
+                +
+                cloudHTML(false)
         };
 
     }
 
 
-    if (spec.kind === "return-flight") {
+    if (
+        spec.kind ===
+        "return-flight"
+    ) {
 
         return {
             className: "scene-page",
 
-            html: `
-                <img
-                    class="scene-image"
-                    src="${spec.src}"
-                    alt=""
-                    draggable="false"
-                >
-
-                <div class="cloud-layer reverse">
-
-                    <img
-                        class="cloud cloud-a"
-                        src="clouds-01.png"
-                        alt=""
-                    >
-
-                    <img
-                        class="cloud cloud-b"
-                        src="clouds-02.png"
-                        alt=""
-                    >
-
-                </div>
-            `
+            html:
+                sceneHTML(
+                    spec.src
+                )
+                +
+                cloudHTML(true)
         };
 
     }
 
 
-    if (spec.kind === "falling") {
+    if (
+        spec.kind === "falling"
+    ) {
 
         return {
             className: "scene-page",
@@ -2826,21 +3133,7 @@ function buildPage(spec) {
             html: `
                 <div class="falling-scene">
 
-                    <div class="cloud-layer">
-
-                        <img
-                            class="cloud cloud-a"
-                            src="clouds-01.png"
-                            alt=""
-                        >
-
-                        <img
-                            class="cloud cloud-b"
-                            src="clouds-02.png"
-                            alt=""
-                        >
-
-                    </div>
+                    ${cloudHTML(false)}
 
                     <img
                         class="falling-jabuti"
@@ -2855,7 +3148,9 @@ function buildPage(spec) {
     }
 
 
-    if (spec.kind === "text") {
+    if (
+        spec.kind === "text"
+    ) {
 
         return {
             className: "text-page",
@@ -2874,7 +3169,10 @@ function buildPage(spec) {
     }
 
 
-    if (spec.kind === "jabuti-panel") {
+    if (
+        spec.kind ===
+        "jabuti-panel"
+    ) {
 
         return {
             className: "scene-page",
@@ -2899,202 +3197,29 @@ function buildPage(spec) {
     }
 
 
-    if (spec.kind === "tasks") {
+    if (
+        spec.kind === "tasks"
+    ) {
 
         return {
             className: "task-page",
 
-            html: `
-                <div class="interactive-wrap">
-
-                    <h2 class="interactive-title">
-                        Поміркуй після читання
-                    </h2>
-
-
-                    <div class="cards">
-
-
-                        <div class="task-card">
-
-                            <button class="task-toggle">
-                                1. Чому Джабуті так хотів
-                                потрапити на свято?
-                            </button>
-
-                            <div class="task-detail">
-                                Чому Джабуті так хотів
-                                потрапити на свято,
-                                хоча не мав крил?
-                            </div>
-
-                        </div>
-
-
-                        <div class="task-card">
-
-                            <button class="task-toggle">
-                                2. Який план він придумав?
-                            </button>
-
-                            <div class="task-detail">
-                                Який план він придумав?
-                                Чому цей план був ризикованим?
-                            </div>
-
-                        </div>
-
-
-                        <div class="task-card">
-
-                            <button class="task-toggle">
-                                3. Яким був Джабуті?
-                            </button>
-
-                            <div class="task-detail">
-                                Як ти вважаєш:
-                                Джабуті був сміливим,
-                                хитрим чи необачним?
-                                Можна обрати кілька відповідей
-                                і коротко пояснити.
-                            </div>
-
-                        </div>
-
-
-                        <div class="task-card">
-
-                            <button class="task-toggle">
-                                4. До чого призвела його витівка?
-                            </button>
-
-                            <div class="task-detail">
-                                Що стало наслідком
-                                його витівки?
-                            </div>
-
-                        </div>
-
-
-                        <div class="task-card">
-
-                            <button class="task-toggle">
-                                5. Чи повірив ти Джабуті?
-                            </button>
-
-                            <div class="task-detail">
-                                Чи повірив ти Джабуті,
-                                коли він під час падіння
-                                обіцяв більше нічого
-                                не вигадувати?
-                                Чому?
-                            </div>
-
-                        </div>
-
-
-                    </div>
-
-                </div>
-            `
+            html:
+                tasksHTML()
         };
 
     }
 
 
-    if (spec.kind === "quiz") {
+    if (
+        spec.kind === "quiz"
+    ) {
 
         return {
             className: "quiz-page",
 
-            html: `
-                <div class="interactive-wrap">
-
-                    <h2 class="interactive-title">
-                        Джабуті перевіряє твою уважність
-                    </h2>
-
-
-                    <div class="cards">
-
-
-                        ${quizCard(
-                            "1. Хто повідомляв мешканців лісу про свято?",
-                            ["Урубу", "Тукан", "Мавпа"],
-                            "Тукан"
-                        )}
-
-
-                        ${quizCard(
-                            "2. Де мало відбутися свято?",
-                            ["У джунглях", "На небі", "Біля річки"],
-                            "На небі"
-                        )}
-
-
-                        ${quizCard(
-                            "3. Що Урубу взяв із собою на свято?",
-                            ["Барабан", "Гітару", "Кошик із фруктами"],
-                            "Гітару"
-                        )}
-
-
-                        ${quizCard(
-                            "4. Де сховався Джабуті?",
-                            ["У дуплі", "У гітарі", "Під крилом Урубу"],
-                            "У гітарі"
-                        )}
-
-
-                        ${quizCard(
-                            "5. Що видало Джабуті дорогою назад?",
-                            ["Він заспівав", "Він заворушився", "Він засміявся"],
-                            "Він заворушився"
-                        )}
-
-
-                    </div>
-
-
-                    <div class="memory-card">
-
-                        <div>
-                            — І найскладніше!
-                            Що я обіцяв,
-                            коли падав?
-                        </div>
-
-                        <button
-                            class="memory-button"
-                            data-memory
-                        >
-                            Перевірити
-                        </button>
-
-                        <div class="memory-answer">
-
-                            — «Якщо врятуюся —
-                            більше ніколи нічого
-                            такого не вигадуватиму!»
-
-                            <br><br>
-
-                            Е-е-е…
-                            Ну, з обіцянками
-                            в мене іноді складно. 😄
-
-                            <br>
-
-                            <strong>
-                                До наступної пригоди, друже!
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-                </div>
-            `
+            html:
+                quizHTML()
         };
 
     }
@@ -3109,11 +3234,200 @@ function buildPage(spec) {
 
 
 /* =========================================================
-   QUIZ CARD
+   TASKS
 ========================================================= */
 
+function tasksHTML() {
+
+    return `
+        <div class="interactive-wrap">
+
+            <h2 class="interactive-title">
+                Поміркуй після читання
+            </h2>
+
+            <div class="cards">
+
+
+                ${taskCard(
+                    "1. Чому Джабуті так хотів потрапити на свято?",
+                    "Чому Джабуті так хотів потрапити на свято, хоча не мав крил?"
+                )}
+
+
+                ${taskCard(
+                    "2. Який план він придумав?",
+                    "Який план він придумав? Чому цей план був ризикованим?"
+                )}
+
+
+                ${taskCard(
+                    "3. Яким був Джабуті?",
+                    "Як ти вважаєш: Джабуті був сміливим, хитрим чи необачним? Можна обрати кілька відповідей і коротко пояснити."
+                )}
+
+
+                ${taskCard(
+                    "4. До чого призвела його витівка?",
+                    "Що стало наслідком його витівки?"
+                )}
+
+
+                ${taskCard(
+                    "5. Чи повірив ти Джабуті?",
+                    "Чи повірив ти Джабуті, коли він під час падіння обіцяв більше нічого не вигадувати? Чому?"
+                )}
+
+
+            </div>
+
+        </div>
+    `;
+
+}
+
+
+function taskCard(
+    title,
+    detail
+) {
+
+    return `
+        <div class="task-card">
+
+            <button class="task-toggle">
+                ${title}
+            </button>
+
+            <div class="task-detail">
+                ${detail}
+            </div>
+
+        </div>
+    `;
+
+}
+
+
+/* =========================================================
+   QUIZ
+========================================================= */
+
+function quizHTML() {
+
+    return `
+        <div class="interactive-wrap">
+
+            <h2 class="interactive-title">
+                Джабуті перевіряє твою уважність
+            </h2>
+
+            <div class="cards">
+
+
+                ${quizCard(
+                    "1. Хто повідомляв мешканців лісу про свято?",
+                    [
+                        "Урубу",
+                        "Тукан",
+                        "Мавпа"
+                    ],
+                    "Тукан"
+                )}
+
+
+                ${quizCard(
+                    "2. Де мало відбутися свято?",
+                    [
+                        "У джунглях",
+                        "На небі",
+                        "Біля річки"
+                    ],
+                    "На небі"
+                )}
+
+
+                ${quizCard(
+                    "3. Що Урубу взяв із собою на свято?",
+                    [
+                        "Барабан",
+                        "Гітару",
+                        "Кошик із фруктами"
+                    ],
+                    "Гітару"
+                )}
+
+
+                ${quizCard(
+                    "4. Де сховався Джабуті?",
+                    [
+                        "У дуплі",
+                        "У гітарі",
+                        "Під крилом Урубу"
+                    ],
+                    "У гітарі"
+                )}
+
+
+                ${quizCard(
+                    "5. Що видало Джабуті дорогою назад?",
+                    [
+                        "Він заспівав",
+                        "Він заворушився",
+                        "Він засміявся"
+                    ],
+                    "Він заворушився"
+                )}
+
+
+            </div>
+
+
+            <div class="memory-card">
+
+                <div>
+                    — І найскладніше!
+                    Що я обіцяв,
+                    коли падав?
+                </div>
+
+                <button
+                    class="memory-button"
+                    data-memory
+                >
+                    Перевірити
+                </button>
+
+                <div class="memory-answer">
+
+                    — «Якщо врятуюся —
+                    більше ніколи нічого
+                    такого не вигадуватиму!»
+
+                    <br><br>
+
+                    Е-е-е…
+                    Ну, з обіцянками
+                    в мене іноді складно.
+
+                    <br><br>
+
+                    <strong>
+                        До наступної пригоди, друже!
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+}
+
+
 function quizCard(
-    question,
+    title,
     answers,
     correct
 ) {
@@ -3125,23 +3439,26 @@ function quizCard(
         >
 
             <button class="quiz-toggle">
-                ${question}
+                ${title}
             </button>
 
             <div class="quiz-options">
 
                 <div class="answer-row">
 
-                    ${answers.map(
-                        answer => `
-                            <button
-                                class="answer"
-                                data-answer="${answer}"
-                            >
-                                ${answer}
-                            </button>
-                        `
-                    ).join("")}
+                    ${answers
+                        .map(
+                            answer => `
+                                <button
+                                    class="answer"
+                                    data-answer="${answer}"
+                                >
+                                    ${answer}
+                                </button>
+                            `
+                        )
+                        .join("")
+                    }
 
                 </div>
 
@@ -3154,99 +3471,405 @@ function quizCard(
 
 
 /* =========================================================
+   RESPONSIVE MODE
+========================================================= */
+
+function detectMode() {
+
+    const nextMobileMode =
+        window.innerWidth <= 780
+        &&
+        window.innerHeight >
+        window.innerWidth;
+
+
+    if (
+        nextMobileMode
+        !== mobileMode
+    ) {
+
+        mobileMode =
+            nextMobileMode;
+
+        document.body
+            .classList
+            .toggle(
+                "mobile-mode",
+                mobileMode
+            );
+
+    }
+
+}
+
+
+/* =========================================================
+   SIZE
+========================================================= */
+
+function fitBookToViewport() {
+
+    detectMode();
+
+
+    const vw =
+        window.innerWidth;
+
+    const vh =
+        window.innerHeight;
+
+
+    if (
+        mobileMode
+    ) {
+
+        const width =
+            Math.max(
+                280,
+                vw - 20
+            );
+
+        const availableHeight =
+            Math.max(
+                430,
+                vh - 116
+            );
+
+        const height =
+            Math.min(
+                availableHeight,
+                width * 1.52
+            );
+
+
+        mobileBook.style.width =
+            `${width}px`;
+
+        mobileBook.style.height =
+            `${height}px`;
+
+
+        return;
+    }
+
+
+    const availableW =
+        vw - 24;
+
+    const availableH =
+        vh - 105;
+
+
+    let width =
+        Math.min(
+            availableW,
+            availableH
+                * 16 / 9,
+            1760
+        );
+
+
+    let height =
+        width * 9 / 16;
+
+
+    desktopBook.style.width =
+        `${width}px`;
+
+    desktopBook.style.height =
+        `${height}px`;
+
+}
+
+
+/* =========================================================
    APPLY PAGE
 ========================================================= */
 
-function applyPage(
+function applyDesktopPage(
     element,
     spec,
     side
 ) {
 
-    const built =
+    const page =
         buildPage(spec);
 
+
     element.className =
-        `page ${side}-page ${built.className}`;
+        `page ${side}-page ${page.className}`;
 
     element.innerHTML =
-        built.html;
+        page.html;
 
 }
 
 
 /* =========================================================
-   APPLY SHEET FACE
+   TEXT FIT
 ========================================================= */
 
-function applySheetFace(
-    element,
-    spec,
-    side
+function fitStoryText(
+    root,
+    mobile = false
 ) {
 
-    const built =
-        buildPage(spec);
+    const blocks =
+        root.querySelectorAll(
+            ".story-text"
+        );
 
-    element.className =
-        `sheet-face ${built.className} ${
-            side === "front"
-            ? "sheet-front"
-            : "sheet-back"
-        }`;
 
-    element.innerHTML =
-        built.html;
+    blocks.forEach(
+        block => {
+
+            const holder =
+                block.parentElement;
+
+            const textLength =
+                block.innerText
+                    .replace(
+                        /\s+/g,
+                        " "
+                    )
+                    .trim()
+                    .length;
+
+
+            let size;
+
+
+            if (
+                mobile
+            ) {
+
+                size =
+                    textLength < 240
+                    ? 22
+                    : textLength < 480
+                    ? 20
+                    : 18;
+
+            }
+
+            else {
+
+                size =
+                    textLength < 210
+                    ? 33
+                    : textLength < 390
+                    ? 29
+                    : textLength < 620
+                    ? 25.5
+                    : 23;
+
+            }
+
+
+            block.style.fontSize =
+                `${size}px`;
+
+
+            while (
+                block.scrollHeight >
+                holder.clientHeight
+                &&
+                size >
+                    (
+                        mobile
+                        ? 15
+                        : 17
+                    )
+            ) {
+
+                size -= .5;
+
+                block.style.fontSize =
+                    `${size}px`;
+
+            }
+
+        }
+    );
 
 }
 
 
 /* =========================================================
-   РЕНДЕР РОЗВОРОТУ
+   DESKTOP RENDER
 ========================================================= */
 
-function renderSpread() {
+function renderDesktop() {
 
     const spread =
         spreads[currentSpread];
 
-    applyPage(
+
+    applyDesktopPage(
         leftPage,
         spread.left,
         "left"
     );
 
-    applyPage(
+
+    applyDesktopPage(
         rightPage,
         spread.right,
         "right"
     );
 
-    updateCounter();
-    updateCorners();
-    updatePageThickness();
+
+    updateThickness();
+    updateControls();
+
 
     requestAnimationFrame(
-        fitCurrentText
-    );
+        () => {
 
-    wireInteractions();
+            fitStoryText(
+                rightPage,
+                false
+            );
+
+            wireInteractions(
+                rightPage
+            );
+
+        }
+    );
 
 }
 
 
 /* =========================================================
-   ПЕРЕГОРТАННЯ ВПЕРЕД
+   MOBILE RENDER
 ========================================================= */
 
-function nextSpread() {
+function mobileVisualHTML(
+    spec
+) {
+
+    const built =
+        buildPage(spec);
+
+
+    return `
+        <div class="mobile-visual">
+            ${built.html}
+        </div>
+    `;
+
+}
+
+
+function mobileContentHTML(
+    spec
+) {
+
+    const built =
+        buildPage(spec);
+
+
+    return `
+        <div class="mobile-content">
+            ${built.html}
+        </div>
+    `;
+
+}
+
+
+function buildMobilePageHTML(
+    spread
+) {
+
+    return `
+        ${mobileVisualHTML(
+            spread.left
+        )}
+
+        ${mobileContentHTML(
+            spread.right
+        )}
+    `;
+
+}
+
+
+function renderMobile() {
+
+    const spread =
+        spreads[currentSpread];
+
+
+    mobilePage.innerHTML =
+        buildMobilePageHTML(
+            spread
+        );
+
+
+    updateControls();
+
+
+    requestAnimationFrame(
+        () => {
+
+            fitStoryText(
+                mobilePage,
+                true
+            );
+
+            wireInteractions(
+                mobilePage
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   RENDER CURRENT
+========================================================= */
+
+function renderCurrent() {
+
+    fitBookToViewport();
+
 
     if (
-        turning ||
-        currentSpread >= spreads.length - 1
+        mobileMode
+    ) {
+
+        renderMobile();
+
+    }
+
+    else {
+
+        renderDesktop();
+
+    }
+
+}
+
+
+/* =========================================================
+   DESKTOP FORWARD
+========================================================= */
+
+async function desktopNextSpread() {
+
+    if (
+        turning
+        ||
+        currentSpread >=
+            spreads.length - 1
     ) {
         return;
     }
+
 
     turning = true;
 
@@ -3258,20 +3881,32 @@ function nextSpread() {
         spreads[currentSpread + 1];
 
 
-    applySheetFace(
-        sheetFront,
-        current.right,
-        "front"
-    );
+    const front =
+        buildPage(
+            current.right
+        );
 
-    applySheetFace(
-        sheetBack,
-        next.left,
-        "back"
-    );
+    const back =
+        buildPage(
+            next.left
+        );
 
 
-    applyPage(
+    sheetFront.className =
+        `sheet-face sheet-front ${front.className}`;
+
+    sheetFront.innerHTML =
+        front.html;
+
+
+    sheetBack.className =
+        `sheet-face sheet-back ${back.className}`;
+
+    sheetBack.innerHTML =
+        back.html;
+
+
+    applyDesktopPage(
         rightPage,
         next.right,
         "right"
@@ -3282,70 +3917,158 @@ function nextSpread() {
         "active"
     );
 
-    turnSheet.style.transition =
-        "none";
 
-    turnSheet.style.transform =
-        "rotateY(0deg)";
+    const turnAnimation =
+        turnSheet.animate(
+            [
 
+                {
+                    offset: 0,
 
-    requestAnimationFrame(
-        () => {
+                    transform:
+                        "rotateY(0deg) skewY(0deg) scaleX(1)",
 
-            requestAnimationFrame(
-                () => {
+                    filter:
+                        "brightness(1)"
+                },
 
-                    turnSheet.style.transition =
-                        "transform 930ms cubic-bezier(.64,.01,.24,1)";
+                {
+                    offset: .16,
 
-                    turnSheet.style.transform =
-                        "rotateY(-180deg)";
+                    transform:
+                        "rotateY(-18deg) skewY(-1deg) scaleX(.995)",
 
+                    filter:
+                        "brightness(.98)"
+                },
+
+                {
+                    offset: .39,
+
+                    transform:
+                        "rotateY(-65deg) skewY(-2.4deg) scaleX(.965)",
+
+                    filter:
+                        "brightness(.93)"
+                },
+
+                {
+                    offset: .52,
+
+                    transform:
+                        "rotateY(-92deg) skewY(-3.1deg) scaleX(.925)",
+
+                    filter:
+                        "brightness(.88)"
+                },
+
+                {
+                    offset: .70,
+
+                    transform:
+                        "rotateY(-137deg) skewY(-1.8deg) scaleX(.955)",
+
+                    filter:
+                        "brightness(.92)"
+                },
+
+                {
+                    offset: .88,
+
+                    transform:
+                        "rotateY(-169deg) skewY(-.5deg) scaleX(.99)",
+
+                    filter:
+                        "brightness(.98)"
+                },
+
+                {
+                    offset: 1,
+
+                    transform:
+                        "rotateY(-180deg) skewY(0deg) scaleX(1)",
+
+                    filter:
+                        "brightness(1)"
                 }
-            );
 
+            ],
+
+            {
+                duration: 1320,
+
+                easing:
+                    "cubic-bezier(.18,.70,.18,1)",
+
+                fill: "forwards"
+            }
+        );
+
+
+    sheetGloss.animate(
+        [
+
+            {
+                opacity: .04
+            },
+
+            {
+                offset: .48,
+                opacity: .72
+            },
+
+            {
+                opacity: .06
+            }
+
+        ],
+
+        {
+            duration: 1320,
+
+            easing: "ease-in-out",
+
+            fill: "forwards"
         }
     );
 
 
-    setTimeout(
-        () => {
+    await turnAnimation.finished;
 
-            currentSpread++;
 
-            turnSheet.classList.remove(
-                "active"
-            );
+    currentSpread++;
 
-            turnSheet.style.transition =
-                "none";
 
-            turnSheet.style.transform =
-                "rotateY(0deg)";
-
-            renderSpread();
-
-            turning = false;
-
-        },
-        950
+    turnSheet.classList.remove(
+        "active"
     );
+
+
+    turnAnimation.cancel();
+
+
+    renderDesktop();
+
+
+    turning = false;
 
 }
 
 
 /* =========================================================
-   ПЕРЕГОРТАННЯ НАЗАД
+   DESKTOP BACK
 ========================================================= */
 
-function previousSpread() {
+async function desktopPreviousSpread() {
 
     if (
-        turning ||
+        turning
+        ||
         currentSpread <= 0
     ) {
         return;
     }
+
 
     turning = true;
 
@@ -3357,48 +4080,520 @@ function previousSpread() {
         spreads[currentSpread - 1];
 
 
-    applyPage(
+    applyDesktopPage(
         leftPage,
         previous.left,
         "left"
     );
 
 
-    applySheetFace(
-        sheetFront,
-        previous.right,
-        "front"
-    );
+    const front =
+        buildPage(
+            previous.right
+        );
 
-    applySheetFace(
-        sheetBack,
-        current.left,
-        "back"
-    );
+    const back =
+        buildPage(
+            current.left
+        );
+
+
+    sheetFront.className =
+        `sheet-face sheet-front ${front.className}`;
+
+    sheetFront.innerHTML =
+        front.html;
+
+
+    sheetBack.className =
+        `sheet-face sheet-back ${back.className}`;
+
+    sheetBack.innerHTML =
+        back.html;
 
 
     turnSheet.classList.add(
         "active"
     );
 
-    turnSheet.style.transition =
-        "none";
 
-    turnSheet.style.transform =
-        "rotateY(-180deg)";
+    const turnAnimation =
+        turnSheet.animate(
+            [
+
+                {
+                    transform:
+                        "rotateY(-180deg) skewY(0deg) scaleX(1)"
+                },
+
+                {
+                    offset: .18,
+
+                    transform:
+                        "rotateY(-163deg) skewY(.6deg) scaleX(.99)"
+                },
+
+                {
+                    offset: .44,
+
+                    transform:
+                        "rotateY(-112deg) skewY(2.6deg) scaleX(.94)"
+                },
+
+                {
+                    offset: .55,
+
+                    transform:
+                        "rotateY(-86deg) skewY(3deg) scaleX(.925)"
+                },
+
+                {
+                    offset: .75,
+
+                    transform:
+                        "rotateY(-39deg) skewY(1.4deg) scaleX(.97)"
+                },
+
+                {
+                    transform:
+                        "rotateY(0deg) skewY(0deg) scaleX(1)"
+                }
+
+            ],
+
+            {
+                duration: 1320,
+
+                easing:
+                    "cubic-bezier(.18,.70,.18,1)",
+
+                fill: "forwards"
+            }
+        );
 
 
-    requestAnimationFrame(
-        () => {
+    sheetGloss.animate(
+        [
 
-            requestAnimationFrame(
+            {
+                opacity: .05
+            },
+
+            {
+                offset: .52,
+                opacity: .70
+            },
+
+            {
+                opacity: .04
+            }
+
+        ],
+
+        {
+            duration: 1320,
+            easing: "ease-in-out"
+        }
+    );
+
+
+    await turnAnimation.finished;
+
+
+    currentSpread--;
+
+
+    turnSheet.classList.remove(
+        "active"
+    );
+
+
+    turnAnimation.cancel();
+
+
+    renderDesktop();
+
+
+    turning = false;
+
+}
+
+
+/* =========================================================
+   MOBILE TURN
+========================================================= */
+
+async function mobileTurn(
+    direction
+) {
+
+    if (
+        turning
+    ) {
+        return;
+    }
+
+
+    const nextIndex =
+        currentSpread
+        +
+        direction;
+
+
+    if (
+        nextIndex < 0
+        ||
+        nextIndex >=
+            spreads.length
+    ) {
+        return;
+    }
+
+
+    turning = true;
+
+
+    const oldHTML =
+        mobilePage.innerHTML;
+
+
+    const nextSpread =
+        spreads[nextIndex];
+
+
+    mobilePage.innerHTML =
+        buildMobilePageHTML(
+            nextSpread
+        );
+
+
+    mobileTurnCard.innerHTML =
+        oldHTML;
+
+
+    mobileTurnCard.classList.add(
+        "active"
+    );
+
+
+    let frames;
+
+
+    if (
+        direction > 0
+    ) {
+
+        frames = [
+
+            {
+                transform:
+                    "rotateY(0deg) skewY(0deg) scaleX(1)",
+
+                opacity: 1
+            },
+
+            {
+                offset: .22,
+
+                transform:
+                    "rotateY(-20deg) skewY(-1deg) scaleX(.995)",
+
+                opacity: 1
+            },
+
+            {
+                offset: .56,
+
+                transform:
+                    "rotateY(-82deg) skewY(-2.6deg) scaleX(.94)",
+
+                opacity: .97
+            },
+
+            {
+                offset: .82,
+
+                transform:
+                    "rotateY(-145deg) skewY(-1deg) scaleX(.975)",
+
+                opacity: .76
+            },
+
+            {
+                transform:
+                    "rotateY(-178deg) skewY(0deg) scaleX(1)",
+
+                opacity: .05
+            }
+
+        ];
+
+    }
+
+    else {
+
+        mobileTurnCard.innerHTML =
+            mobilePage.innerHTML;
+
+
+        mobilePage.innerHTML =
+            oldHTML;
+
+
+        frames = [
+
+            {
+                transform:
+                    "rotateY(-178deg) skewY(0deg) scaleX(1)",
+
+                opacity: .05
+            },
+
+            {
+                offset: .24,
+
+                transform:
+                    "rotateY(-142deg) skewY(1deg) scaleX(.975)",
+
+                opacity: .76
+            },
+
+            {
+                offset: .55,
+
+                transform:
+                    "rotateY(-83deg) skewY(2.7deg) scaleX(.94)",
+
+                opacity: .97
+            },
+
+            {
+                offset: .82,
+
+                transform:
+                    "rotateY(-18deg) skewY(1deg) scaleX(.995)",
+
+                opacity: 1
+            },
+
+            {
+                transform:
+                    "rotateY(0deg) skewY(0deg) scaleX(1)",
+
+                opacity: 1
+            }
+
+        ];
+
+    }
+
+
+    const animation =
+        mobileTurnCard.animate(
+            frames,
+
+            {
+                duration: 1150,
+
+                easing:
+                    "cubic-bezier(.18,.70,.18,1)",
+
+                fill: "forwards"
+            }
+        );
+
+
+    await animation.finished;
+
+
+    currentSpread =
+        nextIndex;
+
+
+    mobileTurnCard.classList.remove(
+        "active"
+    );
+
+
+    animation.cancel();
+
+
+    renderMobile();
+
+
+    turning = false;
+
+}
+
+
+/* =========================================================
+   CONTROLS
+========================================================= */
+
+function updateControls() {
+
+    const STORY_SPREADS =
+        17;
+
+
+    if (
+        currentSpread <
+        STORY_SPREADS
+    ) {
+
+        counter.textContent =
+            `${currentSpread + 1} / ${STORY_SPREADS}`;
+
+    }
+
+    else if (
+        currentSpread ===
+        STORY_SPREADS
+    ) {
+
+        counter.textContent =
+            "Після читання";
+
+    }
+
+    else {
+
+        counter.textContent =
+            "Перевірка уважності";
+
+    }
+
+
+    [
+        document.getElementById(
+            "desktopPrev"
+        ),
+
+        document.getElementById(
+            "mobilePrev"
+        )
+
+    ].forEach(
+        button => {
+
+            button.disabled =
+                currentSpread === 0;
+
+        }
+    );
+
+
+    [
+        document.getElementById(
+            "desktopNext"
+        ),
+
+        document.getElementById(
+            "mobileNext"
+        )
+
+    ].forEach(
+        button => {
+
+            button.disabled =
+                currentSpread ===
+                spreads.length - 1;
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   PAGE THICKNESS
+========================================================= */
+
+function updateThickness() {
+
+    const max =
+        spreads.length - 1;
+
+
+    const progress =
+        currentSpread / max;
+
+
+    desktopBook.style
+        .setProperty(
+            "--left-stack",
+            `${
+                5
+                +
+                progress * 22
+            }px`
+        );
+
+
+    desktopBook.style
+        .setProperty(
+            "--right-stack",
+            `${
+                27
+                -
+                progress * 22
+            }px`
+        );
+
+}
+
+
+/* =========================================================
+   INTERACTIONS
+========================================================= */
+
+function wireInteractions(
+    root
+) {
+
+    root.querySelectorAll(
+        ".task-toggle"
+    )
+    .forEach(
+        toggle => {
+
+            toggle.addEventListener(
+                "click",
                 () => {
 
-                    turnSheet.style.transition =
-                        "transform 930ms cubic-bezier(.64,.01,.24,1)";
+                    const card =
+                        toggle.closest(
+                            ".task-card"
+                        );
 
-                    turnSheet.style.transform =
-                        "rotateY(0deg)";
+
+                    root.querySelectorAll(
+                        ".task-card.open"
+                    )
+                    .forEach(
+                        openCard => {
+
+                            if (
+                                openCard !==
+                                card
+                            ) {
+
+                                openCard
+                                    .classList
+                                    .remove(
+                                        "open"
+                                    );
+
+                            }
+
+                        }
+                    );
+
+
+                    card.classList
+                        .toggle(
+                            "open"
+                        );
 
                 }
             );
@@ -3407,318 +4602,162 @@ function previousSpread() {
     );
 
 
-    setTimeout(
-        () => {
+    root.querySelectorAll(
+        ".quiz-toggle"
+    )
+    .forEach(
+        toggle => {
 
-            currentSpread--;
+            toggle.addEventListener(
+                "click",
+                () => {
 
-            turnSheet.classList.remove(
-                "active"
+                    const card =
+                        toggle.closest(
+                            ".quiz-card"
+                        );
+
+
+                    root.querySelectorAll(
+                        ".quiz-card.open"
+                    )
+                    .forEach(
+                        openCard => {
+
+                            if (
+                                openCard !==
+                                card
+                            ) {
+
+                                openCard
+                                    .classList
+                                    .remove(
+                                        "open"
+                                    );
+
+                            }
+
+                        }
+                    );
+
+
+                    card.classList
+                        .toggle(
+                            "open"
+                        );
+
+                }
             );
 
-            renderSpread();
-
-            turning = false;
-
-        },
-        950
+        }
     );
 
-}
+
+    root.querySelectorAll(
+        ".answer"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                event => {
+
+                    event.stopPropagation();
 
 
-/* =========================================================
-   ЛІЧИЛЬНИК
-========================================================= */
-
-const STORY_SPREADS = 17;
-
-
-function updateCounter() {
-
-    if (
-        currentSpread < STORY_SPREADS
-    ) {
-
-        counter.textContent =
-            `${currentSpread + 1} / ${STORY_SPREADS}`;
-
-        return;
-    }
+                    const card =
+                        button.closest(
+                            ".quiz-card"
+                        );
 
 
-    if (
-        currentSpread === STORY_SPREADS
-    ) {
-
-        counter.textContent =
-            "Після читання";
-
-        return;
-    }
-
-
-    counter.textContent =
-        "Перевірка уважності";
-
-}
-
-
-/* =========================================================
-   КУТИКИ
-========================================================= */
-
-function updateCorners() {
-
-    prevCorner.disabled =
-        currentSpread === 0;
-
-    nextCorner.disabled =
-        currentSpread === spreads.length - 1;
-
-}
-
-
-/* =========================================================
-   ТОВЩИНА СТОРІНОК
-========================================================= */
-
-function updatePageThickness() {
-
-    const max =
-        spreads.length - 1;
-
-    const progress =
-        currentSpread / max;
-
-
-    const leftThickness =
-        5 + progress * 22;
-
-    const rightThickness =
-        27 - progress * 22;
-
-
-    bookShell.style.setProperty(
-        "--left-stack",
-        `${leftThickness}px`
-    );
-
-    bookShell.style.setProperty(
-        "--right-stack",
-        `${rightThickness}px`
-    );
-
-}
-
-
-/* =========================================================
-   ПІДГАНЯННЯ ТЕКСТУ
-========================================================= */
-
-function fitCurrentText() {
-
-    const text =
-        rightPage.querySelector(
-            ".story-text"
-        );
-
-    if (!text) {
-        return;
-    }
-
-
-    const holder =
-        text.parentElement;
-
-    let size = 24;
-
-
-    if (
-        window.innerWidth < 800
-    ) {
-        size = 17;
-    }
-
-
-    text.style.fontSize =
-        size + "px";
-
-
-    while (
-        text.scrollHeight >
-        holder.clientHeight
-        &&
-        size > 13
-    ) {
-
-        size -= .5;
-
-        text.style.fontSize =
-            size + "px";
-
-    }
-
-}
-
-
-/* =========================================================
-   КЛІКАБЕЛЬНІ ПЛАШКИ
-========================================================= */
-
-function wireInteractions() {
-
-    rightPage
-        .querySelectorAll(
-            ".task-toggle"
-        )
-        .forEach(
-            button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        button
-                            .closest(
-                                ".task-card"
-                            )
-                            .classList
-                            .toggle(
-                                "open"
-                            );
-
+                    if (
+                        card.dataset.done ===
+                        "true"
+                    ) {
+                        return;
                     }
-                );
-
-            }
-        );
 
 
-    rightPage
-        .querySelectorAll(
-            ".quiz-toggle"
-        )
-        .forEach(
-            button => {
+                    const correct =
+                        card.dataset.correct;
 
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        button
-                            .closest(
-                                ".quiz-card"
-                            )
-                            .classList
-                            .toggle(
-                                "open"
-                            );
-
-                    }
-                );
-
-            }
-        );
+                    const selected =
+                        button.dataset.answer;
 
 
-    rightPage
-        .querySelectorAll(
-            ".answer"
-        )
-        .forEach(
-            button => {
+                    if (
+                        selected ===
+                        correct
+                    ) {
 
-                button.addEventListener(
-                    "click",
-                    event => {
-
-                        event.stopPropagation();
-
-
-                        const card =
-                            button.closest(
-                                ".quiz-card"
-                            );
-
-
-                        if (
-                            card.dataset.done
-                            === "true"
-                        ) {
-                            return;
-                        }
-
-
-                        const correct =
-                            card.dataset.correct;
-
-                        const selected =
-                            button.dataset.answer;
-
-
-                        if (
-                            selected === correct
-                        ) {
-
-                            button.classList.add(
+                        button.classList
+                            .add(
                                 "correct"
                             );
 
-                            card.dataset.done =
-                                "true";
+                        card.dataset.done =
+                            "true";
 
-                            celebrateJabuti();
+                        celebrateJabuti();
 
-                        }
+                    }
 
-                        else {
+                    else {
 
-                            button.classList.add(
+                        button.classList
+                            .add(
                                 "wrong"
                             );
 
 
-                            setTimeout(
-                                () => {
+                        setTimeout(
+                            () => {
 
-                                    button.classList.remove(
+                                button.classList
+                                    .remove(
                                         "wrong"
                                     );
 
-                                },
-                                700
-                            );
-
-                        }
+                            },
+                            650
+                        );
 
                     }
-                );
 
-            }
-        );
+                }
+            );
+
+        }
+    );
 
 
     const memoryButton =
-        rightPage.querySelector(
+        root.querySelector(
             "[data-memory]"
         );
 
 
-    if (memoryButton) {
+    if (
+        memoryButton
+    ) {
 
         memoryButton.addEventListener(
             "click",
             () => {
 
                 const answer =
-                    rightPage.querySelector(
+                    root.querySelector(
                         ".memory-answer"
                     );
 
-                answer.classList.add(
-                    "visible"
-                );
+
+                answer.classList
+                    .add(
+                        "visible"
+                    );
+
 
                 celebrateJabuti();
 
@@ -3731,38 +4770,49 @@ function wireInteractions() {
 
 
 /* =========================================================
-   РЕАКЦІЯ ДЖАБУТІ
+   JABUTI REACTION
 ========================================================= */
 
 function celebrateJabuti() {
 
+    const root =
+        mobileMode
+        ? mobilePage
+        : leftPage;
+
+
     const jabuti =
-        leftPage.querySelector(
+        root.querySelector(
             ".quiz-jabuti"
         );
 
-    if (!jabuti) {
+
+    if (
+        !jabuti
+    ) {
         return;
     }
 
 
-    jabuti.classList.remove(
-        "celebrate"
-    );
+    jabuti.classList
+        .remove(
+            "celebrate"
+        );
 
 
     void jabuti.offsetWidth;
 
 
-    jabuti.classList.add(
-        "celebrate"
-    );
+    jabuti.classList
+        .add(
+            "celebrate"
+        );
 
 }
 
 
 /* =========================================================
-   ВІДКРИТТЯ КНИГИ
+   OPEN
 ========================================================= */
 
 document
@@ -3773,25 +4823,30 @@ document
         "click",
         () => {
 
-            coverFace.classList.add(
-                "opening"
-            );
+            coverFace.classList
+                .add(
+                    "opening"
+                );
 
 
             setTimeout(
                 () => {
 
-                    coverScreen.style.display =
+                    coverScreen.style
+                        .display =
                         "none";
 
-                    readerScreen.classList.add(
-                        "visible"
-                    );
 
-                    renderSpread();
+                    readerScreen.classList
+                        .add(
+                            "visible"
+                        );
+
+
+                    renderCurrent();
 
                 },
-                780
+                800
             );
 
         }
@@ -3799,22 +4854,53 @@ document
 
 
 /* =========================================================
-   КУТИКИ
+   CORNERS
 ========================================================= */
 
-nextCorner.addEventListener(
-    "click",
-    nextSpread
-);
+document
+    .getElementById(
+        "desktopNext"
+    )
+    .addEventListener(
+        "click",
+        desktopNextSpread
+    );
 
-prevCorner.addEventListener(
-    "click",
-    previousSpread
-);
+
+document
+    .getElementById(
+        "desktopPrev"
+    )
+    .addEventListener(
+        "click",
+        desktopPreviousSpread
+    );
+
+
+document
+    .getElementById(
+        "mobileNext"
+    )
+    .addEventListener(
+        "click",
+        () =>
+            mobileTurn(1)
+    );
+
+
+document
+    .getElementById(
+        "mobilePrev"
+    )
+    .addEventListener(
+        "click",
+        () =>
+            mobileTurn(-1)
+    );
 
 
 /* =========================================================
-   КЛАВІАТУРА
+   KEYBOARD
 ========================================================= */
 
 window.addEventListener(
@@ -3822,25 +4908,47 @@ window.addEventListener(
     event => {
 
         if (
-            !readerScreen.classList.contains(
-                "visible"
-            )
+            !readerScreen
+                .classList
+                .contains(
+                    "visible"
+                )
         ) {
             return;
         }
 
 
         if (
-            event.key === "ArrowRight"
+            event.key ===
+            "ArrowRight"
         ) {
-            nextSpread();
+
+            if (
+                mobileMode
+            ) {
+                mobileTurn(1);
+            }
+            else {
+                desktopNextSpread();
+            }
+
         }
 
 
         if (
-            event.key === "ArrowLeft"
+            event.key ===
+            "ArrowLeft"
         ) {
-            previousSpread();
+
+            if (
+                mobileMode
+            ) {
+                mobileTurn(-1);
+            }
+            else {
+                desktopPreviousSpread();
+            }
+
         }
 
     }
@@ -3859,20 +4967,27 @@ document
         "click",
         () => {
 
-            readerScreen.classList.remove(
-                "visible"
-            );
+            readerScreen
+                .classList
+                .remove(
+                    "visible"
+                );
 
-            coverScreen.style.display =
+
+            coverScreen.style
+                .display =
                 "flex";
 
-            coverFace.classList.remove(
-                "opening"
-            );
+
+            coverFace.classList
+                .remove(
+                    "opening"
+                );
+
 
             currentSpread = 0;
 
-            renderSpread();
+            turning = false;
 
         }
     );
@@ -3893,7 +5008,8 @@ document
             try {
 
                 if (
-                    !document.fullscreenElement
+                    !document
+                        .fullscreenElement
                 ) {
 
                     await document
@@ -3911,9 +5027,13 @@ document
 
             }
 
-            catch (error) {
+            catch (
+                error
+            ) {
 
-                console.log(error);
+                console.log(
+                    error
+                );
 
             }
 
@@ -3922,19 +5042,47 @@ document
 
 
 /* =========================================================
-   RESIZE
+   RESIZE / ROTATION
 ========================================================= */
+
+let resizeTimer;
+
 
 window.addEventListener(
     "resize",
     () => {
 
-        requestAnimationFrame(
-            fitCurrentText
+        clearTimeout(
+            resizeTimer
         );
+
+
+        resizeTimer =
+            setTimeout(
+                () => {
+
+                    if (
+                        readerScreen
+                            .classList
+                            .contains(
+                                "visible"
+                            )
+                    ) {
+
+                        renderCurrent();
+
+                    }
+
+                },
+                100
+            );
 
     }
 );
+
+
+/* initial */
+fitBookToViewport();
 
 </script>
 
