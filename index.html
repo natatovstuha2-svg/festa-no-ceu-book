@@ -29,15 +29,6 @@ body{
 }
 button{font:inherit}
 
-/* ========================= LOADER ========================= */
-#loader{
-  position:fixed;inset:0;z-index:3000;
-  display:grid;place-items:center;
-  background:linear-gradient(135deg,#fff,#eefaff);
-  color:#17617d;font-weight:800;font-size:18px;
-}
-#loader.hidden{display:none}
-
 /* ========================= COVER ========================= */
 #coverScreen{
   position:fixed;inset:0;z-index:1000;
@@ -550,12 +541,10 @@ body.mobile-mode .falling-jabuti{width:24%;animation-duration:5.5s}
 
 <body>
 
-<div id="loader">Завантаження книги…</div>
-
 <section id="coverScreen">
   <div class="closed-book">
     <div class="cover-face" id="coverFace">
-      <img id="coverImage" alt="Інтерактивна книга «Свято на небі»" draggable="false">
+      <img id="coverImage" src="book-cover.png" alt="Інтерактивна книга «Свято на небі»" draggable="false">
       <button class="open-corner" id="openBookButton" aria-label="Відкрити книгу"></button>
     </div>
   </div>
@@ -601,39 +590,23 @@ body.mobile-mode .falling-jabuti{width:24%;animation-duration:5.5s}
 
 <script>
 /* =========================================================
-   ASSETS — код сам знаходить .png / .jpg / .jpeg / .webp
+   ASSETS — усі файли в репозиторії мають .png
    ========================================================= */
-const assetBases = [
-  "book-cover",
-  "01","02","03","04","05","06","07","08","09","10","11","12","13",
-  "toucan-invite","return-hide","final-scene",
-  "clouds-01","clouds-02","jabuti","text-page-bg"
-];
+const assets = {
+  "book-cover":"book-cover.png",
+  "01":"01.png","02":"02.png","03":"03.png","04":"04.png","05":"05.png",
+  "06":"06.png","07":"07.png","08":"08.png","09":"09.png","10":"10.png",
+  "11":"11.png","12":"12.png","13":"13.png",
+  "toucan-invite":"toucan-invite.png",
+  "return-hide":"return-hide.png",
+  "final-scene":"final-scene.png",
+  "clouds-01":"clouds-01.png",
+  "clouds-02":"clouds-02.png",
+  "jabuti":"jabuti.png",
+  "text-page-bg":"text-page-bg.png"
+};
 
-const assets = {};
-const extensions = [".png",".jpg",".jpeg",".webp",".PNG",".JPG",".JPEG",".WEBP"];
-
-function tryImage(url){
-  return new Promise(resolve=>{
-    const img = new Image();
-    img.onload=()=>resolve(url);
-    img.onerror=()=>resolve(null);
-    img.src=url;
-  });
-}
-async function resolveAsset(base){
-  for(const ext of extensions){
-    const found = await tryImage(base+ext);
-    if(found) return found;
-  }
-  return base+".png";
-}
-async function preloadAssets(){
-  await Promise.all(assetBases.map(async b=>assets[b]=await resolveAsset(b)));
-  document.documentElement.style.setProperty("--text-bg",`url("${assets["text-page-bg"]}")`);
-  document.getElementById("coverImage").src=assets["book-cover"];
-  document.getElementById("loader").classList.add("hidden");
-}
+document.documentElement.style.setProperty("--text-bg",'url("text-page-bg.png")');
 
 /* =========================================================
    STORY
@@ -1271,4 +1244,15 @@ let resizeTimer;
 window.addEventListener("resize",()=>{
   clearTimeout(resizeTimer);
   resizeTimer=setTimeout(()=>{
-   
+    if(!readerScreen.classList.contains("visible"))return;
+    detectMode();
+    if(mobileMode)renderMobile();
+    else initDesktop(currentSpread);
+  },220);
+});
+
+detectMode();
+updateCounter();
+</script>
+</body>
+</html>
