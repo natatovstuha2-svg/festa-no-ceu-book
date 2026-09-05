@@ -6,61 +6,43 @@
 
 <title>Свято на небі — інтерактивна книга</title>
 
-<!-- Бібліотека справжнього гортання сторінок -->
-<script src="https://unpkg.com/page-flip/dist/js/page-flip.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.js"></script>
 
 <style>
-/* =========================================================
-   ОСНОВА
-========================================================= */
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 html,
 body {
-  margin: 0;
-  width: 100%;
-  min-height: 100%;
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
 }
 
 body {
-  font-family: "Segoe UI", Arial, sans-serif;
-  color: #17384d;
+    font-family: Arial, "Segoe UI", sans-serif;
+    color: #173b50;
+    overflow-x: hidden;
 
-  background:
-    radial-gradient(circle at 12% 20%, rgba(90, 201, 255, .19), transparent 28%),
-    radial-gradient(circle at 88% 80%, rgba(84, 193, 159, .15), transparent 30%),
-    linear-gradient(135deg, #ffffff 0%, #e8f7ff 48%, #f9fdff 100%);
-
-  overflow-x: hidden;
-}
-
-
-/* легкі декоративні плями по краях */
-body::before,
-body::after {
-  content: "";
-  position: fixed;
-  z-index: -1;
-  width: 420px;
-  height: 420px;
-  border-radius: 50%;
-  filter: blur(45px);
-  opacity: .22;
-}
-
-body::before {
-  left: -180px;
-  top: -130px;
-  background: #54c58d;
-}
-
-body::after {
-  right: -180px;
-  bottom: -130px;
-  background: #4dc6ff;
+    background:
+        radial-gradient(
+            circle at 10% 20%,
+            rgba(104, 222, 202, .22),
+            transparent 26%
+        ),
+        radial-gradient(
+            circle at 91% 82%,
+            rgba(87, 196, 245, .21),
+            transparent 27%
+        ),
+        linear-gradient(
+            135deg,
+            #ffffff 0%,
+            #edfaff 48%,
+            #f9feff 100%
+        );
 }
 
 
@@ -69,166 +51,411 @@ body::after {
 ========================================================= */
 
 #coverScreen {
-  min-height: 100vh;
+    min-height: 100vh;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  padding: 24px;
+    padding: 24px;
 
-  perspective: 1800px;
-}
-
-.cover-book {
-  position: relative;
-
-  width: min(92vw, 1420px);
-  aspect-ratio: 16 / 9;
-
-  border-radius: 8px 18px 18px 8px;
-
-  box-shadow:
-    0 28px 60px rgba(22, 72, 81, .25),
-    0 8px 18px rgba(22, 72, 81, .16);
-
-  transform-origin: left center;
-
-  transition:
-    transform 1s cubic-bezier(.7,.02,.23,1),
-    opacity .55s ease;
-
-  overflow: hidden;
-}
-
-.cover-book.opening {
-  transform:
-    rotateY(-78deg)
-    translateX(-6%);
-
-  opacity: 0;
-}
-
-.cover-book img {
-  width: 100%;
-  height: 100%;
-
-  display: block;
-  object-fit: cover;
-
-  user-select: none;
+    perspective: 1800px;
 }
 
 
-/* кутик відкривання */
+.cover-volume {
+    position: relative;
+
+    width: min(92vw, 1450px);
+    aspect-ratio: 16 / 9;
+
+    transform-style: preserve-3d;
+
+    filter:
+        drop-shadow(0 28px 32px rgba(35, 75, 75, .24));
+}
+
+
+/* товщина сторінок закритої книги */
+.cover-volume::before {
+    content: "";
+
+    position: absolute;
+
+    left: 3.1%;
+    right: .7%;
+    top: 2.2%;
+    bottom: -13px;
+
+    z-index: -2;
+
+    border-radius: 4px 15px 17px 4px;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            #ffffff 0px,
+            #ffffff 2px,
+            #dce5e8 3px,
+            #ffffff 4px
+        );
+
+    box-shadow:
+        5px 11px 19px rgba(25, 55, 60, .20);
+}
+
+
+/* задня тверда обкладинка */
+.cover-volume::after {
+    content: "";
+
+    position: absolute;
+
+    left: 1%;
+    right: -.4%;
+    top: 1%;
+    bottom: -21px;
+
+    z-index: -3;
+
+    border-radius: 5px 17px 20px 5px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #0b553e,
+            #12674e 38%,
+            #084631
+        );
+
+    border:
+        2px solid rgba(217, 170, 56, .72);
+}
+
+
+#coverBook {
+    position: absolute;
+    inset: 0;
+
+    overflow: hidden;
+
+    border-radius: 5px 17px 17px 5px;
+
+    transform-origin: left center;
+
+    transition:
+        transform 1.05s cubic-bezier(.67,.02,.22,1),
+        opacity .62s ease;
+}
+
+
+#coverBook.opening {
+    transform:
+        rotateY(-93deg)
+        translateX(-4%);
+
+    opacity: .12;
+}
+
+
+#coverBook img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+    object-fit: cover;
+
+    user-select: none;
+}
+
+
+/* кутик обкладинки */
 .cover-corner {
-  position: absolute;
+    position: absolute;
 
-  right: 0;
-  bottom: 0;
+    right: 0;
+    bottom: 0;
 
-  width: 95px;
-  height: 95px;
+    width: 110px;
+    height: 110px;
 
-  cursor: pointer;
+    cursor: pointer;
+    z-index: 20;
 
-  background:
-    linear-gradient(
-      135deg,
-      transparent 49%,
-      rgba(255,255,255,.88) 50%
-    );
-
-  filter:
-    drop-shadow(-5px -5px 8px rgba(0,0,0,.10));
-
-  transition:
-    transform .25s ease;
+    filter:
+        drop-shadow(-4px -4px 8px rgba(0,0,0,.10));
 }
 
-.cover-corner:hover {
-  transform: scale(1.08);
+
+.cover-corner::before {
+    content: "";
+
+    position: absolute;
+
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            135deg,
+            transparent 48%,
+            rgba(255,255,255,.96) 50%,
+            rgba(238,247,249,.97) 100%
+        );
+
+    clip-path:
+        polygon(100% 0, 100% 100%, 0 100%);
+
+    transition: transform .25s ease;
 }
+
+
+.cover-corner:hover::before {
+    transform: translate(-5px, -5px);
+}
+
 
 .cover-corner::after {
-  content: "›";
+    content: "відкрити";
 
-  position: absolute;
+    position: absolute;
 
-  right: 20px;
-  bottom: 12px;
+    right: 10px;
+    bottom: 13px;
 
-  color: #8c6928;
+    transform: rotate(-45deg);
 
-  font-size: 38px;
-  font-weight: 300;
+    color: #7d6426;
 
-  transform: rotate(-45deg);
+    font-size: 12px;
+    font-weight: 700;
 }
 
 
 /* =========================================================
-   ЕКРАН КНИГИ
+   ЧИТАЧ
 ========================================================= */
 
 #readerScreen {
-  display: none;
+    display: none;
 
-  min-height: 100vh;
+    min-height: 100vh;
 
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
-  padding: 22px 16px;
+    padding: 20px 14px 16px;
 }
+
 
 #readerScreen.visible {
-  display: flex;
+    display: flex;
 }
 
 
-/* вузька дорога рамка всієї відкритої книги */
-.book-stage {
-  position: relative;
+/* =========================================================
+   ОБ'ЄМНА КНИГА
+========================================================= */
 
-  width: min(97vw, 1760px);
+.book-volume {
+    position: relative;
 
-  padding: 9px;
+    width: min(96vw, 1780px);
 
-  border-radius: 18px;
+    padding:
+        10px 13px 25px;
 
-  background:
-    linear-gradient(
-      145deg,
-      #0e654d,
-      #174b3d 46%,
-      #0b6049
-    );
+    border-radius: 20px;
 
-  box-shadow:
-    0 26px 60px rgba(33, 87, 92, .19),
-    0 8px 20px rgba(33, 87, 92, .12),
-    inset 0 0 0 1px rgba(255,220,119,.38);
+    perspective: 2400px;
+
+    filter:
+        drop-shadow(
+            0 32px 34px
+            rgba(35, 78, 78, .20)
+        );
 }
 
-.book-stage::before {
-  content: "";
 
-  position: absolute;
-  inset: 4px;
+/* тверда обкладинка під сторінками */
+.book-volume::before {
+    content: "";
 
-  border-radius: 14px;
+    position: absolute;
 
-  border: 1px solid rgba(244, 202, 90, .62);
+    z-index: -3;
 
-  pointer-events: none;
+    left: 0;
+    right: 0;
+
+    top: 8px;
+    bottom: 0;
+
+    border-radius:
+        19px 19px 23px 23px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #084a36 0%,
+            #10654b 15%,
+            #0a513c 50%,
+            #10654b 85%,
+            #084a36 100%
+        );
+
+    border:
+        2px solid
+        rgba(213, 168, 51, .82);
+
+    box-shadow:
+        inset 0 0 0 2px
+        rgba(247, 210, 102, .20);
+}
+
+
+/* нижня товщина блоку сторінок */
+.book-volume::after {
+    content: "";
+
+    position: absolute;
+
+    z-index: -2;
+
+    left: 17px;
+    right: 17px;
+
+    bottom: 11px;
+
+    height: 23px;
+
+    border-radius:
+        0 0 14px 14px;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            #ffffff 0px,
+            #ffffff 2px,
+            #d8e2e5 3px,
+            #ffffff 5px
+        );
+
+    box-shadow:
+        0 9px 16px
+        rgba(25, 58, 62, .16);
+}
+
+
+/* бокові пачки сторінок */
+.paper-edge-left,
+.paper-edge-right {
+    position: absolute;
+
+    z-index: -1;
+
+    top: 18px;
+    bottom: 27px;
+
+    width: 17px;
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #ffffff 0px,
+            #ffffff 2px,
+            #d6e0e3 3px,
+            #ffffff 5px
+        );
+
+    box-shadow:
+        0 4px 8px
+        rgba(0,0,0,.08);
+
+    pointer-events: none;
+}
+
+
+.paper-edge-left {
+    left: 12px;
+
+    border-radius:
+        12px 0 0 12px;
+}
+
+
+.paper-edge-right {
+    right: 12px;
+
+    border-radius:
+        0 12px 12px 0;
+}
+
+
+/* внутрішній книжковий жолобок */
+.gutter {
+    position: absolute;
+
+    z-index: 100;
+
+    left: 50%;
+
+    top: 17px;
+    bottom: 34px;
+
+    width: 52px;
+
+    transform:
+        translateX(-50%);
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(20,42,48,.07) 18%,
+            rgba(14,30,35,.18) 42%,
+            rgba(255,255,255,.42) 50%,
+            rgba(14,30,35,.17) 58%,
+            rgba(20,42,48,.07) 82%,
+            transparent 100%
+        );
+
+    filter:
+        blur(.2px);
+}
+
+
+/* тонке золоте обрамлення */
+.gold-line {
+    position: absolute;
+
+    z-index: 90;
+
+    inset:
+        7px 9px 21px;
+
+    border-radius: 12px;
+
+    border:
+        1px solid
+        rgba(232, 190, 76, .58);
+
+    pointer-events: none;
 }
 
 
 /* контейнер бібліотеки */
 #book {
-  margin: 0 auto;
+    position: relative;
+
+    width: 100%;
+    height: 100%;
 }
 
 
@@ -237,100 +464,114 @@ body::after {
 ========================================================= */
 
 .page {
-  position: relative;
+    position: relative;
 
-  background: white;
+    overflow: hidden;
 
-  overflow: hidden;
+    background: #ffffff;
 
-  border-radius: 3px;
-
-  box-shadow:
-    inset 0 0 0 1px rgba(66, 91, 92, .06);
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(37, 73, 80, .05);
 }
 
 
-/* =========================================================
-   ІЛЮСТРАЦІЯ
-========================================================= */
-
+/* ліва сюжетна сторінка */
 .scene-page {
-  background: #dff6ff;
+    background: #ffffff;
+
+    box-shadow:
+        inset -16px 0 24px
+        rgba(26, 53, 58, .10);
 }
 
-.scene-page img.scene {
-  position: absolute;
 
-  inset: 0;
+.scene-page .scene {
+    position: absolute;
 
-  width: 100%;
-  height: 100%;
+    inset: 0;
 
-  object-fit: cover;
+    width: 100%;
+    height: 100%;
 
-  display: block;
+    display: block;
+
+    object-fit: cover;
+
+    user-select: none;
+}
+
+
+/* права текстова сторінка */
+.text-page,
+.question-page {
+    background:
+        url("text-page-bg.png")
+        center / cover no-repeat;
+
+    box-shadow:
+        inset 16px 0 24px
+        rgba(26, 53, 58, .09);
 }
 
 
 /* =========================================================
-   ТЕКСТОВА СТОРІНКА
+   ТЕКСТ КАЗКИ
 ========================================================= */
-
-.text-page {
-  background:
-    url("text-page-bg.png")
-    center / cover no-repeat;
-}
 
 .text-wrap {
-  position: absolute;
+    position: absolute;
 
-  left: 7.7%;
-  right: 7.7%;
-  top: 9%;
-  bottom: 9%;
+    left: 7.8%;
+    right: 7.8%;
 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+    top: 8.5%;
+    bottom: 8.5%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
 }
+
 
 .story-text {
-  margin: 0;
+    margin: 0;
 
-  font-family:
-    "Segoe UI",
-    Arial,
-    sans-serif;
+    font-family:
+        Arial,
+        "Segoe UI",
+        sans-serif;
 
-  font-size:
-    clamp(17px, 1.25vw, 25px);
+    font-size:
+        24px;
 
-  line-height: 1.48;
+    line-height: 1.46;
 
-  font-weight: 480;
+    font-weight: 400;
 
-  color: #17384d;
+    color: #183e54;
 
-  text-align: left;
-
-  text-wrap: pretty;
+    text-align: left;
 }
+
 
 .story-text p {
-  margin: 0 0 .72em;
+    margin:
+        0 0 .72em;
 }
+
 
 .story-text strong {
-  font-weight: 750;
-  color: #084f72;
+    color: #075276;
+    font-weight: 700;
 }
 
 
-/* репліки */
 .dialogue {
-  color: #074f73;
-  font-weight: 650;
+    color: #075276;
+    font-weight: 650;
 }
 
 
@@ -339,207 +580,233 @@ body::after {
 ========================================================= */
 
 .cloud-layer {
-  position: absolute;
+    position: absolute;
 
-  inset: 0;
+    inset: 0;
 
-  overflow: hidden;
+    z-index: 10;
 
-  pointer-events: none;
+    overflow: hidden;
 
-  z-index: 5;
+    pointer-events: none;
 }
+
 
 .cloud {
-  position: absolute;
+    position: absolute;
 
-  height: auto;
+    height: auto;
 
-  pointer-events: none;
+    pointer-events: none;
 
-  filter:
-    drop-shadow(0 5px 8px rgba(255,255,255,.20));
+    filter:
+        drop-shadow(
+            0 4px 8px
+            rgba(255,255,255,.25)
+        );
 }
 
-.cloud-a {
-  width: 66%;
 
-  top: 4%;
-  left: -68%;
+.cloud-one {
+    width: 64%;
 
-  opacity: .74;
+    top: 8%;
+    left: -70%;
 
-  animation:
-    cloudMoveRight 16s linear infinite;
+    opacity: .71;
+
+    animation:
+        cloudRight
+        17s linear infinite;
 }
 
-.cloud-b {
-  width: 48%;
 
-  top: 53%;
-  left: -55%;
+.cloud-two {
+    width: 47%;
 
-  opacity: .50;
+    top: 55%;
+    left: -58%;
 
-  animation:
-    cloudMoveRight 27s linear infinite;
+    opacity: .48;
 
-  animation-delay: -10s;
+    animation:
+        cloudRight
+        28s linear infinite;
+
+    animation-delay: -9s;
 }
 
-.cloud-layer.reverse .cloud-a {
-  left: auto;
-  right: -68%;
 
-  animation-name:
-    cloudMoveLeft;
+.cloud-layer.reverse .cloud-one {
+    left: auto;
+    right: -70%;
+
+    animation-name:
+        cloudLeft;
 }
 
-.cloud-layer.reverse .cloud-b {
-  left: auto;
-  right: -55%;
 
-  animation-name:
-    cloudMoveLeft;
+.cloud-layer.reverse .cloud-two {
+    left: auto;
+    right: -58%;
+
+    animation-name:
+        cloudLeft;
 }
 
-@keyframes cloudMoveRight {
-  from {
-    transform: translateX(0);
-  }
 
-  to {
-    transform: translateX(255%);
-  }
+@keyframes cloudRight {
+    from {
+        transform:
+            translateX(0);
+    }
+
+    to {
+        transform:
+            translateX(270%);
+    }
 }
 
-@keyframes cloudMoveLeft {
-  from {
-    transform: translateX(0);
-  }
 
-  to {
-    transform: translateX(-255%);
-  }
+@keyframes cloudLeft {
+    from {
+        transform:
+            translateX(0);
+    }
+
+    to {
+        transform:
+            translateX(-270%);
+    }
 }
 
 
 /* =========================================================
-   АНІМОВАНИЙ ДЖАБУТІ
+   ДЖАБУТІ НА ПІДЛОЖЦІ
 ========================================================= */
 
-.jabuti-stage {
-  position: relative;
+.jabuti-page {
+    position: relative;
 
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 
-  overflow: hidden;
+    overflow: hidden;
 
-  background:
-    radial-gradient(circle at 50% 34%, rgba(255,255,255,.92), transparent 27%),
-    linear-gradient(180deg, #72caf5 0%, #dff6ff 63%, #b8e994 100%);
+    background:
+        url("text-page-bg.png")
+        center / cover no-repeat;
 }
 
-.jabuti-stage::before {
-  content: "";
 
-  position: absolute;
+/* трохи затемнюємо сам низ,
+   щоб персонаж мав опору */
+.jabuti-page::after {
+    content: "";
 
-  left: -5%;
-  right: -5%;
-  bottom: -10%;
+    position: absolute;
 
-  height: 38%;
+    left: 8%;
+    right: 8%;
+    bottom: 2%;
 
-  background:
-    radial-gradient(ellipse at center, #68b95c 0%, #398d4a 58%, #26713e 100%);
+    height: 17%;
 
-  border-radius: 50%;
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            rgba(28, 119, 82, .17),
+            transparent 68%
+        );
+
+    filter: blur(8px);
 }
 
-.jabuti-floating {
-  position: absolute;
 
-  left: 50%;
-  bottom: 7%;
+.jabuti-character {
+    position: absolute;
 
-  width: 56%;
+    z-index: 4;
 
-  transform:
-    translateX(-50%);
+    left: 50%;
+    bottom: 4%;
 
-  animation:
-    jabutiFloat 2.9s ease-in-out infinite;
-}
+    width: 53%;
 
-.jabuti-floating img {
-  width: 100%;
-  display: block;
-
-  filter:
-    drop-shadow(0 16px 16px rgba(0,0,0,.18));
-
-  animation:
-    jabutiTilt 3.8s ease-in-out infinite;
-}
-
-@keyframes jabutiFloat {
-
-  0%,
-  100% {
     transform:
-      translateX(-50%)
-      translateY(0);
-  }
+        translateX(-50%);
 
-  50% {
-    transform:
-      translateX(-50%)
-      translateY(-12px);
-  }
-}
+    transform-origin:
+        center bottom;
 
-@keyframes jabutiTilt {
+    animation:
+        jabutiIdle
+        3.2s ease-in-out infinite;
 
-  0%,
-  100% {
-    transform: rotate(-1deg);
-  }
-
-  50% {
-    transform: rotate(2deg);
-  }
+    filter:
+        drop-shadow(
+            0 17px 15px
+            rgba(31, 63, 59, .19)
+        );
 }
 
 
-/* при правильній відповіді */
-.jabuti-correct {
-  animation:
-    jabutiCelebrate .62s ease;
+@keyframes jabutiIdle {
+
+    0%,
+    100% {
+        transform:
+            translateX(-50%)
+            translateY(0)
+            rotate(-1deg);
+    }
+
+    50% {
+        transform:
+            translateX(-50%)
+            translateY(-11px)
+            rotate(1.5deg);
+    }
 }
+
+
+.jabuti-character.celebrate {
+    animation:
+        jabutiCelebrate
+        .65s ease;
+}
+
 
 @keyframes jabutiCelebrate {
 
-  0% {
-    transform: scale(1);
-  }
+    0% {
+        transform:
+            translateX(-50%)
+            scale(1);
+    }
 
-  35% {
-    transform:
-      scale(1.10)
-      rotate(-4deg);
-  }
+    35% {
+        transform:
+            translateX(-50%)
+            translateY(-18px)
+            rotate(-4deg)
+            scale(1.07);
+    }
 
-  70% {
-    transform:
-      scale(1.07)
-      rotate(4deg);
-  }
+    70% {
+        transform:
+            translateX(-50%)
+            rotate(4deg)
+            scale(1.05);
+    }
 
-  100% {
-    transform: scale(1);
-  }
+    100% {
+        transform:
+            translateX(-50%)
+            scale(1);
+    }
 }
 
 
@@ -547,48 +814,54 @@ body::after {
    ПИТАННЯ
 ========================================================= */
 
-.question-page {
-  background:
-    url("text-page-bg.png")
-    center / cover no-repeat;
-}
-
 .question-wrap {
-  position: absolute;
+    position: absolute;
 
-  inset: 7%;
+    inset: 7.5%;
 
-  overflow-y: auto;
-
-  padding-right: 8px;
+    overflow-y: auto;
 }
 
-.question-head {
-  margin:
-    0 0 18px;
 
-  color: #075477;
+.question-heading {
+    margin:
+        0 0 20px;
 
-  font-size:
-    clamp(22px, 1.7vw, 34px);
+    font-family:
+        Arial,
+        "Segoe UI",
+        sans-serif;
 
-  font-weight: 800;
+    font-size: 30px;
+
+    line-height: 1.16;
+
+    color: #075276;
+
+    font-weight: 750;
 }
+
 
 .question-list {
-  margin: 0;
-  padding-left: 1.25em;
+    margin: 0;
 
-  font-size:
-    clamp(16px, 1.1vw, 22px);
+    padding-left: 1.25em;
 
-  line-height: 1.5;
+    font-family:
+        Arial,
+        "Segoe UI",
+        sans-serif;
 
-  color: #17384d;
+    font-size: 21px;
+
+    line-height: 1.48;
+
+    color: #183e54;
 }
 
+
 .question-list li {
-  margin-bottom: .72em;
+    margin-bottom: .8em;
 }
 
 
@@ -596,228 +869,354 @@ body::after {
    ТЕСТ УВАЖНОСТІ
 ========================================================= */
 
+.quiz-item {
+    margin-bottom: 18px;
+
+    padding-bottom: 15px;
+
+    border-bottom:
+        1px solid
+        rgba(20, 105, 137, .13);
+}
+
+
+.quiz-item:last-of-type {
+    border-bottom: none;
+}
+
+
 .quiz-question {
-  margin-bottom: 20px;
+    margin:
+        0 0 9px;
 
-  padding-bottom: 17px;
+    color: #173f56;
 
-  border-bottom:
-    1px solid rgba(34,102,126,.13);
+    font-size: 18px;
+
+    line-height: 1.35;
+
+    font-weight: 700;
 }
 
-.quiz-question:last-child {
-  border-bottom: 0;
-}
-
-.quiz-title {
-  margin:
-    0 0 9px;
-
-  font-size:
-    clamp(15px, 1vw, 20px);
-
-  line-height: 1.38;
-
-  font-weight: 700;
-
-  color: #16445c;
-}
 
 .answers {
-  display: flex;
-  flex-wrap: wrap;
+    display: flex;
 
-  gap: 8px;
+    flex-wrap: wrap;
+
+    gap: 8px;
 }
+
 
 .answer {
-  border:
-    1px solid rgba(9,101,139,.22);
+    border:
+        1px solid
+        rgba(10, 95, 132, .22);
 
-  background:
-    rgba(255,255,255,.87);
+    border-radius: 999px;
 
-  color: #14516d;
+    background:
+        rgba(255,255,255,.93);
 
-  padding:
-    7px 12px;
+    color: #0d5572;
 
-  border-radius: 999px;
+    padding:
+        7px 13px;
 
-  cursor: pointer;
+    cursor: pointer;
 
-  font-size:
-    clamp(13px, .9vw, 17px);
+    font-size: 15px;
 
-  transition:
-    .2s ease;
+    transition:
+        transform .16s ease,
+        background .16s ease;
 }
+
 
 .answer:hover {
-  transform: translateY(-1px);
+    transform:
+        translateY(-1px);
 
-  background:
-    #ffffff;
+    background: #ffffff;
 }
+
 
 .answer.correct {
-  background: #d8f5df;
-  border-color: #65b67c;
-  color: #23683a;
+    background: #d9f4df;
+
+    border-color: #68b97d;
+
+    color: #216439;
 }
+
 
 .answer.wrong {
-  background: #ffe4e4;
-  border-color: #df8585;
-  color: #963f3f;
+    background: #ffe3e3;
+
+    border-color: #db7d7d;
+
+    color: #944040;
 }
 
 
-/* повідомлення Джабуті */
-.jabuti-message {
-  margin-top: 16px;
+.final-memory {
+    margin-top: 20px;
 
-  padding:
-    12px 16px;
+    padding:
+        15px 17px;
 
-  border-radius: 16px;
+    border-radius: 17px;
 
-  background:
-    rgba(255,255,255,.87);
+    background:
+        rgba(255,255,255,.86);
 
-  border:
-    1px solid rgba(18,109,145,.18);
+    border:
+        1px solid
+        rgba(10, 95, 132, .17);
 
-  color: #075477;
+    color: #075276;
 
-  font-size:
-    clamp(14px, 1vw, 18px);
+    font-size: 17px;
 
-  line-height: 1.4;
+    line-height: 1.42;
 
-  font-weight: 650;
-
-  opacity: 0;
-
-  transform:
-    translateY(8px);
-
-  transition:
-    .28s ease;
+    font-weight: 650;
 }
 
-.jabuti-message.visible {
-  opacity: 1;
 
-  transform:
-    translateY(0);
+.reveal-button {
+    margin-top: 12px;
+
+    border: none;
+
+    border-radius: 999px;
+
+    padding:
+        9px 16px;
+
+    background: #11698c;
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    font-weight: 700;
+}
+
+
+.jabuti-reply {
+    display: none;
+
+    margin-top: 12px;
+
+    font-weight: 700;
+}
+
+
+.jabuti-reply.visible {
+    display: block;
+
+    animation:
+        fadeAnswer
+        .35s ease;
+}
+
+
+@keyframes fadeAnswer {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(7px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
 }
 
 
 /* =========================================================
-   КЕРУВАННЯ ПІД КНИГОЮ
+   КУТИК ДЛЯ ГОРТАННЯ
 ========================================================= */
 
-.book-controls {
-  width: min(95vw, 1730px);
+.corner-cue {
+    position: absolute;
 
-  display: flex;
+    z-index: 150;
 
-  justify-content: space-between;
-  align-items: center;
+    right: 21px;
+    bottom: 33px;
 
-  margin-top: 12px;
+    width: 62px;
+    height: 62px;
+
+    pointer-events: none;
+
+    opacity: .68;
 }
 
-.control-group {
-  display: flex;
-  gap: 10px;
+
+.corner-cue::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    clip-path:
+        polygon(100% 0, 100% 100%, 0 100%);
+
+    background:
+        linear-gradient(
+            135deg,
+            transparent 45%,
+            rgba(255,255,255,.75) 48%,
+            rgba(226, 190, 88, .32) 100%
+        );
+
+    animation:
+        cornerPulse
+        2s ease-in-out infinite;
 }
+
+
+@keyframes cornerPulse {
+
+    0%,
+    100% {
+        transform:
+            translate(0,0);
+    }
+
+    50% {
+        transform:
+            translate(-4px,-4px);
+    }
+}
+
+
+/* =========================================================
+   КЕРУВАННЯ
+========================================================= */
+
+.reader-controls {
+    width: min(94vw, 1720px);
+
+    margin-top: 16px;
+
+    display: grid;
+
+    grid-template-columns:
+        1fr auto 1fr;
+
+    align-items: center;
+}
+
+
+.controls-left {
+    justify-self: start;
+}
+
+
+.controls-right {
+    justify-self: end;
+}
+
 
 .round-button {
-  width: 46px;
-  height: 46px;
+    width: 46px;
+    height: 46px;
 
-  display: grid;
-  place-items: center;
+    display: grid;
+    place-items: center;
 
-  border-radius: 50%;
+    border-radius: 50%;
 
-  border:
-    1px solid rgba(81,128,137,.18);
+    border:
+        1px solid
+        rgba(25, 102, 128, .16);
 
-  background:
-    rgba(255,255,255,.92);
+    background:
+        rgba(255,255,255,.94);
 
-  color: #176481;
+    color: #145e7c;
 
-  cursor: pointer;
+    cursor: pointer;
 
-  box-shadow:
-    0 6px 15px rgba(53,109,118,.13);
+    box-shadow:
+        0 7px 18px
+        rgba(32, 91, 104, .12);
 
-  transition:
-    transform .18s ease;
+    transition:
+        transform .17s ease;
 }
+
 
 .round-button:hover {
-  transform: scale(1.07);
+    transform:
+        scale(1.06);
 }
+
 
 .round-button svg {
-  width: 22px;
-  height: 22px;
+    width: 22px;
+    height: 22px;
 
-  fill: none;
+    fill: none;
 
-  stroke: currentColor;
+    stroke: currentColor;
 
-  stroke-width: 2.2;
+    stroke-width: 2.2;
 
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.book-counter {
-  min-width: 84px;
-
-  padding:
-    7px 14px;
-
-  text-align: center;
-
-  border-radius: 999px;
-
-  background:
-    rgba(255,255,255,.88);
-
-  border:
-    1px solid rgba(81,128,137,.14);
-
-  color: #176481;
-
-  font-size: 14px;
-  font-weight: 700;
-
-  box-shadow:
-    0 5px 14px rgba(53,109,118,.10);
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 
-/* =========================================================
-   ПІДКАЗКА КУТИКА
-========================================================= */
+.counter {
+    min-width: 145px;
 
-.corner-hint {
-  margin-top: 12px;
+    padding:
+        8px 16px;
 
-  color: #4d8498;
+    border-radius: 999px;
 
-  font-size: 13px;
+    text-align: center;
 
-  text-align: center;
+    background:
+        rgba(255,255,255,.92);
 
-  opacity: .82;
+    border:
+        1px solid
+        rgba(25, 102, 128, .13);
+
+    color: #17617d;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 6px 15px
+        rgba(32, 91, 104, .09);
+}
+
+
+.flip-hint {
+    margin-top: 10px;
+
+    text-align: center;
+
+    color: #6091a2;
+
+    font-size: 13px;
 }
 
 
@@ -827,61 +1226,79 @@ body::after {
 
 @media (max-width: 760px) {
 
-  #readerScreen {
-    padding:
-      8px 4px 14px;
-  }
+    #readerScreen {
+        padding:
+            6px 3px 14px;
+    }
 
-  .book-stage {
-    width: 99vw;
-    padding: 4px;
-  }
+    .book-volume {
+        width: 99vw;
 
-  .story-text {
-    font-size:
-      clamp(14px, 3.8vw, 19px);
+        padding:
+            5px 6px 14px;
+    }
 
-    line-height: 1.42;
-  }
+    .paper-edge-left,
+    .paper-edge-right,
+    .gutter,
+    .gold-line,
+    .corner-cue {
+        display: none;
+    }
 
-  .text-wrap {
-    left: 7%;
-    right: 7%;
-    top: 7%;
-    bottom: 7%;
-  }
+    .story-text {
+        font-size: 18px;
 
-  .corner-hint {
-    display: none;
-  }
+        line-height: 1.42;
+    }
 
-  .round-button {
-    width: 42px;
-    height: 42px;
-  }
+    .text-wrap {
+        left: 7%;
+        right: 7%;
+
+        top: 7%;
+        bottom: 7%;
+    }
+
+    .question-heading {
+        font-size: 23px;
+    }
+
+    .question-list {
+        font-size: 17px;
+    }
+
+    .flip-hint {
+        display: none;
+    }
 
 }
 
 
-/* доступність */
+/* =========================================================
+   ЗМЕНШЕННЯ АНІМАЦІЇ
+========================================================= */
+
 @media (prefers-reduced-motion: reduce) {
 
-  *,
-  *::before,
-  *::after {
-    animation-duration:
-      .01ms !important;
+    *,
+    *::before,
+    *::after {
+        animation-duration:
+            .01ms !important;
 
-    animation-iteration-count:
-      1 !important;
+        animation-iteration-count:
+            1 !important;
 
-    transition-duration:
-      .01ms !important;
-  }
+        transition-duration:
+            .01ms !important;
+    }
+
 }
 
 </style>
 </head>
+
 
 <body>
 
@@ -892,1214 +1309,1613 @@ body::after {
 
 <section id="coverScreen">
 
-  <div
-    class="cover-book"
-    id="coverBook"
-  >
+    <div class="cover-volume">
 
-    <img
-      src="book-cover.png"
-      alt="Інтерактивна книга «Свято на небі»"
-      draggable="false"
-    >
+        <div id="coverBook">
 
-    <div
-      class="cover-corner"
-      id="coverCorner"
-      title="Відкрити книгу"
-    ></div>
+            <img
+                src="book-cover.png"
+                alt="Інтерактивна книга «Свято на небі»"
+                draggable="false"
+            >
 
-  </div>
+            <div
+                class="cover-corner"
+                id="coverCorner"
+                title="Відкрити книгу"
+            ></div>
+
+        </div>
+
+    </div>
 
 </section>
 
 
 
 <!-- ======================================================
-     ЧИТАННЯ
+     КНИГА
 ====================================================== -->
 
 <section id="readerScreen">
 
-  <div class="book-stage">
+    <div class="book-volume">
 
-    <div id="book">
+        <div class="paper-edge-left"></div>
+        <div class="paper-edge-right"></div>
 
+        <div class="gold-line"></div>
+        <div class="gutter"></div>
 
-      <!-- ==================================================
-           РОЗВОРОТ 01
-      =================================================== -->
-
-      <div class="page scene-page">
-        <img
-          class="scene"
-          src="01.png"
-          alt="Джабуті в тропічному лісі"
-        >
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p>
-              Ця історія сталася дуже давно
-              в одному тропічному лісі.
-            </p>
-
-            <p>
-              Серед густої зелені,
-              величезних дерев і галасливих птахів
-              жив <strong>Джабуті</strong> —
-              веселий, добрий і страшенно допитливий.
-            </p>
-
-            <p>
-              Йому до всього було діло:
-              хто куди летить, що шелестить у траві,
-              звідки взялася нова стежка
-              і чому мавпи з самого ранку
-              так підозріло хихочуть.
-            </p>
-
-          </div>
-        </div>
-      </div>
+        <div class="corner-cue"></div>
 
 
+        <div id="book">
 
-      <!-- ==================================================
-           РОЗВОРОТ 02
-      =================================================== -->
 
-      <div class="page scene-page">
-        <img
-          class="scene"
-          src="02.png"
-          alt=""
-        >
-      </div>
+<!-- ======================================================
+     01
+====================================================== -->
 
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
+<div class="page scene-page">
+
+    <img
+        class="scene"
+        src="01.png"
+        alt=""
+        draggable="false"
+    >
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
 
             <p>
-              Через свою цікавість Джабуті
-              вже не раз потрапляв
-              у різні історії.
+                Ця історія сталася дуже давно
+                в одному тропічному лісі.
             </p>
 
             <p>
-              Але одна пригода була настільки особливою,
-              що про неї в лісі пам’ятали
-              ще дуже довго.
+                Серед густої зелені,
+                величезних дерев і галасливих птахів
+                жив Джабуті — веселий, добрий
+                і страшенно допитливий.
             </p>
 
             <p>
-              Отже, слухайте.
+                Йому до всього було діло:
+                хто куди летить,
+                що шелестить у траві,
+                звідки взялася нова стежка
+                і чому мавпи з самого ранку
+                так підозріло хихочуть.
             </p>
-
-            <p>
-              Стояло спекотне літо.
-              Сонце так припікало,
-              що навіть папуги сперечалися тихіше,
-              а мавпи шукали найгустішу тінь.
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- ==================================================
-           РОЗВОРОТ 03
-      =================================================== -->
-
-      <div class="page scene-page">
-        <img
-          class="scene"
-          src="03.png"
-          alt=""
-        >
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p>
-              І тоді птахи вирішили:
-            </p>
-
-            <p class="dialogue">
-              — А влаштуймо свято!
-            </p>
-
-            <p class="dialogue">
-              — У джунглях? — запитав хтось.
-            </p>
-
-            <p class="dialogue">
-              — Та ні! Там спекотно й гамірно.
-              Полетімо святкувати на небо!
-              Там і прохолодніше, і тихіше,
-              і краєвид чудовий!
-            </p>
-
-            <p>
-              Ідея всім страшенно сподобалася.
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- ==================================================
-           РОЗВОРОТ 04
-      =================================================== -->
-
-      <div class="page scene-page">
-        <img
-          class="scene"
-          src="04.png"
-          alt=""
-        >
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p>
-              Але була одна умова:
-              на свято могли потрапити лише ті,
-              <strong>хто має крила.</strong>
-            </p>
-
-            <p>
-              Сповістити про це мешканців лісу
-              доручили Тукану.
-            </p>
-
-            <p class="dialogue">
-              — Увага! Увага!
-              Велике свято на небі!
-              Запрошуються всі, хто має крила!
-            </p>
-
-            <p>
-              Саме в цей час неподалік
-              кудись поспішав Джабуті.
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- ==================================================
-           РОЗВОРОТ 05
-      =================================================== -->
-
-      <div class="page scene-page">
-        <img
-          class="scene"
-          src="05.png"
-          alt=""
-        >
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p>
-              Почувши лише слова
-              «велике свято»,
-              Джабуті одразу зупинився.
-            </p>
-
-            <p class="dialogue">
-              — Свято?!
-              О! Чудово!
-              Я неодмінно прибуду!
-            </p>
-
-            <p>
-              Тукан уже відлітав,
-              але почув його:
-            </p>
-
-            <p class="dialogue">
-              — Джабуті!
-              Ти не дослухав!
-            </p>
-
-            <p class="dialogue">
-              — Та все я почув!
-              Свято! На небі! Буду!
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- ==================================================
-           РОЗВОРОТ 06
-      =================================================== -->
-
-      <div class="page scene-page">
-
-        <img
-          class="scene"
-          src="06.png"
-          alt=""
-        >
-
-        <div class="cloud-layer">
-
-          <img
-            class="cloud cloud-a"
-            src="clouds-01.png"
-            alt=""
-          >
-
-          <img
-            class="cloud cloud-b"
-            src="clouds-02.png"
-            alt=""
-          >
 
         </div>
-
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p>
-              Тукан махнув крилами
-              й прокричав уже здалеку:
-            </p>
-
-            <p class="dialogue">
-              — Запрошуються ті,
-              хто має кри-и-и-ла-а-а-а!
-            </p>
-
-            <p>
-              Джабуті завмер.
-            </p>
-
-            <p>
-              Подивився на одну лапу.
-              На другу.
-              Озирнувся на панцир.
-              Підняв голову до неба.
-            </p>
-
-            <p class="dialogue">
-              — Крила…
-              От саме крил мені й не вистачає.
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- ==================================================
-           РОЗВОРОТ 07
-      =================================================== -->
-
-      <div class="page scene-page">
-        <img
-          class="scene"
-          src="07.png"
-          alt=""
-        >
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p>
-              На хвилинку Джабуті засмутився.
-              Але тільки на хвилинку.
-            </p>
-
-            <p>
-              Бо якщо він щось задумував,
-              то відмовити його було
-              майже неможливо.
-            </p>
-
-            <p class="dialogue">
-              — Немає крил?
-              Значить, треба придумати
-              щось інше!
-            </p>
-
-            <p>
-              І тут він побачив
-              свого знайомого —
-              грифа Урубу.
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- ==================================================
-           РОЗВОРОТ 08
-      =================================================== -->
-
-      <div class="page scene-page">
-        <img
-          class="scene"
-          src="08.png"
-          alt=""
-        >
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p>
-              Урубу був музикантом
-              і збирався взяти із собою
-              на свято улюблену гітару.
-            </p>
-
-            <p>
-              Джабуті подивився на Урубу.
-            </p>
-
-            <p>
-              Потім — на гітару.
-            </p>
-
-            <p>
-              Потім знову на Урубу.
-            </p>
-
-            <p>
-              А тоді дуже повільно усміхнувся.
-            </p>
-
-            <p class="dialogue">
-              — Здається,
-              я знаю, як потраплю на свято…
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- ==================================================
-           РОЗВОРОТ 09
-      =================================================== -->
-
-      <div class="page scene-page">
-
-        <img
-          class="scene"
-          src="09.png"
-          alt=""
-        >
-
-        <div class="cloud-layer reverse">
-
-          <img
-            class="cloud cloud-a"
-            src="clouds-01.png"
-            alt=""
-          >
-
-          <img
-            class="cloud cloud-b"
-            src="clouds-02.png"
-            alt=""
-          >
-
-        </div>
-
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p>
-              Того вечора Джабуті
-              завітав до Урубу.
-            </p>
-
-            <p>
-              Вони довго розмовляли.
-              Нарешті Джабуті попрощався
-              і зробив вигляд,
-              ніби пішов додому.
-            </p>
-
-            <p>
-              Щойно Урубу відвернувся,
-              Джабуті тихенько повернувся
-              й заліз усередину гітари.
-            </p>
-
-            <p class="dialogue">
-              — Тіснувато…
-              Але ж не щодня літаєш на небо!
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- ==================================================
-           РОЗВОРОТ 10
-      =================================================== -->
-
-      <div class="page scene-page">
-        <img
-          class="scene"
-          src="10.png"
-          alt=""
-        >
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p>
-              Наступного ранку
-              Урубу взяв гітару.
-            </p>
-
-            <p class="dialogue">
-              — Дивно…
-              Щось вона сьогодні важка.
-            </p>
-
-            <p>
-              Усередині Джабуті завмер
-              і навіть перестав дихати.
-            </p>
-
-            <p>
-              Урубу злетів.
-              Для Джабуті це був
-              перший політ у житті.
-            </p>
-
-            <p>
-              Гітара хиталася,
-              поруч свистів вітер,
-              а Джабуті раз у раз шепотів:
-            </p>
-
-            <p class="dialogue">
-              — І навіщо птахам
-              узагалі подобається літати?
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- ==================================================
-           РОЗВОРОТ 11
-      =================================================== -->
-
-      <div class="page scene-page">
-        <img
-          class="scene"
-          src="11.png"
-          alt=""
-        >
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p>
-              Нарешті Урубу дістався до неба.
-            </p>
-
-            <p>
-              Всюди лунала музика,
-              сяяли вогні,
-              стояли столи з фруктами,
-              а птахи співали й танцювали
-              серед хмар.
-            </p>
-
-            <p>
-              Урубу поставив гітару осторонь.
-            </p>
-
-            <p>
-              Джабуті обережно визирнув,
-              дочекався слушної миті
-              й швиденько вибрався назовні.
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- ==================================================
-           РОЗВОРОТ 12
-      =================================================== -->
-
-      <div class="page scene-page">
-        <img
-          class="scene"
-          src="12.png"
-          alt=""
-        >
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p>
-              За кілька хвилин
-              хтось із птахів побачив його.
-            </p>
-
-            <p class="dialogue">
-              — Джабуті?!
-            </p>
-
-            <p class="dialogue">
-              — Як?!
-            </p>
-
-            <p class="dialogue">
-              — Ти ж не вмієш літати!
-            </p>
-
-            <p>
-              Джабуті лише загадково посміхався.
-            </p>
-
-            <p class="dialogue">
-              — У кожного є
-              свої маленькі секрети.
-            </p>
-
-            <p>
-              І пішов веселитися.
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- ==================================================
-           РОЗВОРОТ 13
-      =================================================== -->
-
-      <div class="page scene-page">
-        <img
-          class="scene"
-          src="13.png"
-          alt=""
-        >
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p>
-              Джабуті танцював,
-              сміявся, слухав музику
-              й куштував усе,
-              до чого міг дотягнутися.
-            </p>
-
-            <p>
-              Та свято добігало кінця.
-            </p>
-
-            <p>
-              Джабуті швидко пригадав,
-              що назад йому теж
-              якось треба потрапити.
-            </p>
-
-            <p>
-              Тож він знову нишком
-              заліз у гітару Урубу.
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- ==================================================
-           ДОДАТКОВИЙ ТЕКСТ:
-           повернення, падіння, фінал
-      =================================================== -->
-
-      <div class="page scene-page">
-        <div class="jabuti-stage">
-
-          <div class="jabuti-floating">
-            <img
-              src="jabuti.png"
-              alt="Джабуті"
-            >
-          </div>
-
-        </div>
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p>
-              Дорога назад була довгою.
-              Джабуті сидів тихо-тихо.
-            </p>
-
-            <p>
-              Але раптом у нього
-              засвербіло під панциром.
-            </p>
-
-            <p>
-              Він заворушився.
-            </p>
-
-            <p class="dialogue">
-              — Що це там? —
-              здивувався Урубу.
-            </p>
-
-            <p>
-              Він зазирнув усередину
-              й побачив Джабуті.
-            </p>
-
-            <p class="dialogue">
-              — А-а-а!
-              То ось як ти потрапив на свято!
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <div class="page scene-page">
-        <div class="jabuti-stage">
-
-          <div class="jabuti-floating">
-            <img
-              src="jabuti.png"
-              alt="Джабуті"
-            >
-          </div>
-
-        </div>
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p>
-              Розсерджений Урубу
-              перевернув гітару
-              отвором донизу.
-            </p>
-
-            <p class="dialogue">
-              — Урубу, зачекай!
-              Давай усе обговори-и-и-и-мо!
-            </p>
-
-            <p>
-              Але було пізно.
-            </p>
-
-            <p>
-              Джабуті випав.
-            </p>
-
-            <p>
-              Він летів униз
-              і бачив, як земля
-              стає дедалі ближчою.
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <div class="page scene-page">
-        <div class="jabuti-stage">
-
-          <div class="jabuti-floating">
-            <img
-              src="jabuti.png"
-              alt="Джабуті"
-            >
-          </div>
-
-        </div>
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p class="dialogue">
-              — Тільки б урятуватися!
-              Тільки б урятуватися!
-            </p>
-
-            <p class="dialogue">
-              — Якщо врятуюся —
-              більше ніколи нічого
-              такого не вигадуватиму!
-            </p>
-
-            <p class="dialogue">
-              — Ніколи!
-              Чуєте?!
-              Ні-ко-ли!
-            </p>
-
-            <p>
-              І тут —
-              <strong>БУМ!</strong>
-            </p>
-
-            <p>
-              Джабуті впав просто на каміння.
-              Від сильного удару його панцир
-              розколовся на багато шматочків.
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <div class="page scene-page">
-        <div class="jabuti-stage">
-
-          <div class="jabuti-floating">
-            <img
-              src="jabuti.png"
-              alt="Джабуті"
-            >
-          </div>
-
-        </div>
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p>
-              На щастя,
-              Джабуті залишився живий.
-            </p>
-
-            <p>
-              Невдовзі його знайшли друзі.
-              Вони обережно зібрали
-              всі шматочки панцира
-              й склали їх докупи.
-            </p>
-
-            <p>
-              Минув час.
-              Джабуті одужав.
-            </p>
-
-            <p>
-              Тільки його панцир відтоді
-              виглядав інакше —
-              ніби був складений
-              із багатьох окремих частинок.
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <div class="page scene-page">
-        <div class="jabuti-stage">
-
-          <div class="jabuti-floating">
-            <img
-              src="jabuti.png"
-              alt="Джабуті"
-            >
-          </div>
-
-        </div>
-      </div>
-
-      <div class="page text-page">
-        <div class="text-wrap">
-          <div class="story-text">
-
-            <p>
-              Кажуть, саме тому
-              панцир Джабуті й сьогодні
-              має такий незвичайний
-              мозаїчний візерунок.
-            </p>
-
-            <p>
-              А щодо його обіцянки
-              більше нічого не вигадувати…
-            </p>
-
-            <p>
-              Ну…
-            </p>
-
-            <p>
-              Той, хто хоч трохи знає Джабуті,
-              розуміє:
-              <strong>ця обіцянка довго
-              не протрималася.</strong>
-            </p>
-
-            <p>
-              Бо якщо поруч живе
-              допитливий Джабуті,
-              нова пригода —
-              лише питання часу.
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- ==================================================
-           УСВІДОМЛЕННЯ ПРОЧИТАНОГО
-      =================================================== -->
-
-      <div class="page scene-page">
-
-        <div class="jabuti-stage">
-
-          <div class="jabuti-floating">
-            <img
-              src="jabuti.png"
-              alt="Джабуті"
-            >
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="page question-page">
-
-        <div class="question-wrap">
-
-          <h2 class="question-head">
-            Поміркуй після читання
-          </h2>
-
-          <ol class="question-list">
-
-            <li>
-              Чому Джабуті так хотів
-              потрапити на свято,
-              хоча не мав крил?
-            </li>
-
-            <li>
-              Який план він придумав?
-              Чому цей план був ризикованим?
-            </li>
-
-            <li>
-              Яким був Джабуті:
-              сміливим, хитрим чи необачним?
-              Можна обрати кілька відповідей.
-              Поясни свою думку.
-            </li>
-
-            <li>
-              Що стало наслідком
-              його витівки?
-            </li>
-
-            <li>
-              Чи повірив ти Джабуті,
-              коли під час падіння
-              він обіцяв більше
-              нічого не вигадувати?
-              Чому?
-            </li>
-
-          </ol>
-
-        </div>
-
-      </div>
-
-
-
-      <!-- ==================================================
-           ПЕРЕВІРКА УВАЖНОСТІ
-      =================================================== -->
-
-      <div class="page scene-page">
-
-        <div class="jabuti-stage">
-
-          <div
-            class="jabuti-floating"
-            id="quizJabuti"
-          >
-            <img
-              src="jabuti.png"
-              alt="Джабуті"
-            >
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="page question-page">
-
-        <div class="question-wrap">
-
-          <h2 class="question-head">
-            Джабуті перевіряє твою уважність
-          </h2>
-
-
-          <div
-            class="quiz-question"
-            data-correct="Тукан"
-          >
-
-            <p class="quiz-title">
-              1. Хто повідомляв мешканців
-              лісу про свято?
-            </p>
-
-            <div class="answers">
-              <button class="answer">Урубу</button>
-              <button class="answer">Тукан</button>
-              <button class="answer">Мавпа</button>
-            </div>
-
-          </div>
-
-
-
-          <div
-            class="quiz-question"
-            data-correct="На небі"
-          >
-
-            <p class="quiz-title">
-              2. Де мало відбутися свято?
-            </p>
-
-            <div class="answers">
-              <button class="answer">У джунглях</button>
-              <button class="answer">На небі</button>
-              <button class="answer">Біля річки</button>
-            </div>
-
-          </div>
-
-
-
-          <div
-            class="quiz-question"
-            data-correct="Гітару"
-          >
-
-            <p class="quiz-title">
-              3. Що Урубу взяв із собою?
-            </p>
-
-            <div class="answers">
-              <button class="answer">Гітару</button>
-              <button class="answer">Барабан</button>
-              <button class="answer">Кошик</button>
-            </div>
-
-          </div>
-
-
-
-          <div
-            class="quiz-question"
-            data-correct="У гітарі"
-          >
-
-            <p class="quiz-title">
-              4. Де сховався Джабуті?
-            </p>
-
-            <div class="answers">
-              <button class="answer">У дуплі</button>
-              <button class="answer">Під крилом Урубу</button>
-              <button class="answer">У гітарі</button>
-            </div>
-
-          </div>
-
-
-
-          <div
-            class="quiz-question"
-            data-correct="Він заворушився"
-          >
-
-            <p class="quiz-title">
-              5. Що видало Джабуті
-              дорогою назад?
-            </p>
-
-            <div class="answers">
-              <button class="answer">Він засміявся</button>
-              <button class="answer">Він заворушився</button>
-              <button class="answer">Він заспівав</button>
-            </div>
-
-          </div>
-
-
-          <div
-            class="jabuti-message"
-            id="jabutiMessage"
-          >
-            — Е-е-е… Ну, з обіцянками
-            в мене іноді складно.
-            До наступної пригоди, друже!
-          </div>
-
-        </div>
-
-      </div>
-
 
     </div>
 
-  </div>
+</div>
 
 
+<!-- ======================================================
+     02
+====================================================== -->
 
-  <!-- ======================================================
-       КНОПКИ
-  ======================================================= -->
+<div class="page scene-page">
 
-  <div class="book-controls">
+    <img
+        class="scene"
+        src="02.png"
+        alt=""
+        draggable="false"
+    >
 
-    <div class="control-group">
+</div>
 
-      <button
-        class="round-button"
-        id="homeButton"
-        aria-label="Обкладинка"
-        title="До обкладинки"
-      >
 
-        <svg viewBox="0 0 24 24">
-          <path d="M3 11.5L12 4l9 7.5"/>
-          <path d="M5.5 10v10h13V10"/>
-        </svg>
+<div class="page text-page">
 
-      </button>
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                Через свою цікавість Джабуті
+                вже не раз потрапляв
+                у різні історії.
+            </p>
+
+            <p>
+                Але одна пригода була настільки особливою,
+                що про неї в лісі пам’ятали
+                ще дуже довго.
+            </p>
+
+            <p>
+                Отже, слухайте.
+            </p>
+
+            <p>
+                Стояло спекотне літо.
+                Сонце так припікало,
+                що навіть папуги сперечалися тихіше,
+                а мавпи шукали найгустішу тінь.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     03
+====================================================== -->
+
+<div class="page scene-page">
+
+    <img
+        class="scene"
+        src="03.png"
+        alt=""
+        draggable="false"
+    >
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                І тоді птахи вирішили:
+            </p>
+
+            <p class="dialogue">
+                — А влаштуймо свято!
+            </p>
+
+            <p class="dialogue">
+                — У джунглях? — запитав хтось.
+            </p>
+
+            <p class="dialogue">
+                — Та ні! Там спекотно й гамірно.
+                Полетімо святкувати на небо!
+                Там і прохолодніше, і тихіше,
+                і краєвид чудовий!
+            </p>
+
+            <p>
+                Ідея всім страшенно сподобалася.
+            </p>
+
+            <p>
+                Але була одна умова:
+                на свято могли потрапити лише ті,
+                хто має крила.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     04
+====================================================== -->
+
+<div class="page scene-page">
+
+    <img
+        class="scene"
+        src="04.png"
+        alt=""
+        draggable="false"
+    >
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                Сповістити про це мешканців лісу
+                доручили Тукану.
+            </p>
+
+            <p>
+                Він літав над деревами
+                й голосно вигукував:
+            </p>
+
+            <p class="dialogue">
+                — Увага! Увага!
+                Велике свято на небі!
+                Запрошуються всі, хто має крила!
+            </p>
+
+            <p>
+                Саме в цей час неподалік
+                кудись поспішав Джабуті.
+            </p>
+
+            <p>
+                Почувши лише слова
+                «велике свято»,
+                він одразу зупинився.
+            </p>
+
+            <p class="dialogue">
+                — Свято?! О! Чудово!
+                Я неодмінно прибуду!
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     05
+====================================================== -->
+
+<div class="page scene-page">
+
+    <img
+        class="scene"
+        src="05.png"
+        alt=""
+        draggable="false"
+    >
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                Тукан уже відлітав,
+                але почув його й повернув голову:
+            </p>
+
+            <p class="dialogue">
+                — Джабуті! Ти не дослухав!
+            </p>
+
+            <p class="dialogue">
+                — Та все я почув!
+                Свято! На небі! Буду!
+            </p>
+
+            <p>
+                Тукан махнув крилами
+                й прокричав ще раз,
+                уже здалеку:
+            </p>
+
+            <p class="dialogue">
+                — Запрошуються ті,
+                хто має кри-и-и-ла-а-а-а!
+            </p>
+
+            <p>
+                Джабуті завмер.
+            </p>
+
+            <p>
+                Подивився на одну лапу.
+                На другу.
+                Озирнувся на панцир.
+                Підняв голову до неба.
+            </p>
+
+            <p class="dialogue">
+                — Крила…
+                От саме крил мені й не вистачає.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     06
+====================================================== -->
+
+<div class="page scene-page">
+
+    <img
+        class="scene"
+        src="06.png"
+        alt=""
+        draggable="false"
+    >
+
+    <div class="cloud-layer">
+
+        <img
+            src="clouds-01.png"
+            class="cloud cloud-one"
+            alt=""
+        >
+
+        <img
+            src="clouds-02.png"
+            class="cloud cloud-two"
+            alt=""
+        >
+
+    </div>
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                На хвилинку Джабуті засмутився.
+            </p>
+
+            <p>
+                Але тільки на хвилинку.
+            </p>
+
+            <p>
+                Бо якщо він щось задумував,
+                то відмовити його було
+                майже неможливо.
+            </p>
+
+            <p class="dialogue">
+                — Немає крил?
+                Значить, треба придумати
+                щось інше!
+            </p>
+
+            <p>
+                І Джабуті почав міркувати.
+            </p>
+
+            <p>
+                Він думав під деревом.
+                Думав біля річки.
+                Думав дорогою додому.
+                Навіть мало не врізався в пеньок,
+                бо дивився не під ноги,
+                а кудись угору.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     07
+====================================================== -->
+
+<div class="page scene-page">
+
+    <img
+        class="scene"
+        src="07.png"
+        alt=""
+        draggable="false"
+    >
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                І тут він побачив
+                свого знайомого —
+                грифа Урубу.
+            </p>
+
+            <p>
+                Урубу саме готувався до свята.
+                Він був музикантом
+                і збирався взяти із собою
+                улюблену гітару.
+            </p>
+
+            <p>
+                Джабуті подивився на Урубу.
+            </p>
+
+            <p>
+                Потім — на гітару.
+            </p>
+
+            <p>
+                Потім знову на Урубу.
+            </p>
+
+            <p>
+                А тоді дуже повільно усміхнувся.
+            </p>
+
+            <p class="dialogue">
+                — Здається,
+                я знаю, як потраплю на свято…
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     08 — СВЯТО НА НЕБІ
+====================================================== -->
+
+<div class="page scene-page">
+
+    <img
+        class="scene"
+        src="08.png"
+        alt=""
+        draggable="false"
+    >
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                Того вечора Джабуті
+                завітав до Урубу.
+            </p>
+
+            <p>
+                Вони розмовляли про погоду,
+                про музику,
+                про майбутнє свято.
+                Джабуті ставив стільки запитань,
+                що Урубу вже почав позіхати.
+            </p>
+
+            <p>
+                Нарешті Джабуті попрощався:
+            </p>
+
+            <p class="dialogue">
+                — Ну, бувай!
+                Гарно тобі повеселитися!
+            </p>
+
+            <p class="dialogue">
+                — Дякую! — відповів Урубу.
+            </p>
+
+            <p>
+                Джабуті пішов…
+            </p>
+
+            <p>
+                Точніше,
+                зробив вигляд, що пішов.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     09
+====================================================== -->
+
+<div class="page scene-page">
+
+    <img
+        class="scene"
+        src="09.png"
+        alt=""
+        draggable="false"
+    >
+
+    <div class="cloud-layer reverse">
+
+        <img
+            src="clouds-01.png"
+            class="cloud cloud-one"
+            alt=""
+        >
+
+        <img
+            src="clouds-02.png"
+            class="cloud cloud-two"
+            alt=""
+        >
+
+    </div>
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                Щойно Урубу відвернувся,
+                Джабуті тихенько повернувся,
+                підкрався до гітари
+                й заліз усередину.
+            </p>
+
+            <p class="dialogue">
+                — Тіснувато, —
+                прошепотів він. —
+                Але ж не щодня
+                літаєш на небо!
+            </p>
+
+            <p>
+                Наступного ранку
+                Урубу взяв гітару.
+            </p>
+
+            <p class="dialogue">
+                — Дивно…
+                Щось вона сьогодні важка.
+            </p>
+
+            <p>
+                Усередині Джабуті завмер
+                і навіть перестав дихати.
+            </p>
+
+            <p class="dialogue">
+                — Мабуть,
+                від хвилювання перед концертом, —
+                вирішив Урубу.
+            </p>
+
+            <p>
+                І полетів.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     10
+====================================================== -->
+
+<div class="page scene-page">
+
+    <img
+        class="scene"
+        src="10.png"
+        alt=""
+        draggable="false"
+    >
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                Для Джабуті це був
+                перший політ у житті.
+            </p>
+
+            <p>
+                Гітара хиталася.
+            </p>
+
+            <p>
+                Десь поруч свистів вітер.
+            </p>
+
+            <p>
+                Джабуті підстрибував усередині
+                на кожному різкому повороті.
+            </p>
+
+            <p class="dialogue">
+                — Ой!
+            </p>
+
+            <p>
+                Потім ще раз:
+            </p>
+
+            <p class="dialogue">
+                — Ой!
+            </p>
+
+            <p>
+                А після третього поштовху
+                прошепотів:
+            </p>
+
+            <p class="dialogue">
+                — І навіщо птахам
+                узагалі подобається літати?
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     11
+====================================================== -->
+
+<div class="page scene-page">
+
+    <img
+        class="scene"
+        src="11.png"
+        alt=""
+        draggable="false"
+    >
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                Нарешті Урубу дістався до неба.
+            </p>
+
+            <p>
+                Всюди лунала музика,
+                сяяли вогні,
+                стояли столи з фруктами,
+                а птахи співали й танцювали
+                серед хмар.
+            </p>
+
+            <p>
+                Урубу поставив гітару осторонь
+                і пішов вітатися з друзями.
+            </p>
+
+            <p>
+                Джабуті обережно визирнув.
+            </p>
+
+            <p>
+                Нікого.
+            </p>
+
+            <p>
+                Ще трохи висунув голову.
+            </p>
+
+            <p>
+                Ніхто не дивиться.
+            </p>
+
+            <p>
+                І тоді він швиденько
+                вибрався назовні.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     12
+====================================================== -->
+
+<div class="page scene-page">
+
+    <img
+        class="scene"
+        src="12.png"
+        alt=""
+        draggable="false"
+    >
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                За кілька хвилин
+                хтось із птахів побачив його.
+            </p>
+
+            <p class="dialogue">
+                — Джабуті?!
+            </p>
+
+            <p>
+                Усі озирнулися.
+            </p>
+
+            <p class="dialogue">
+                — Як?!
+            </p>
+
+            <p class="dialogue">
+                — Звідки?!
+            </p>
+
+            <p class="dialogue">
+                — Ти ж не вмієш літати!
+            </p>
+
+            <p>
+                Джабуті лише загадково посміхався.
+            </p>
+
+            <p class="dialogue">
+                — У кожного є
+                свої маленькі секрети.
+            </p>
+
+            <p>
+                І пішов веселитися.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     13
+====================================================== -->
+
+<div class="page scene-page">
+
+    <img
+        class="scene"
+        src="13.png"
+        alt=""
+        draggable="false"
+    >
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                Він танцював,
+                сміявся,
+                слухав музику
+                й куштував усе,
+                до чого міг дотягнутися.
+            </p>
+
+            <p>
+                Джабуті був неймовірно
+                задоволений собою.
+            </p>
+
+            <p>
+                Йому таки вдалося!
+            </p>
+
+            <p>
+                Та свято добігало кінця.
+            </p>
+
+            <p>
+                Птахи почали
+                збиратися додому.
+            </p>
+
+            <p>
+                Джабуті швидко пригадав,
+                що назад йому теж
+                якось треба потрапити.
+            </p>
+
+            <p>
+                Тож він знову нишком
+                заліз у гітару Урубу.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     14 — FINAL SCENE
+====================================================== -->
+
+<div class="page scene-page">
+
+    <img
+        class="scene"
+        src="final-scene.png"
+        alt=""
+        draggable="false"
+    >
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                Урубу злетів.
+            </p>
+
+            <p>
+                Дорога назад була довгою.
+            </p>
+
+            <p>
+                Джабуті сидів тихо-тихо.
+            </p>
+
+            <p>
+                Але раптом у нього
+                засвербіло під панциром.
+            </p>
+
+            <p>
+                Він потерся об стінку гітари.
+            </p>
+
+            <p>
+                <strong>Шурх!</strong>
+            </p>
+
+            <p>
+                Урубу насторожився.
+            </p>
+
+            <p>
+                Джабуті завмер.
+            </p>
+
+            <p>
+                Через хвилину
+                гітару хитнуло.
+            </p>
+
+            <p>
+                <strong>Бум!</strong>
+            </p>
+
+            <p class="dialogue">
+                — Що це там? —
+                здивувався Урубу.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     ПРОДОВЖЕННЯ ФІНАЛУ —
+     ТЕКСТОВІ РОЗВОРОТИ З ДЖАБУТІ НА ПІДЛОЖЦІ
+====================================================== -->
+
+<div class="page">
+
+    <div class="jabuti-page">
+
+        <img
+            src="jabuti.png"
+            class="jabuti-character"
+            alt="Джабуті"
+        >
+
+    </div>
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                Він зазирнув усередину.
+            </p>
+
+            <p>
+                І побачив Джабуті.
+            </p>
+
+            <p class="dialogue">
+                — А-а-а!
+                То ось як ти потрапив на свято!
+            </p>
+
+            <p>
+                Урубу дуже розсердився.
+            </p>
+
+            <p class="dialogue">
+                — Ти мене обдурив!
+            </p>
+
+            <p>
+                Він перевернув гітару
+                отвором донизу.
+            </p>
+
+            <p class="dialogue">
+                — Урубу, зачекай!
+                Давай усе обговори-и-и-и-мо!
+            </p>
+
+            <p>
+                Але було пізно.
+            </p>
+
+            <p>
+                Джабуті випав.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="page">
+
+    <div class="jabuti-page">
+
+        <img
+            src="jabuti.png"
+            class="jabuti-character"
+            alt="Джабуті"
+        >
+
+    </div>
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                Він летів униз
+                і бачив,
+                як земля стає дедалі ближчою.
+            </p>
+
+            <p class="dialogue">
+                — Тільки б урятуватися!
+                Тільки б урятуватися!
+            </p>
+
+            <p>
+                Ще нижче.
+            </p>
+
+            <p class="dialogue">
+                — Якщо врятуюся —
+                більше ніколи нічого
+                такого не вигадуватиму!
+            </p>
+
+            <p>
+                Ще нижче.
+            </p>
+
+            <p class="dialogue">
+                — Ніколи!
+                Чуєте?!
+                Ні-ко-ли!
+            </p>
+
+            <p>
+                І тут —
+            </p>
+
+            <p>
+                <strong>БУМ!</strong>
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="page">
+
+    <div class="jabuti-page">
+
+        <img
+            src="jabuti.png"
+            class="jabuti-character"
+            alt="Джабуті"
+        >
+
+    </div>
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                Джабуті впав
+                просто на каміння.
+            </p>
+
+            <p>
+                Удар був таким сильним,
+                що його міцний панцир
+                розколовся
+                на багато шматочків.
+            </p>
+
+            <p>
+                На щастя,
+                сам Джабуті
+                залишився живий.
+            </p>
+
+            <p>
+                Невдовзі його знайшли друзі.
+            </p>
+
+            <p>
+                Вони обережно зібрали
+                всі шматочки панцира
+                й склали їх докупи.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="page">
+
+    <div class="jabuti-page">
+
+        <img
+            src="jabuti.png"
+            class="jabuti-character"
+            alt="Джабуті"
+        >
+
+    </div>
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                Минув час.
+            </p>
+
+            <p>
+                Джабуті одужав.
+            </p>
+
+            <p>
+                Він знову гуляв лісом,
+                сміявся,
+                ставив безліч запитань
+                і цікавився всім на світі.
+            </p>
+
+            <p>
+                Тільки його панцир відтоді
+                виглядав інакше —
+                ніби був складений
+                із багатьох окремих частинок.
+            </p>
+
+            <p>
+                Кажуть,
+                саме тому панцир Джабуті
+                й сьогодні має
+                такий незвичайний візерунок.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="page">
+
+    <div class="jabuti-page">
+
+        <img
+            src="jabuti.png"
+            class="jabuti-character"
+            alt="Джабуті"
+        >
+
+    </div>
+
+</div>
+
+
+<div class="page text-page">
+
+    <div class="text-wrap">
+
+        <div class="story-text">
+
+            <p>
+                А щодо його обіцянки
+                більше нічого не вигадувати…
+            </p>
+
+            <p>
+                Ну…
+            </p>
+
+            <p>
+                Той, хто хоч трохи знає Джабуті,
+                розуміє:
+                ця обіцянка
+                довго не протрималася.
+            </p>
+
+            <p>
+                Бо якщо поруч живе
+                допитливий Джабуті,
+                нова пригода —
+                лише питання часу.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     ПІСЛЯ ЧИТАННЯ
+====================================================== -->
+
+<div class="page">
+
+    <div class="jabuti-page">
+
+        <img
+            src="jabuti.png"
+            class="jabuti-character"
+            alt="Джабуті"
+        >
+
+    </div>
+
+</div>
+
+
+<div class="page question-page">
+
+    <div class="question-wrap">
+
+        <h2 class="question-heading">
+            Поміркуй після читання
+        </h2>
+
+        <ol class="question-list">
+
+            <li>
+                Чому Джабуті так хотів
+                потрапити на свято,
+                хоча не мав крил?
+            </li>
+
+            <li>
+                Який план він придумав?
+                Чому цей план був ризикованим?
+            </li>
+
+            <li>
+                Як ти вважаєш:
+                Джабуті був сміливим,
+                хитрим чи необачним?
+                Можна обрати кілька відповідей
+                і коротко пояснити.
+            </li>
+
+            <li>
+                Що стало наслідком
+                його витівки?
+            </li>
+
+            <li>
+                Чи повірив ти Джабуті,
+                коли він під час падіння
+                обіцяв більше нічого
+                не вигадувати?
+                Чому?
+            </li>
+
+        </ol>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     ПЕРЕВІРКА УВАЖНОСТІ
+====================================================== -->
+
+<div class="page">
+
+    <div class="jabuti-page">
+
+        <img
+            src="jabuti.png"
+            class="jabuti-character"
+            id="quizJabuti"
+            alt="Джабуті"
+        >
+
+    </div>
+
+</div>
+
+
+<div class="page question-page">
+
+    <div class="question-wrap">
+
+        <h2 class="question-heading">
+            Джабуті перевіряє твою уважність
+        </h2>
+
+
+        <div class="quiz-item" data-answer="Тукан">
+
+            <p class="quiz-question">
+                1. Хто повідомляв
+                мешканців лісу про свято?
+            </p>
+
+            <div class="answers">
+
+                <button class="answer">
+                    Урубу
+                </button>
+
+                <button class="answer">
+                    Тукан
+                </button>
+
+                <button class="answer">
+                    Мавпа
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="quiz-item" data-answer="На небі">
+
+            <p class="quiz-question">
+                2. Де мало відбутися свято?
+            </p>
+
+            <div class="answers">
+
+                <button class="answer">
+                    У джунглях
+                </button>
+
+                <button class="answer">
+                    На небі
+                </button>
+
+                <button class="answer">
+                    Біля річки
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="quiz-item" data-answer="Гітару">
+
+            <p class="quiz-question">
+                3. Що Урубу взяв
+                із собою на свято?
+            </p>
+
+            <div class="answers">
+
+                <button class="answer">
+                    Барабан
+                </button>
+
+                <button class="answer">
+                    Гітару
+                </button>
+
+                <button class="answer">
+                    Кошик із фруктами
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="quiz-item" data-answer="У гітарі">
+
+            <p class="quiz-question">
+                4. Де сховався Джабуті?
+            </p>
+
+            <div class="answers">
+
+                <button class="answer">
+                    У дуплі
+                </button>
+
+                <button class="answer">
+                    У гітарі
+                </button>
+
+                <button class="answer">
+                    Під крилом Урубу
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="quiz-item" data-answer="Він заворушився">
+
+            <p class="quiz-question">
+                5. Що видало Джабуті
+                дорогою назад?
+            </p>
+
+            <div class="answers">
+
+                <button class="answer">
+                    Він заспівав
+                </button>
+
+                <button class="answer">
+                    Він заворушився
+                </button>
+
+                <button class="answer">
+                    Він засміявся
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="final-memory">
+
+            <div>
+                — І найскладніше!
+                Що я обіцяв,
+                коли падав?
+            </div>
+
+            <button
+                class="reveal-button"
+                id="revealAnswer"
+            >
+                Перевірити
+            </button>
+
+            <div
+                class="jabuti-reply"
+                id="jabutiReply"
+            >
+                — «Якщо врятуюся —
+                більше ніколи нічого
+                такого не вигадуватиму!»
+                <br><br>
+                Е-е-е…
+                Ну, з обіцянками
+                в мене іноді складно.
+                <br>
+                До наступної пригоди, друже!
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+        </div>
+
+    </div>
+
+
+<!-- ======================================================
+     КЕРУВАННЯ
+====================================================== -->
+
+<div class="reader-controls">
+
+    <div class="controls-left">
+
+        <button
+            class="round-button"
+            id="homeButton"
+            title="До обкладинки"
+        >
+
+            <svg viewBox="0 0 24 24">
+
+                <path
+                    d="M3 11.5L12 4l9 7.5"
+                />
+
+                <path
+                    d="M5.5 10v10h13V10"
+                />
+
+            </svg>
+
+        </button>
 
     </div>
 
 
     <div
-      class="book-counter"
-      id="bookCounter"
+        class="counter"
+        id="counter"
     >
-      1
+        1 / 14
     </div>
 
 
-    <div class="control-group">
+    <div class="controls-right">
 
-      <button
-        class="round-button"
-        id="fullscreenButton"
-        aria-label="Повний екран"
-        title="Повний екран"
-      >
+        <button
+            class="round-button"
+            id="fullscreenButton"
+            title="Повний екран"
+        >
 
-        <svg viewBox="0 0 24 24">
-          <path d="M8 3H3v5"/>
-          <path d="M16 3h5v5"/>
-          <path d="M8 21H3v-5"/>
-          <path d="M16 21h5v-5"/>
-        </svg>
+            <svg viewBox="0 0 24 24">
 
-      </button>
+                <path d="M8 3H3v5"/>
+                <path d="M16 3h5v5"/>
+                <path d="M8 21H3v-5"/>
+                <path d="M16 21h5v-5"/>
+
+            </svg>
+
+        </button>
 
     </div>
 
-  </div>
+</div>
 
 
-  <div class="corner-hint">
-    Перегорни сторінку, потягнувши за її кутик
-  </div>
+<div class="flip-hint">
+    Перегорни сторінку,
+    потягнувши за нижній кутик
+</div>
+
 
 </section>
 
@@ -2112,149 +2928,279 @@ body::after {
 ========================================================= */
 
 const coverScreen =
-  document.getElementById("coverScreen");
+    document.getElementById(
+        "coverScreen"
+    );
 
 const coverBook =
-  document.getElementById("coverBook");
+    document.getElementById(
+        "coverBook"
+    );
 
 const coverCorner =
-  document.getElementById("coverCorner");
+    document.getElementById(
+        "coverCorner"
+    );
 
 const readerScreen =
-  document.getElementById("readerScreen");
+    document.getElementById(
+        "readerScreen"
+    );
+
+
+let pageFlip = null;
 
 
 function openBook() {
 
-  coverBook.classList.add(
-    "opening"
-  );
-
-  setTimeout(() => {
-
-    coverScreen.style.display =
-      "none";
-
-    readerScreen.classList.add(
-      "visible"
+    coverBook.classList.add(
+        "opening"
     );
 
-    pageFlip.update();
 
-  }, 780);
+    setTimeout(() => {
+
+        coverScreen.style.display =
+            "none";
+
+        readerScreen.classList.add(
+            "visible"
+        );
+
+
+        if (!pageFlip) {
+
+            initialiseBook();
+
+        }
+
+        else {
+
+            pageFlip.update();
+
+        }
+
+    }, 760);
 
 }
 
 
 coverCorner.addEventListener(
-  "click",
-  openBook
+    "click",
+    openBook
 );
-
 
 
 /* =========================================================
    PAGE FLIP
 ========================================================= */
 
-const bookElement =
-  document.getElementById("book");
+function initialiseBook() {
+
+    const book =
+        document.getElementById(
+            "book"
+        );
 
 
-const pageFlip =
-  new St.PageFlip(
-    bookElement,
-    {
-      width: 800,
-      height: 450,
+    pageFlip =
+        new St.PageFlip(
+            book,
+            {
+                width: 860,
+                height: 484,
 
-      size: "stretch",
+                size: "stretch",
 
-      minWidth: 300,
-      maxWidth: 900,
+                minWidth: 300,
+                maxWidth: 900,
 
-      minHeight: 169,
-      maxHeight: 506,
+                minHeight: 169,
+                maxHeight: 506,
 
-      maxShadowOpacity: .35,
+                showCover: false,
 
-      showCover: false,
+                usePortrait: true,
 
-      mobileScrollSupport: false,
+                mobileScrollSupport: false,
 
-      usePortrait: true,
+                useMouseEvents: true,
 
-      flippingTime: 900,
+                showPageCorners: true,
 
-      drawShadow: true,
+                disableFlipByClick: false,
 
-      clickEventForward: true
-    }
-  );
+                clickEventForward: true,
+
+                drawShadow: true,
+
+                maxShadowOpacity: .42,
+
+                flippingTime: 1050,
+
+                autoSize: true
+            }
+        );
 
 
-pageFlip.loadFromHTML(
-  document.querySelectorAll(
-    "#book .page"
-  )
-);
+    pageFlip.loadFromHTML(
+        document.querySelectorAll(
+            "#book > .page"
+        )
+    );
+
+
+    pageFlip.on(
+        "flip",
+        event => {
+
+            updateCounter(
+                event.data
+            );
+
+            fitAllText();
+
+        }
+    );
+
+
+    fitAllText();
+
+}
 
 
 /* =========================================================
    ЛІЧИЛЬНИК
 ========================================================= */
 
-const bookCounter =
-  document.getElementById(
-    "bookCounter"
-  );
+const counter =
+    document.getElementById(
+        "counter"
+    );
 
 
-pageFlip.on(
-  "flip",
-  event => {
+function updateCounter(
+    pageIndex
+) {
 
-    const pageNumber =
-      Math.floor(
-        event.data / 2
-      ) + 1;
+    const spread =
+        Math.floor(
+            pageIndex / 2
+        );
 
-    bookCounter.textContent =
-      pageNumber;
 
-  }
-);
+    if (spread <= 13) {
 
+        counter.textContent =
+            `${spread + 1} / 14`;
+
+    }
+
+    else if (spread === 19) {
+
+        counter.textContent =
+            "Після читання";
+
+    }
+
+    else if (spread >= 20) {
+
+        counter.textContent =
+            "Перевірка уважності";
+
+    }
+
+    else {
+
+        counter.textContent =
+            "Фінал";
+
+    }
+
+}
 
 
 /* =========================================================
-   ПОВЕРНЕННЯ ДО ОБКЛАДИНКИ
+   АВТОМАТИЧНЕ ПІДГАНЯННЯ ТЕКСТУ
+========================================================= */
+
+function fitAllText() {
+
+    document
+        .querySelectorAll(
+            ".story-text"
+        )
+        .forEach(
+            text => {
+
+                const holder =
+                    text.parentElement;
+
+
+                let size = 24;
+
+                text.style.fontSize =
+                    size + "px";
+
+
+                while (
+                    text.scrollHeight >
+                    holder.clientHeight
+                    &&
+                    size > 16
+                ) {
+
+                    size -= .5;
+
+                    text.style.fontSize =
+                        size + "px";
+
+                }
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   HOME
 ========================================================= */
 
 document
-  .getElementById(
-    "homeButton"
-  )
-  .addEventListener(
-    "click",
-    () => {
+    .getElementById(
+        "homeButton"
+    )
+    .addEventListener(
+        "click",
+        () => {
 
-      readerScreen.classList.remove(
-        "visible"
-      );
+            readerScreen.classList.remove(
+                "visible"
+            );
 
-      coverScreen.style.display =
-        "flex";
 
-      coverBook.classList.remove(
-        "opening"
-      );
+            coverScreen.style.display =
+                "flex";
 
-      pageFlip.turnToPage(0);
 
-    }
-  );
+            coverBook.classList.remove(
+                "opening"
+            );
 
+
+            if (pageFlip) {
+
+                pageFlip.turnToPage(0);
+
+            }
+
+
+            counter.textContent =
+                "1 / 14";
+
+        }
+    );
 
 
 /* =========================================================
@@ -2262,209 +3208,213 @@ document
 ========================================================= */
 
 document
-  .getElementById(
-    "fullscreenButton"
-  )
-  .addEventListener(
-    "click",
-    async () => {
+    .getElementById(
+        "fullscreenButton"
+    )
+    .addEventListener(
+        "click",
+        async () => {
 
-      try {
-
-        if (
-          !document.fullscreenElement
-        ) {
-
-          await document
-            .documentElement
-            .requestFullscreen();
-
-        }
-
-        else {
-
-          await document
-            .exitFullscreen();
-
-        }
-
-      }
-
-      catch (error) {
-
-        console.log(
-          error
-        );
-
-      }
-
-    }
-  );
-
-
-
-/* =========================================================
-   ТЕСТ
-========================================================= */
-
-let correctAnswers = 0;
-
-const totalQuestions =
-  document.querySelectorAll(
-    ".quiz-question"
-  ).length;
-
-
-document
-  .querySelectorAll(
-    ".quiz-question"
-  )
-  .forEach(
-    question => {
-
-      const correct =
-        question.dataset.correct;
-
-      const buttons =
-        question.querySelectorAll(
-          ".answer"
-        );
-
-
-      buttons.forEach(
-        button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              if (
-                question.dataset.done
-                === "true"
-              ) {
-                return;
-              }
-
-
-              question.dataset.done =
-                "true";
-
-
-              if (
-                button.textContent.trim()
-                === correct
-              ) {
-
-                button.classList.add(
-                  "correct"
-                );
-
-                correctAnswers++;
-
-
-                const jabuti =
-                  document.getElementById(
-                    "quizJabuti"
-                  );
-
-                jabuti.classList.remove(
-                  "jabuti-correct"
-                );
-
-                void jabuti.offsetWidth;
-
-                jabuti.classList.add(
-                  "jabuti-correct"
-                );
-
-              }
-
-              else {
-
-                button.classList.add(
-                  "wrong"
-                );
-
-
-                buttons.forEach(
-                  item => {
-
-                    if (
-                      item.textContent.trim()
-                      === correct
-                    ) {
-
-                      item.classList.add(
-                        "correct"
-                      );
-
-                    }
-
-                  }
-                );
-
-              }
-
-
-              if (
-                document.querySelectorAll(
-                  '.quiz-question[data-done="true"]'
-                ).length
-                === totalQuestions
-              ) {
-
-                const message =
-                  document.getElementById(
-                    "jabutiMessage"
-                  );
-
+            try {
 
                 if (
-                  correctAnswers
-                  === totalQuestions
+                    !document.fullscreenElement
                 ) {
 
-                  message.innerHTML =
-                    "— Ого! Ти читав дуже уважно! А тепер найскладніше: що я обіцяв, коли падав?<br><br>Е-е-е… Ну, з обіцянками в мене іноді складно. До наступної пригоди, друже!";
+                    await document
+                        .documentElement
+                        .requestFullscreen();
 
                 }
 
                 else {
 
-                  message.innerHTML =
-                    `— Маємо ${correctAnswers} правильних відповідей із ${totalQuestions}. Непогано! А тепер пригадай: що я обіцяв, коли падав?<br><br>Е-е-е… Ну, з обіцянками в мене іноді складно. До наступної пригоди, друже!`;
+                    await document
+                        .exitFullscreen();
 
                 }
 
+            }
 
-                message.classList.add(
-                  "visible"
-                );
+            catch (error) {
 
-              }
+                console.log(error);
 
             }
-          );
 
         }
-      );
-
-    }
-  );
-
+    );
 
 
 /* =========================================================
-   ПЕРЕРАХУНОК ПРИ ЗМІНІ РОЗМІРУ
+   QUIZ
+========================================================= */
+
+document
+    .querySelectorAll(
+        ".quiz-item"
+    )
+    .forEach(
+        item => {
+
+            const correct =
+                item.dataset.answer;
+
+
+            item
+                .querySelectorAll(
+                    ".answer"
+                )
+                .forEach(
+                    button => {
+
+                        button.addEventListener(
+                            "click",
+                            () => {
+
+                                if (
+                                    item.dataset.done
+                                    === "yes"
+                                ) {
+                                    return;
+                                }
+
+
+                                item.dataset.done =
+                                    "yes";
+
+
+                                const chosen =
+                                    button
+                                        .textContent
+                                        .trim();
+
+
+                                if (
+                                    chosen === correct
+                                ) {
+
+                                    button.classList.add(
+                                        "correct"
+                                    );
+
+
+                                    celebrateJabuti();
+
+                                }
+
+                                else {
+
+                                    button.classList.add(
+                                        "wrong"
+                                    );
+
+
+                                    item
+                                        .querySelectorAll(
+                                            ".answer"
+                                        )
+                                        .forEach(
+                                            answer => {
+
+                                                if (
+                                                    answer
+                                                        .textContent
+                                                        .trim()
+                                                    === correct
+                                                ) {
+
+                                                    answer
+                                                        .classList
+                                                        .add(
+                                                            "correct"
+                                                        );
+
+                                                }
+
+                                            }
+                                        );
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
+
+        }
+    );
+
+
+function celebrateJabuti() {
+
+    const jabuti =
+        document.getElementById(
+            "quizJabuti"
+        );
+
+
+    jabuti.classList.remove(
+        "celebrate"
+    );
+
+
+    void jabuti.offsetWidth;
+
+
+    jabuti.classList.add(
+        "celebrate"
+    );
+
+}
+
+
+/* =========================================================
+   ОСТАННЯ ПЕРЕВІРКА
+========================================================= */
+
+document
+    .getElementById(
+        "revealAnswer"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            document
+                .getElementById(
+                    "jabutiReply"
+                )
+                .classList
+                .add(
+                    "visible"
+                );
+
+
+            celebrateJabuti();
+
+        }
+    );
+
+
+/* =========================================================
+   RESIZE
 ========================================================= */
 
 window.addEventListener(
-  "resize",
-  () => {
+    "resize",
+    () => {
 
-    pageFlip.update();
+        if (pageFlip) {
 
-  }
+            pageFlip.update();
+
+            fitAllText();
+
+        }
+
+    }
 );
 
 </script>
