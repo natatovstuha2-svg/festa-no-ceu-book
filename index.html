@@ -171,15 +171,17 @@ button{font:inherit}
 }
 .text-wrap{
   position:absolute;z-index:5;
-  left:8.2%;right:8.2%;top:7.5%;bottom:7.5%;
+  left:8%;right:8%;top:6.5%;bottom:6.5%;
   display:flex;flex-direction:column;justify-content:center;
 }
 .story-text{
   color:var(--ink);
-  line-height:1.43;
+  font-size:20px !important;
+  line-height:1.38;
   font-weight:430;
+  letter-spacing:0;
 }
-.story-text p{margin:0 0 .62em}
+.story-text p{margin:0 0 .48em}
 .story-text strong,.dialogue{color:var(--deep);font-weight:760}
 
 /* ========================= CLOUDS ========================= */
@@ -479,7 +481,12 @@ body.mobile-mode #mobileShell{display:block}
   background:var(--text-bg) center/cover no-repeat;
   scrollbar-width:thin;
 }
-.mobile-content .story-text{font-size:18px!important;line-height:1.43}
+.mobile-content .story-text{
+  font-size:17px!important;
+  line-height:1.40;
+  letter-spacing:0;
+}
+.mobile-content .story-text p{margin:0 0 .52em}
 .mobile-content .interactive-wrap{position:static;overflow:visible;padding:0}
 .mobile-content .interactive-title{font-size:24px;margin-bottom:16px}
 .mobile-content .task-toggle,.mobile-content .quiz-toggle{font-size:16px;padding:13px 14px}
@@ -881,13 +888,7 @@ function quizHTML(){
 }
 
 function textFont(html){
-  const plain=html.replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
-  const n=plain.length;
-  if(n<180)return 31;
-  if(n<320)return 28;
-  if(n<520)return 24;
-  if(n<720)return 21.5;
-  return 19.5;
+  return 20;
 }
 
 function sceneHTML(spec){
@@ -1235,10 +1236,29 @@ document.getElementById("homeButton").addEventListener("click",()=>{
 
 document.getElementById("fullscreenButton").addEventListener("click",async()=>{
   try{
-    if(!document.fullscreenElement)await document.documentElement.requestFullscreen();
-    else await document.exitFullscreen();
-  }catch(e){}
+    const target = readerScreen;
+    if(!document.fullscreenElement && !document.webkitFullscreenElement){
+      if(target.requestFullscreen) await target.requestFullscreen();
+      else if(target.webkitRequestFullscreen) target.webkitRequestFullscreen();
+    }else{
+      if(document.exitFullscreen) await document.exitFullscreen();
+      else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+    }
+  }catch(e){
+    console.log("Fullscreen is not available in this browser.", e);
+  }
 });
+
+function refreshAfterFullscreen(){
+  setTimeout(()=>{
+    if(!readerScreen.classList.contains("visible")) return;
+    detectMode();
+    if(mobileMode) renderMobile();
+    else initDesktop(currentSpread);
+  },220);
+}
+document.addEventListener("fullscreenchange",refreshAfterFullscreen);
+document.addEventListener("webkitfullscreenchange",refreshAfterFullscreen);
 
 let resizeTimer;
 window.addEventListener("resize",()=>{
