@@ -1,0 +1,2096 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Свято на небі — інтерактивна книга</title>
+
+<style>
+
+/* =========================================================
+   ОСНОВА
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  background:
+    radial-gradient(circle at 50% 20%, #168bd0 0%, #075d91 45%, #023f65 100%);
+  color: #17324a;
+  overflow-x: hidden;
+}
+
+button {
+  font: inherit;
+}
+
+
+/* =========================================================
+   ОБКЛАДИНКА
+========================================================= */
+
+#cover-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 24px;
+  perspective: 1800px;
+}
+
+.cover-wrap {
+  position: relative;
+
+  width: min(
+    92vw,
+    calc(78vh * 16 / 9)
+  );
+
+  aspect-ratio: 16 / 9;
+
+  transform-origin: left center;
+
+  transition:
+    transform 1.15s cubic-bezier(.65,.02,.25,1),
+    opacity .55s ease;
+
+  filter:
+    drop-shadow(0 25px 30px rgba(0,0,0,.30));
+}
+
+.cover-wrap.opening {
+  transform:
+    rotateY(-105deg)
+    translateX(-10%);
+
+  opacity: 0;
+}
+
+.cover-image {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  border-radius:
+    8px 18px 18px 8px;
+
+  cursor: pointer;
+
+  user-select: none;
+}
+
+
+/* КОРІНЕЦЬ */
+
+.book-spine {
+  position: absolute;
+
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 4.2%;
+
+  z-index: 4;
+
+  border-radius:
+    8px 0 0 8px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #063b2b 0%,
+      #126b49 35%,
+      #074630 68%,
+      #022a1d 100%
+    );
+
+  border-right:
+    2px solid rgba(238,194,82,.9);
+
+  box-shadow:
+    inset -8px 0 12px rgba(0,0,0,.28),
+    inset 3px 0 4px rgba(255,255,255,.10),
+    5px 0 9px rgba(0,0,0,.18);
+}
+
+.book-spine::before {
+  content: "";
+
+  position: absolute;
+
+  left: 22%;
+  top: 4%;
+  bottom: 4%;
+
+  width: 2px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      transparent,
+      #f4ce70 8%,
+      #c99226 48%,
+      #ffe59b 92%,
+      transparent
+    );
+}
+
+
+/* кнопка відкривання */
+
+.open-book-btn {
+  margin-top: 22px;
+
+  border: 1px solid rgba(255,255,255,.55);
+
+  background:
+    rgba(255,255,255,.94);
+
+  color: #07567e;
+
+  padding:
+    11px 28px;
+
+  border-radius: 999px;
+
+  cursor: pointer;
+
+  font-size:
+    clamp(16px, 1.4vw, 20px);
+
+  font-weight: 700;
+
+  box-shadow:
+    0 8px 22px rgba(0,0,0,.20);
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+.open-book-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 12px 28px rgba(0,0,0,.25);
+}
+
+
+/* =========================================================
+   КНИГА
+========================================================= */
+
+#book-screen {
+  display: none;
+
+  min-height: 100vh;
+
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  padding:
+    20px 24px 18px;
+}
+
+#book-screen.visible {
+  display: flex;
+}
+
+
+/* увесь розворот */
+
+.book-shell {
+  position: relative;
+
+  width: min(
+    96vw,
+    calc(79vh * 32 / 9)
+  );
+
+  aspect-ratio: 32 / 9;
+
+  filter:
+    drop-shadow(0 22px 26px rgba(0,0,0,.30));
+
+  overflow: hidden;
+
+  border-radius: 13px;
+}
+
+
+/* дві сторінки */
+
+.book-spread {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  background: #ffffff;
+}
+
+
+/* центральний книжковий згин */
+
+.book-spread::after {
+  content: "";
+
+  position: absolute;
+
+  z-index: 20;
+
+  left: 50%;
+  top: 0;
+  bottom: 0;
+
+  width: 32px;
+
+  transform:
+    translateX(-50%);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0,0,0,.09) 29%,
+      rgba(0,0,0,.17) 46%,
+      rgba(255,255,255,.24) 51%,
+      rgba(0,0,0,.10) 59%,
+      transparent 100%
+    );
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   СТОРІНКА ТЕКСТУ
+========================================================= */
+
+.text-page {
+  position: relative;
+
+  overflow: hidden;
+
+  background:
+    url("text-page-bg.png")
+    center / cover no-repeat;
+}
+
+
+/* власне текст */
+
+.story-text {
+  position: absolute;
+
+  left: 8%;
+  right: 9%;
+
+  top: 9%;
+  bottom: 13%;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  padding-right: 3%;
+}
+
+
+/* заголовок */
+
+.story-title {
+  margin:
+    0 0 18px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(24px, 2vw, 40px);
+
+  line-height: 1.08;
+
+  color: #07577f;
+
+  font-weight: 700;
+}
+
+
+/* текст */
+
+.story-body {
+  margin: 0;
+
+  font-size:
+    clamp(17px, 1.34vw, 27px);
+
+  line-height: 1.47;
+
+  color: #17364d;
+
+  font-weight: 500;
+
+  text-wrap: pretty;
+}
+
+.story-body p {
+  margin:
+    0 0 .7em;
+}
+
+
+/* =========================================================
+   СЮЖЕТНА СТОРІНКА
+========================================================= */
+
+.scene-page {
+  position: relative;
+
+  overflow: hidden;
+
+  background: #8ed7ff;
+}
+
+.scene-image {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  user-select: none;
+
+  transform: scale(1.002);
+}
+
+
+/* плавний вхід нового розвороту */
+
+.book-spread.change-next {
+  animation:
+    spreadNext .45s ease;
+}
+
+.book-spread.change-prev {
+  animation:
+    spreadPrev .45s ease;
+}
+
+@keyframes spreadNext {
+
+  from {
+    opacity: .15;
+    transform:
+      translateX(25px);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateX(0);
+  }
+
+}
+
+@keyframes spreadPrev {
+
+  from {
+    opacity: .15;
+    transform:
+      translateX(-25px);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateX(0);
+  }
+
+}
+
+
+/* =========================================================
+   ХМАРИ — СТОРІНКИ ПОЛЬОТУ
+========================================================= */
+
+.cloud-layer {
+  position: absolute;
+
+  inset: 0;
+
+  overflow: hidden;
+
+  pointer-events: none;
+
+  z-index: 5;
+}
+
+.cloud {
+  position: absolute;
+
+  height: auto;
+
+  pointer-events: none;
+
+  opacity: .70;
+
+  filter:
+    drop-shadow(
+      0 5px 8px
+      rgba(255,255,255,.15)
+    );
+}
+
+
+/* ближні */
+
+.cloud-one {
+  width: 67%;
+
+  top: 3%;
+
+  left: -72%;
+
+  animation:
+    clouds-right
+    17s linear infinite;
+}
+
+
+/* дальні */
+
+.cloud-two {
+  width: 48%;
+
+  top: 48%;
+
+  left: -55%;
+
+  opacity: .52;
+
+  animation:
+    clouds-right
+    27s linear infinite;
+
+  animation-delay: -9s;
+}
+
+
+/* рух до правого краю */
+
+@keyframes clouds-right {
+
+  from {
+    transform:
+      translateX(0);
+  }
+
+  to {
+    transform:
+      translateX(255%);
+  }
+
+}
+
+
+/* для повернення — рух у протилежний бік */
+
+.cloud-layer.reverse .cloud-one {
+  left: auto;
+  right: -72%;
+
+  animation-name:
+    clouds-left;
+}
+
+.cloud-layer.reverse .cloud-two {
+  left: auto;
+  right: -55%;
+
+  animation-name:
+    clouds-left;
+}
+
+@keyframes clouds-left {
+
+  from {
+    transform:
+      translateX(0);
+  }
+
+  to {
+    transform:
+      translateX(-255%);
+  }
+
+}
+
+
+/* дуже легкий рух камери на польоті */
+
+.flight-scene {
+  animation:
+    flight-camera
+    10s ease-in-out infinite alternate;
+}
+
+@keyframes flight-camera {
+
+  from {
+    transform:
+      scale(1.035)
+      translateX(-.5%);
+  }
+
+  to {
+    transform:
+      scale(1.07)
+      translateX(.8%);
+  }
+
+}
+
+
+/* падіння */
+
+.fall-scene {
+  animation:
+    fall-camera
+    3.8s ease-in-out infinite alternate;
+}
+
+@keyframes fall-camera {
+
+  from {
+    transform:
+      scale(1.03)
+      translateY(-.5%);
+  }
+
+  to {
+    transform:
+      scale(1.065)
+      translateY(1.2%);
+  }
+
+}
+
+
+/* =========================================================
+   КЕРУВАННЯ
+========================================================= */
+
+.controls {
+  width: min(
+    96vw,
+    calc(79vh * 32 / 9)
+  );
+
+  display: grid;
+
+  grid-template-columns:
+    1fr auto 1fr;
+
+  align-items: center;
+
+  margin-top: 13px;
+}
+
+
+/* кнопки вперед / назад */
+
+.nav-btn,
+.utility-btn {
+  width: 48px;
+  height: 48px;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    1px solid rgba(255,255,255,.45);
+
+  border-radius: 50%;
+
+  background:
+    rgba(255,255,255,.94);
+
+  color: #075e89;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 6px 15px rgba(0,0,0,.20);
+
+  transition:
+    transform .18s ease,
+    opacity .18s ease;
+}
+
+.nav-btn:hover,
+.utility-btn:hover {
+  transform:
+    scale(1.07);
+}
+
+.nav-btn:disabled {
+  opacity: .30;
+
+  cursor:
+    default;
+
+  transform: none;
+}
+
+.nav-btn svg,
+.utility-btn svg {
+  width: 24px;
+  height: 24px;
+
+  fill: none;
+
+  stroke: currentColor;
+
+  stroke-width: 2.3;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* лівий блок */
+
+.control-left {
+  justify-self: start;
+
+  display: flex;
+
+  gap: 10px;
+}
+
+
+/* правий блок */
+
+.control-right {
+  justify-self: end;
+
+  display: flex;
+
+  gap: 10px;
+}
+
+
+/* лічильник */
+
+.page-counter {
+  min-width: 92px;
+
+  padding:
+    7px 15px;
+
+  border-radius: 999px;
+
+  text-align: center;
+
+  color: #fff;
+
+  background:
+    rgba(3,50,78,.62);
+
+  backdrop-filter:
+    blur(7px);
+
+  font-size:
+    15px;
+
+  font-weight: 700;
+
+  letter-spacing: .04em;
+}
+
+
+/* =========================================================
+   ПРОГРЕС
+========================================================= */
+
+.progress-track {
+  position: fixed;
+
+  z-index: 100;
+
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+  height: 4px;
+
+  background:
+    rgba(255,255,255,.18);
+}
+
+.progress-bar {
+  height: 100%;
+
+  width: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ffd34f,
+      #ff9d22
+    );
+
+  transition:
+    width .4s ease;
+}
+
+
+/* =========================================================
+   МОБІЛЬНИЙ РЕЖИМ
+========================================================= */
+
+@media (max-width: 820px) {
+
+  #book-screen {
+    padding:
+      10px 8px 15px;
+  }
+
+  .book-shell {
+
+    width:
+      min(
+        98vw,
+        calc(75vh * 16 / 9)
+      );
+
+    aspect-ratio:
+      16 / 9;
+  }
+
+  .book-spread {
+    display: block;
+  }
+
+  .book-spread::after {
+    display: none;
+  }
+
+  .text-page,
+  .scene-page {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: none;
+  }
+
+  .mobile-visible {
+    display: block;
+  }
+
+  .controls {
+    width: min(
+      98vw,
+      calc(75vh * 16 / 9)
+    );
+  }
+
+  .story-title {
+    font-size:
+      clamp(21px, 5.2vw, 31px);
+
+    margin-bottom: 11px;
+  }
+
+  .story-body {
+    font-size:
+      clamp(15px, 3.7vw, 22px);
+
+    line-height: 1.4;
+  }
+
+  .story-text {
+    left: 8%;
+    right: 8%;
+    top: 7%;
+    bottom: 10%;
+  }
+
+}
+
+
+/* дуже вузькі телефони */
+
+@media (max-width: 520px) {
+
+  .nav-btn,
+  .utility-btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  .page-counter {
+    min-width: 75px;
+
+    padding:
+      6px 10px;
+
+    font-size: 13px;
+  }
+
+}
+
+
+/* вимикаємо рух для тих,
+   кому він заважає */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration:
+      .01ms !important;
+
+    animation-iteration-count:
+      1 !important;
+
+    transition-duration:
+      .01ms !important;
+  }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- ======================================================
+     ОБКЛАДИНКА
+====================================================== -->
+
+<section id="cover-screen">
+
+  <div
+    class="cover-wrap"
+    id="coverWrap"
+  >
+
+    <img
+      src="book-cover.png"
+      alt="Інтерактивна книга «Свято на небі»"
+      class="cover-image"
+      id="coverImage"
+      draggable="false"
+    >
+
+    <div
+      class="book-spine"
+      aria-hidden="true"
+    ></div>
+
+  </div>
+
+
+  <button
+    class="open-book-btn"
+    id="openBookBtn"
+    type="button"
+  >
+    Відкрити книгу
+  </button>
+
+</section>
+
+
+
+<!-- ======================================================
+     КНИГА
+====================================================== -->
+
+<section id="book-screen">
+
+  <div class="book-shell">
+
+    <div
+      class="book-spread"
+      id="bookSpread"
+    >
+
+      <!-- ЛІВА СТОРІНКА -->
+
+      <article
+        class="text-page"
+        id="textPage"
+      >
+
+        <div
+          class="story-text"
+          id="storyText"
+        ></div>
+
+      </article>
+
+
+      <!-- ПРАВА СТОРІНКА -->
+
+      <figure
+        class="scene-page"
+        id="scenePage"
+      >
+
+        <img
+          id="sceneImage"
+          class="scene-image"
+          src="01.png"
+          alt=""
+          draggable="false"
+        >
+
+
+        <!-- ХМАРИ -->
+
+        <div
+          class="cloud-layer"
+          id="cloudLayer"
+          hidden
+        >
+
+          <img
+            src="clouds-01.png"
+            alt=""
+            class="cloud cloud-one"
+            draggable="false"
+          >
+
+          <img
+            src="clouds-02.png"
+            alt=""
+            class="cloud cloud-two"
+            draggable="false"
+          >
+
+        </div>
+
+      </figure>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- КЕРУВАННЯ -->
+
+  <div class="controls">
+
+
+    <div class="control-left">
+
+      <button
+        class="nav-btn"
+        id="prevBtn"
+        type="button"
+        aria-label="Попередня сторінка"
+      >
+
+        <svg viewBox="0 0 24 24">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+
+      </button>
+
+
+      <button
+        class="utility-btn"
+        id="homeBtn"
+        type="button"
+        aria-label="Повернутися до обкладинки"
+      >
+
+        <svg viewBox="0 0 24 24">
+          <path d="M3 11.5L12 4l9 7.5"/>
+          <path d="M5.5 10v10h13V10"/>
+        </svg>
+
+      </button>
+
+    </div>
+
+
+
+    <div
+      class="page-counter"
+      id="pageCounter"
+    >
+      1 / 13
+    </div>
+
+
+
+    <div class="control-right">
+
+
+      <button
+        class="utility-btn"
+        id="fullscreenBtn"
+        type="button"
+        aria-label="Повноекранний режим"
+      >
+
+        <svg viewBox="0 0 24 24">
+          <path d="M8 3H3v5"/>
+          <path d="M16 3h5v5"/>
+          <path d="M8 21H3v-5"/>
+          <path d="M16 21h5v-5"/>
+        </svg>
+
+      </button>
+
+
+      <button
+        class="nav-btn"
+        id="nextBtn"
+        type="button"
+        aria-label="Наступна сторінка"
+      >
+
+        <svg viewBox="0 0 24 24">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+
+      </button>
+
+    </div>
+
+
+  </div>
+
+</section>
+
+
+
+<div
+  class="progress-track"
+  aria-hidden="true"
+>
+  <div
+    class="progress-bar"
+    id="progressBar"
+  ></div>
+</div>
+
+
+
+<script>
+
+/* =========================================================
+   ТЕКСТ КАЗКИ
+========================================================= */
+
+const spreads = [
+
+{
+  image: "01.png",
+
+  title: "Джабуті",
+
+  text: `
+    <p>
+      У далеких джунглях Бразилії жив
+      черепаха на ім’я <strong>Джабуті</strong>.
+      Він був повільним, зате дуже допитливим
+      і винахідливим.
+    </p>
+
+    <p>
+      Джабуті любив слухати пташині розмови
+      й завжди мріяв про незвичайні пригоди.
+    </p>
+  `
+},
+
+
+{
+  image: "02.png",
+
+  title: "Неймовірна новина",
+
+  text: `
+    <p>
+      Одного ранку лісом розлетілася новина:
+      <strong>на небі готують велике свято!</strong>
+    </p>
+
+    <p>
+      Птахи раділи й готувалися до польоту.
+      Адже потрапити туди могли лише ті,
+      хто мав крила.
+    </p>
+  `
+},
+
+
+{
+  image: "03.png",
+
+  title: "Мрія без крил",
+
+  text: `
+    <p>
+      Джабуті довго дивився услід птахам.
+      Йому теж страшенно хотілося побачити
+      небесне свято.
+    </p>
+
+    <p>
+      — Я теж туди потраплю! — вирішив він.
+    </p>
+
+    <p>
+      Птахи лише сміялися:
+      у черепахи немає крил.
+      Але Джабуті не збирався відмовлятися
+      від своєї мрії.
+    </p>
+  `
+},
+
+
+{
+  image: "04.png",
+
+  title: "Урубу-музикант",
+
+  text: `
+    <p>
+      Серед знайомих Джабуті був
+      <strong>гриф Урубу</strong>.
+      Він чудово грав на гітарі
+      й саме збирався взяти її
+      на небесне свято.
+    </p>
+
+    <p>
+      Джабуті побачив інструмент —
+      і в його голові раптом народився
+      хитрий план.
+    </p>
+  `
+},
+
+
+{
+  image: "05.png",
+
+  title: "Хитрий план",
+
+  text: `
+    <p>
+      Джабуті завітав до Урубу,
+      довго розмовляв із ним,
+      а потім удав, ніби пішов додому.
+    </p>
+
+    <p>
+      Коли господар відвернувся,
+      черепаха тихенько заліз
+      <strong>усередину гітари</strong>
+      й сховався там.
+    </p>
+  `
+},
+
+
+{
+  image: "06.png",
+
+  title: "Перший політ",
+
+  text: `
+    <p>
+      Урубу взяв гітару й полетів.
+      Інструмент здався йому трохи важчим,
+      ніж звичайно, але він поспішав
+      і не став нічого перевіряти.
+    </p>
+
+    <p>
+      А всередині сидів Джабуті.
+      Уперше в житті він
+      <strong>летів високо над землею</strong>.
+    </p>
+  `,
+
+  clouds: true,
+  cloudDirection: "right",
+  motion: "flight"
+},
+
+
+{
+  image: "07.png",
+
+  title: "Свято на небі",
+
+  text: `
+    <p>
+      Урубу прилетів на небо
+      й поставив гітару осторонь.
+    </p>
+
+    <p>
+      Джабуті дочекався,
+      поки ніхто не дивився,
+      тихенько вибрався зі своєї схованки
+      й з’явився серед гостей.
+    </p>
+
+    <p>
+      Птахи не могли повірити своїм очам:
+      як черепаха без крил опинилася на небі?
+    </p>
+  `
+},
+
+
+{
+  image: "08.png",
+
+  title: "Таємничий гість",
+
+  text: `
+    <p>
+      Джабуті лише загадково усміхався
+      і не розповідав свого секрету.
+    </p>
+
+    <p>
+      Він слухав музику,
+      ласував фруктами,
+      веселився разом з усіма
+      й був страшенно задоволений:
+      йому таки вдалося здійснити задумане.
+    </p>
+  `
+},
+
+
+{
+  image: "09.png",
+
+  title: "Дорога додому",
+
+  text: `
+    <p>
+      Коли свято закінчилося,
+      Джабуті знову нишком
+      заліз усередину гітари.
+    </p>
+
+    <p>
+      Урубу взяв інструмент
+      і полетів назад до землі.
+    </p>
+
+    <p>
+      Та під час польоту
+      Джабуті необережно заворушився...
+    </p>
+  `,
+
+  clouds: true,
+  cloudDirection: "left",
+  motion: "flight"
+},
+
+
+{
+  image: "10.png",
+
+  title: "Таємницю розкрито",
+
+  text: `
+    <p>
+      Урубу почув дивний звук,
+      заглянув у гітару —
+      і нарешті зрозумів,
+      як Джабуті потрапив на свято.
+    </p>
+
+    <p>
+      Розсерджений обманом,
+      він перевернув інструмент
+      отвором донизу.
+    </p>
+
+    <p>
+      Джабуті випав
+      і полетів просто до землі.
+    </p>
+  `,
+
+  motion: "fall"
+},
+
+
+{
+  image: "11.png",
+
+  title: "Падіння",
+
+  text: `
+    <p>
+      Джабуті падав із величезної висоти.
+      Він бачив, як земля стає
+      дедалі ближчою.
+    </p>
+
+    <p>
+      Черепаха впала просто на каміння.
+      Від сильного удару її панцир
+      <strong>розколовся на багато шматочків</strong>.
+    </p>
+
+    <p>
+      На щастя, сам Джабуті залишився живий.
+    </p>
+  `
+},
+
+
+{
+  image: "12.png",
+
+  title: "Друзі поруч",
+
+  text: `
+    <p>
+      Лісові друзі знайшли Джабуті
+      й не залишили його самого.
+    </p>
+
+    <p>
+      Вони зібрали уламки панцира
+      та дуже обережно
+      склали їх докупи.
+    </p>
+
+    <p>
+      Тріщини залишилися,
+      але панцир знову став міцним.
+    </p>
+  `
+},
+
+
+{
+  image: "13.png",
+
+  title: "Новий панцир",
+
+  text: `
+    <p>
+      Джабуті одужав
+      і знову став веселим та допитливим.
+    </p>
+
+    <p>
+      Та відтоді його панцир виглядав так,
+      ніби був складений
+      із багатьох окремих шматочків.
+    </p>
+
+    <p>
+      Так, розповідає бразильська народна казка,
+      на панцирі Джабуті
+      з’явився незвичайний мозаїчний візерунок.
+    </p>
+  `
+}
+
+];
+
+
+
+/* =========================================================
+   ЕЛЕМЕНТИ
+========================================================= */
+
+const coverScreen =
+  document.getElementById("cover-screen");
+
+const coverWrap =
+  document.getElementById("coverWrap");
+
+const coverImage =
+  document.getElementById("coverImage");
+
+const openBookBtn =
+  document.getElementById("openBookBtn");
+
+const bookScreen =
+  document.getElementById("book-screen");
+
+const bookSpread =
+  document.getElementById("bookSpread");
+
+const textPage =
+  document.getElementById("textPage");
+
+const scenePage =
+  document.getElementById("scenePage");
+
+const storyText =
+  document.getElementById("storyText");
+
+const sceneImage =
+  document.getElementById("sceneImage");
+
+const cloudLayer =
+  document.getElementById("cloudLayer");
+
+const prevBtn =
+  document.getElementById("prevBtn");
+
+const nextBtn =
+  document.getElementById("nextBtn");
+
+const homeBtn =
+  document.getElementById("homeBtn");
+
+const fullscreenBtn =
+  document.getElementById("fullscreenBtn");
+
+const pageCounter =
+  document.getElementById("pageCounter");
+
+const progressBar =
+  document.getElementById("progressBar");
+
+
+
+/* =========================================================
+   СТАН КНИГИ
+========================================================= */
+
+let currentSpread = 0;
+
+/* на телефоні:
+   text = текстова сторінка
+   scene = ілюстрація
+*/
+
+let mobileSide = "text";
+
+
+
+function isMobile() {
+
+  return window.matchMedia(
+    "(max-width: 820px)"
+  ).matches;
+
+}
+
+
+
+/* =========================================================
+   ВІДКРИВАННЯ
+========================================================= */
+
+function openBook() {
+
+  coverWrap.classList.add(
+    "opening"
+  );
+
+  openBookBtn.style.opacity = "0";
+
+  setTimeout(() => {
+
+    coverScreen.style.display =
+      "none";
+
+    bookScreen.classList.add(
+      "visible"
+    );
+
+    renderSpread();
+
+  }, 850);
+
+}
+
+
+
+coverImage.addEventListener(
+  "click",
+  openBook
+);
+
+openBookBtn.addEventListener(
+  "click",
+  openBook
+);
+
+
+
+/* =========================================================
+   ПОВЕРНЕННЯ ДО ОБКЛАДИНКИ
+========================================================= */
+
+function goHome() {
+
+  bookScreen.classList.remove(
+    "visible"
+  );
+
+  coverScreen.style.display =
+    "flex";
+
+  coverWrap.classList.remove(
+    "opening"
+  );
+
+  openBookBtn.style.opacity =
+    "1";
+
+  currentSpread = 0;
+
+  mobileSide = "text";
+
+}
+
+
+
+homeBtn.addEventListener(
+  "click",
+  goHome
+);
+
+
+
+/* =========================================================
+   ВІДОБРАЖЕННЯ РОЗВОРОТУ
+========================================================= */
+
+function renderSpread(
+  direction = "next"
+) {
+
+  const spread =
+    spreads[currentSpread];
+
+
+  /* ---------- ТЕКСТ ---------- */
+
+  storyText.innerHTML = `
+
+    <h2 class="story-title">
+      ${spread.title}
+    </h2>
+
+    <div class="story-body">
+      ${spread.text}
+    </div>
+
+  `;
+
+
+  /* ---------- КАРТИНКА ---------- */
+
+  sceneImage.src =
+    spread.image;
+
+  sceneImage.alt =
+    spread.title;
+
+
+  /* прибираємо старі рухи */
+
+  sceneImage.classList.remove(
+    "flight-scene",
+    "fall-scene"
+  );
+
+
+  if (
+    spread.motion === "flight"
+  ) {
+
+    sceneImage.classList.add(
+      "flight-scene"
+    );
+
+  }
+
+
+  if (
+    spread.motion === "fall"
+  ) {
+
+    sceneImage.classList.add(
+      "fall-scene"
+    );
+
+  }
+
+
+  /* ---------- ХМАРИ ---------- */
+
+  if (spread.clouds) {
+
+    cloudLayer.hidden =
+      false;
+
+
+    cloudLayer.classList.toggle(
+      "reverse",
+      spread.cloudDirection ===
+      "left"
+    );
+
+  }
+
+  else {
+
+    cloudLayer.hidden =
+      true;
+
+    cloudLayer.classList.remove(
+      "reverse"
+    );
+
+  }
+
+
+  /* ---------- АНІМАЦІЯ ЗМІНИ ---------- */
+
+  bookSpread.classList.remove(
+    "change-next",
+    "change-prev"
+  );
+
+  void bookSpread.offsetWidth;
+
+  bookSpread.classList.add(
+    direction === "prev"
+      ? "change-prev"
+      : "change-next"
+  );
+
+
+  /* ---------- МОБІЛЬНИЙ РЕЖИМ ---------- */
+
+  updateMobileView();
+
+
+  /* ---------- ЛІЧИЛЬНИК ---------- */
+
+  pageCounter.textContent =
+    `${currentSpread + 1} / ${spreads.length}`;
+
+
+  /* ---------- ПРОГРЕС ---------- */
+
+  progressBar.style.width =
+    `${(
+      (currentSpread + 1)
+      / spreads.length
+    ) * 100}%`;
+
+
+  updateButtons();
+
+}
+
+
+
+/* =========================================================
+   МОБІЛЬНИЙ ПОКАЗ
+========================================================= */
+
+function updateMobileView() {
+
+  textPage.classList.remove(
+    "mobile-visible"
+  );
+
+  scenePage.classList.remove(
+    "mobile-visible"
+  );
+
+
+  if (!isMobile()) {
+
+    return;
+
+  }
+
+
+  if (
+    mobileSide === "text"
+  ) {
+
+    textPage.classList.add(
+      "mobile-visible"
+    );
+
+  }
+
+  else {
+
+    scenePage.classList.add(
+      "mobile-visible"
+    );
+
+  }
+
+}
+
+
+
+/* =========================================================
+   НАСТУПНА
+========================================================= */
+
+function nextPage() {
+
+
+  /* на телефоні
+     спочатку текст,
+     потім картинка */
+
+  if (
+    isMobile()
+    &&
+    mobileSide === "text"
+  ) {
+
+    mobileSide = "scene";
+
+    updateMobileView();
+
+    return;
+
+  }
+
+
+  if (
+    currentSpread <
+    spreads.length - 1
+  ) {
+
+    currentSpread++;
+
+    mobileSide = "text";
+
+    renderSpread(
+      "next"
+    );
+
+  }
+
+}
+
+
+
+/* =========================================================
+   ПОПЕРЕДНЯ
+========================================================= */
+
+function prevPage() {
+
+
+  if (
+    isMobile()
+    &&
+    mobileSide === "scene"
+  ) {
+
+    mobileSide = "text";
+
+    updateMobileView();
+
+    return;
+
+  }
+
+
+  if (
+    currentSpread > 0
+  ) {
+
+    currentSpread--;
+
+    mobileSide =
+      isMobile()
+        ? "scene"
+        : "text";
+
+    renderSpread(
+      "prev"
+    );
+
+  }
+
+}
+
+
+
+nextBtn.addEventListener(
+  "click",
+  nextPage
+);
+
+prevBtn.addEventListener(
+  "click",
+  prevPage
+);
+
+
+
+/* =========================================================
+   КНОПКИ
+========================================================= */
+
+function updateButtons() {
+
+  prevBtn.disabled =
+    currentSpread === 0
+    &&
+    (
+      !isMobile()
+      ||
+      mobileSide === "text"
+    );
+
+
+  nextBtn.disabled =
+    currentSpread ===
+      spreads.length - 1
+    &&
+    (
+      !isMobile()
+      ||
+      mobileSide === "scene"
+    );
+
+}
+
+
+
+/* =========================================================
+   КЛАВІАТУРА
+========================================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      !bookScreen.classList.contains(
+        "visible"
+      )
+    ) {
+      return;
+    }
+
+
+    if (
+      event.key === "ArrowRight"
+      ||
+      event.key === " "
+    ) {
+
+      event.preventDefault();
+
+      nextPage();
+
+    }
+
+
+    if (
+      event.key === "ArrowLeft"
+    ) {
+
+      event.preventDefault();
+
+      prevPage();
+
+    }
+
+  }
+);
+
+
+
+/* =========================================================
+   СВАЙП НА ТЕЛЕФОНІ
+========================================================= */
+
+let touchStartX = 0;
+let touchEndX = 0;
+
+
+bookSpread.addEventListener(
+  "touchstart",
+  event => {
+
+    touchStartX =
+      event.changedTouches[0]
+        .screenX;
+
+  },
+  {
+    passive: true
+  }
+);
+
+
+bookSpread.addEventListener(
+  "touchend",
+  event => {
+
+    touchEndX =
+      event.changedTouches[0]
+        .screenX;
+
+
+    const distance =
+      touchEndX -
+      touchStartX;
+
+
+    if (
+      distance < -45
+    ) {
+
+      nextPage();
+
+    }
+
+
+    if (
+      distance > 45
+    ) {
+
+      prevPage();
+
+    }
+
+  },
+  {
+    passive: true
+  }
+);
+
+
+
+/* =========================================================
+   ПОВНОЕКРАННИЙ РЕЖИМ
+========================================================= */
+
+fullscreenBtn.addEventListener(
+  "click",
+  async () => {
+
+    try {
+
+      if (
+        !document.fullscreenElement
+      ) {
+
+        await document.documentElement
+          .requestFullscreen();
+
+      }
+
+      else {
+
+        await document
+          .exitFullscreen();
+
+      }
+
+    }
+
+    catch (error) {
+
+      console.log(
+        "Повноекранний режим недоступний.",
+        error
+      );
+
+    }
+
+  }
+);
+
+
+
+/* =========================================================
+   ЗМІНА ОРІЄНТАЦІЇ / РОЗМІРУ
+========================================================= */
+
+window.addEventListener(
+  "resize",
+  () => {
+
+    updateMobileView();
+
+    updateButtons();
+
+  }
+);
+
+
+
+/* =========================================================
+   ПОЧАТКОВИЙ СТАН
+========================================================= */
+
+renderSpread();
+
+</script>
+
+
+</body>
+</html>
